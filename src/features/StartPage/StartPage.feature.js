@@ -2,9 +2,10 @@
 
 import { View, Text } from "react-native";
 import React from "react";
-import { SafeView } from "../utils/safeAreaView";
+import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
-import LogoBar from "./logoBar";
+import { LogoBar } from "../../components/logoBar.component";
+import Boxicon from "../../components/Boxicon.component";
 
 const StartPageView = styled(View)`
   display: flex;
@@ -13,13 +14,13 @@ const StartPageView = styled(View)`
   height: 100%;
 `;
 
-export default function StartPage() {
+export const StartPage = () => {
   return (
     <SafeView>
       <LogoBar />
       <StartPageView>
-        <Text>StartPage</Text>
+        <Boxicon />
       </StartPageView>
     </SafeView>
   );
-}
+};

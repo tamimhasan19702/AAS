@@ -25,7 +25,7 @@ const LogoText = styled(Text)`
   font-size: 20px;
 `;
 
-export default function LogoBar() {
+export const LogoBar = () => {
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,
   });
@@ -40,4 +40,4 @@ export default function LogoBar() {
       <LogoText>Sonic</LogoText>
     </LogoBarView>
   );
-}
+};
