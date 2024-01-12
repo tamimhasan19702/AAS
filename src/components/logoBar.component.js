@@ -37,7 +37,7 @@ export const LogoBar = () => {
   return (
     <LogoBarView>
       <MaterialCommunityIcons name="speaker-wireless" size={24} color="white" />
-      <LogoText>Sonic</LogoText>
+      <LogoText>AAC</LogoText>
     </LogoBarView>
   );
 };
