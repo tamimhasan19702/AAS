@@ -3,12 +3,12 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { SplashScreen } from "../features/splash/splash.feature";
-import { AccountFeature } from "../features/account/account.feature";
-import StartPage from "./StartPage";
+import { SplashScreen } from "../features/splash/splash.feature.js";
+import { AccountFeature } from "../features/account/account.feature.js";
+import { StartPage } from "../features/StartPage/StartPage.feature.js";
 
 const Stack = createNativeStackNavigator();
-export default function Navigation() {
+export const Navigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -19,4 +19,4 @@ export default function Navigation() {
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};

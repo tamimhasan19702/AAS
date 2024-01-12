@@ -17,7 +17,7 @@ export const SplashScreen = ({ navigation }) => {
 
   setTimeout(function () {
     setTimePassed(true);
-  }, 3000);
+  }, 2800);
 
   if (!timePassed) {
     return (
