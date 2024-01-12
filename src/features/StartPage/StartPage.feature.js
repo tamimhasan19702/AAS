@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
 import Boxicon from "../../components/Boxicon.component";
 import { useNavigation } from "@react-navigation/native";
+import { AiScreen } from "../AI/AI.feature";
 
 const StartPageView = styled(View)`
   display: flex;
@@ -19,8 +20,7 @@ const BoxContainer = styled(View)`
   margin: 20px 0px;
 `;
 
-export const StartPage = () => {
-  const navigation = useNavigation();
+export const StartPage = ({ navigation }) => {
   const navigateToAIScreen = () => {
     navigation.navigate("AI Screen");
   };

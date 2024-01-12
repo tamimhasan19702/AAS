@@ -4,7 +4,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
-export const AccountNavigation = ({ setLoad }) => {
+export const AccountNavigation = () => {
   return (
     <Stack.Navigator
       initialRouteName="Start Screen"

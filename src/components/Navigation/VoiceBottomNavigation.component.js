@@ -8,6 +8,7 @@ import { StartPage } from "../../features/StartPage/StartPage.feature";
 import { ScheduleScreen } from "../../features/schedule/Schedule.feature";
 import { HistoryScreen } from "../../features/history/History.feature";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { InternalNavigator } from "../../components/Navigation/internalNavigator.component";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,7 +37,7 @@ export const VoiceBottomNavigation = () => {
       })}>
       <Tab.Screen
         name="Home"
-        component={StartPage}
+        component={InternalNavigator}
         options={{
           headerShown: false,
           tabBarLabel: "Home",
