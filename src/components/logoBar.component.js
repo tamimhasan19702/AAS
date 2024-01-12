@@ -9,7 +9,6 @@ import {
   useFonts,
   OverlockSC_400Regular,
 } from "@expo-google-fonts/overlock-sc";
-import { Link } from "@react-navigation/native";
 
 const LogoBarView = styled(View)`
   background-color: ${color.primary};
