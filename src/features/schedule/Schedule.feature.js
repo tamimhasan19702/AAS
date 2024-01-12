@@ -2,11 +2,23 @@
 
 import { View, Text } from "react-native";
 import React from "react";
+import styled from "styled-components";
+import { SafeView } from "../../utils/safeAreaView";
+import { LogoBar } from "../../components/logoBar.component";
 
-export const ScheduleScreen = () => {
+const ScheduleView = styled(View)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+export const ScheduleScreen = ({ navigation }) => {
   return (
-    <View>
-      <Text>ScheduleScreen</Text>
-    </View>
+    <SafeView>
+      <LogoBar link={navigation.navigate} />
+      <ScheduleView>
+        <Text>ScheduleScreen</Text>
+      </ScheduleView>
+    </SafeView>
   );
 };

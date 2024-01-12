@@ -2,11 +2,24 @@
 
 import { View, Text } from "react-native";
 import React from "react";
+import { SafeView } from "../../utils/safeAreaView";
+import styled from "styled-components";
+import { LogoBar } from "../../components/logoBar.component";
 
-export const HistoryScreen = () => {
+const HistoryView = styled(View)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
+export const HistoryScreen = ({ navigation }) => {
   return (
-    <View>
-      <Text>HistoryScreen</Text>
-    </View>
+    <SafeView>
+      <LogoBar link={navigation.navigate} />
+      <HistoryView>
+        <Text>HistoryScreen</Text>
+      </HistoryView>
+    </SafeView>
   );
 };
