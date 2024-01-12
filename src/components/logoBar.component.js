@@ -1,6 +1,6 @@
 /** @format */
 
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
@@ -9,14 +9,11 @@ import {
   useFonts,
   OverlockSC_400Regular,
 } from "@expo-google-fonts/overlock-sc";
+import { Link } from "@react-navigation/native";
 
 const LogoBarView = styled(View)`
   background-color: ${color.primary};
   padding: 16px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 5px;
 `;
 
 const LogoText = styled(Text)`
@@ -25,7 +22,16 @@ const LogoText = styled(Text)`
   font-size: 20px;
 `;
 
-export const LogoBar = () => {
+const ContentView = styled(View)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 20%;
+`;
+
+export const LogoBar = ({ link }) => {
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,
   });
@@ -36,8 +42,16 @@ export const LogoBar = () => {
 
   return (
     <LogoBarView>
-      <MaterialCommunityIcons name="speaker-wireless" size={24} color="white" />
-      <LogoText>AAC</LogoText>
+      <TouchableOpacity onPress={() => link("Start Screen")}>
+        <ContentView>
+          <MaterialCommunityIcons
+            name="speaker-wireless"
+            size={24}
+            color="white"
+          />
+          <LogoText>AAC</LogoText>
+        </ContentView>
+      </TouchableOpacity>
     </LogoBarView>
   );
 };

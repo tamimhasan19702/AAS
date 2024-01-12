@@ -33,6 +33,6 @@ export const SplashScreen = ({ navigation }) => {
       </SplashView>
     );
   }
-  navigation.navigate("Account page");
+  navigation.navigate("Start Screen");
   return null;
 };

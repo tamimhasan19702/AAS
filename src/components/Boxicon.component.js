@@ -12,7 +12,7 @@ import {
 
 const BoxiconView = styled(View)`
   background-color: ${color.primary};
-  padding: 20px 80px;
+  padding: 10px 80px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
@@ -20,7 +20,7 @@ const BoxiconView = styled(View)`
 const AnimationView = styled(LottieView)`
   z-index: 99;
   width: 150px;
-  height: 170px;
+  height: 150px;
 `;
 
 const TextView = styled(View)`

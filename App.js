@@ -2,7 +2,7 @@
 
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { Navigation } from "./src/components/Navigation.component";
+import { Navigation } from "./src/components/Navigation";
 
 export default function App() {
   return (
