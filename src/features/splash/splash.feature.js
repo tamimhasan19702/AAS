@@ -13,21 +13,25 @@ const SplashView = styled(SafeView)`
 `;
 
 export const SplashScreen = ({ setIsLoading }) => {
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 2800);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 2800);
 
-    return () => clearTimeout(timeout);
-  }, [setIsLoading]);
+  //   return () => clearTimeout(timeout);
+  // }, [setIsLoading]);
 
   return (
     <SplashView>
       <LottieView
         autoPlay
         autoSize
+        loop={false}
         source={{
           uri: "https://lottie.host/ee777ab4-b025-4395-a401-ab09cfb5043e/5ytIYi3chy.json",
+        }}
+        onAnimationFinish={() => {
+          setIsLoading(false);
         }}
       />
     </SplashView>
