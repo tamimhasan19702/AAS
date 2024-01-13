@@ -13,6 +13,10 @@ import {
 const LogoBarView = styled(View)`
   background-color: ${color.primary};
   padding: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const LogoText = styled(Text)`
@@ -27,7 +31,6 @@ const ContentView = styled(View)`
   align-items: center;
   justify-content: center;
   gap: 5px;
-  width: 20%;
 `;
 
 export const LogoBar = ({ link }) => {
@@ -50,6 +53,11 @@ export const LogoBar = ({ link }) => {
           />
           <LogoText>AAC</LogoText>
         </ContentView>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => link("Nortification Screen")}>
+        <View>
+          <MaterialCommunityIcons name="bell" size={24} color="white" />
+        </View>
       </TouchableOpacity>
     </LogoBarView>
   );
