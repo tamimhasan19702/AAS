@@ -1,7 +1,7 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
@@ -12,6 +12,8 @@ import {
   OverlockSC_400Regular,
 } from "@expo-google-fonts/overlock-sc";
 import { color } from "../../utils/colors";
+import SoundPlayer from "react-native-sound-player";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AiScreenView = styled(View)`
   display: flex;
@@ -71,6 +73,17 @@ export const AiScreen = ({ navigation }) => {
       ...options,
     });
   };
+
+  const saveAndPlayAudio = async () => {
+    try {
+      await AsyncStorage.setItem("audio", text);
+      console.log("Audio saved to local storage");
+      SoundPlayer.playSoundFile(text, "mp3");
+    } catch (error) {
+      console.log("Error saving and playing audio:", error);
+    }
+  };
+
   return (
     <SafeView>
       <LogoBar link={navigation.navigate} />
@@ -89,6 +102,9 @@ export const AiScreen = ({ navigation }) => {
         />
         <AiInputButton onPress={speak}>
           <AiInputText>Speak!</AiInputText>
+        </AiInputButton>
+        <AiInputButton onPress={saveAndPlayAudio}>
+          <AiInputText>Save and Play Audio</AiInputText>
         </AiInputButton>
       </AiScreenView>
     </SafeView>
