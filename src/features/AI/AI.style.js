@@ -7,7 +7,7 @@ import { TextInput } from "react-native-paper";
 export const AiScreenView = styled(View)`
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
   height: 100%;
 `;
 
@@ -39,5 +39,13 @@ export const AiInputText = styled(Text)`
   text-align: center;
   font-size: 20px;
   color: ${color.white};
+  font-family: "OverlockSC_400Regular";
+`;
+
+export const AiVoiceText = styled(Text)`
+  font-weight: 400;
+  font-size: 20px;
+  text-align: center;
+  padding: 20px 40px;
   font-family: "OverlockSC_400Regular";
 `;

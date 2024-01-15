@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
-
+import { Text } from "react-native";
 import {
   useFonts,
   OverlockSC_400Regular,
@@ -15,21 +15,26 @@ import {
   AiInputButton,
   AiInputText,
   AiText,
+  AiVoiceText,
 } from "./AI.style";
 import { FIREBASEDATABASE } from "../../../firebase.config";
 import { ref, set, onValue } from "firebase/database";
 import * as Speech from "expo-speech";
+import { Loading } from "../../utils/loading";
 
 export const AiScreen = ({ navigation }) => {
   const [text, setText] = useState("");
-  const [audio, setAudio] = useState([]);
-  console.log(audio);
-
+  const [audio, setAudio] = useState("");
+  const [loading, setLoading] = useState(false);
+  console.log(audio.length);
   useEffect(() => {
     onValue(ref(FIREBASEDATABASE, "audioText"), (snapshot) => {
-      setAudio(snapshot.val().audioText);
+      const responseText = snapshot.val()?.audioText || "";
+      if (audio) {
+        setAudio(responseText);
+      }
     });
-  }, []);
+  }, [audio]);
 
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,
@@ -46,7 +51,12 @@ export const AiScreen = ({ navigation }) => {
     setText("");
   };
   const speak = () => {
-    Speech.speak(audio, {});
+    setLoading(true);
+    setTimeout(() => {
+      Speech.speak(audio, {});
+      setLoading(false);
+      setAudio("");
+    }, 1000);
   };
 
   return (
@@ -65,13 +75,26 @@ export const AiScreen = ({ navigation }) => {
           autoCorrect={false}
           multiline={true}
         />
-        <AiInputButton onPress={save}>
+        {}
+        <AiInputButton onPress={save} style={{ marginBottom: 10 }}>
           <AiInputText>Save</AiInputText>
         </AiInputButton>
+
         {audio ? (
-          <AiInputText onPress={speak}>speak</AiInputText>
+          <>
+            <AiVoiceText>Generated AI Voice</AiVoiceText>
+            {loading ? (
+              <Loading /> // Replace with your loading component
+            ) : (
+              <AiInputButton onPress={speak}>
+                <AiInputText>Play the Audio</AiInputText>
+              </AiInputButton>
+            )}
+          </>
         ) : (
-          <Text>Please</Text>
+          <AiVoiceText>
+            Please save your text to generate a AI Voice
+          </AiVoiceText>
         )}
       </AiScreenView>
     </SafeView>
