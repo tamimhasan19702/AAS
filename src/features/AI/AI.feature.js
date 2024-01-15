@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
-import { Text } from "react-native";
 import {
   useFonts,
   OverlockSC_400Regular,

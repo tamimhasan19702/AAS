@@ -19,3 +19,6 @@ const firebaseConfig = {
 
 export const FIRBASEAPP = initializeApp(firebaseConfig);
 export const FIREBASEDATABASE = getDatabase(FIRBASEAPP);
+
+export const OPEN_AI_API_KEY =
+  "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";
