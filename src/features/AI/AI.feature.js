@@ -34,7 +34,7 @@ export const AiScreen = ({ navigation }) => {
         setAudio(responseText);
       }
     });
-  }, [audio]);
+  }, []);
 
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,
