@@ -21,20 +21,21 @@ import { FIREBASEDATABASE } from "../../../firebase.config";
 import { ref, set, onValue } from "firebase/database";
 import * as Speech from "expo-speech";
 import { Loading } from "../../utils/loading";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const AiScreen = ({ navigation }) => {
   const [text, setText] = useState("");
   const [audio, setAudio] = useState("");
-  const [loading, setLoading] = useState(false);
-  console.log(audio.length);
+  const [saveloading, setSaveLoading] = useState(false);
+  const [speakloading, setSpeakLoading] = useState(false);
+
   useEffect(() => {
     onValue(ref(FIREBASEDATABASE, "audioText"), (snapshot) => {
       const responseText = snapshot.val()?.audioText || "";
-      if (audio) {
-        setAudio(responseText);
-      }
+      setAudio(responseText);
+      console.log(audio.length);
     });
-  }, []);
+  }, [audio]);
 
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,
@@ -45,16 +46,20 @@ export const AiScreen = ({ navigation }) => {
   }
 
   const save = () => {
-    set(ref(FIREBASEDATABASE, "audioText"), {
-      audioText: text,
-    });
-    setText("");
+    setSaveLoading(true);
+    setTimeout(() => {
+      set(ref(FIREBASEDATABASE, "audioText"), {
+        audioText: text,
+      });
+      setText("");
+      setSaveLoading(false);
+    }, 2000);
   };
   const speak = () => {
-    setLoading(true);
+    setSpeakLoading(true);
     setTimeout(() => {
       Speech.speak(audio, {});
-      setLoading(false);
+      setSpeakLoading(false);
       setAudio("");
     }, 1000);
   };
@@ -75,27 +80,44 @@ export const AiScreen = ({ navigation }) => {
           autoCorrect={false}
           multiline={true}
         />
-        {}
-        <AiInputButton onPress={save} style={{ marginBottom: 10 }}>
-          <AiInputText>Save</AiInputText>
-        </AiInputButton>
-
-        {audio ? (
-          <>
-            <AiVoiceText>Generated AI Voice</AiVoiceText>
-            {loading ? (
-              <Loading /> // Replace with your loading component
-            ) : (
-              <AiInputButton onPress={speak}>
-                <AiInputText>Play the Audio</AiInputText>
-              </AiInputButton>
-            )}
-          </>
-        ) : (
+        {!text && (
           <AiVoiceText>
             Please save your text to generate a AI Voice
           </AiVoiceText>
         )}
+
+        {saveloading ? (
+          <Loading />
+        ) : (
+          <AiInputButton onPress={save} style={{ marginBottom: 10 }}>
+            <AiInputText>Save</AiInputText>
+          </AiInputButton>
+        )}
+
+        {audio && (
+          <>
+            <AiVoiceText>Generated AI Voice</AiVoiceText>
+            {speakloading ? (
+              <Loading /> // Replace with your loading component
+            ) : (
+              <AiInputButton onPress={speak}>
+                <MaterialCommunityIcons
+                  name="speaker-wireless"
+                  size={30}
+                  color="white"
+                  style={{ textAlign: "center" }}
+                />
+                <AiInputText>Play the Audio</AiInputText>
+              </AiInputButton>
+            )}
+          </>
+        )}
+
+        <AiInputButton
+          onPress={() => navigation.navigate("Speaker Screen")}
+          style={{ marginTop: 30 }}>
+          <AiInputText>Next</AiInputText>
+        </AiInputButton>
       </AiScreenView>
     </SafeView>
   );
