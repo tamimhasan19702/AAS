@@ -57,7 +57,7 @@ export const AiScreen = ({ navigation }) => {
   const speak = () => {
     setSpeakLoading(true);
     setTimeout(() => {
-      Speech.speak(audio, {});
+      Speech.speak(audio);
       setSpeakLoading(false);
       setAudio("");
     }, 1000);

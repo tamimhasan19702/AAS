@@ -51,7 +51,7 @@ export const LogoBar = ({ link }) => {
             size={24}
             color="white"
           />
-          <LogoText>AAC</LogoText>
+          <LogoText>AAS</LogoText>
         </ContentView>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => link("Nortification Screen")}>

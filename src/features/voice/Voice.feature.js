@@ -6,7 +6,6 @@ import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
 import axios from "axios";
-import { OPEN_AI_API_KEY } from "../../../firebase.config";
 
 const VoiceScreenView = styled(View)`
   display: flex;
@@ -16,35 +15,36 @@ const VoiceScreenView = styled(View)`
 `;
 
 export const VoiceScreen = ({ navigation }) => {
-  const [response, setResponse] = useState("");
-  const fetchAIResponse = async () => {
-    const apiKey = OPEN_AI_API_KEY;
-    const prompt = "Once upon a time";
+  const [audioData, setAudioData] = useState("");
+
+  const convertTextToSpeech = async () => {
+    const textToConvert = "Hello World"; // Replace with the actual text you want to convert
+
     try {
-      const result = await axios.post(
-        "https://api.openai.com/v1/engines/davinci-codex/completions",
-        {
-          prompt: prompt,
-          max_tokens: 50,
+      const response = await fetch("http://localhost:3000/convert-to-speech", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
-      );
-      setResponse(result.data.choices[0].text);
+        body: JSON.stringify({
+          text: textToConvert,
+        }),
+      });
+
+      const data = await response.json();
+      setAudioData(data.audioData); // Store the audio data in state or use it as needed
+      console.log(data);
     } catch (error) {
-      console.error("Error fetching AI response:", error);
+      console.error("jotil");
     }
   };
+
   return (
     <SafeView>
       <LogoBar link={navigation.navigate} />
       <VoiceScreenView>
-        <Button title="Generate AI Text" onPress={fetchAIResponse} />
-        <Text>{response}</Text>
+        <Text>VoiceScreen</Text>
+        <Button title="Convert to Speech" onPress={convertTextToSpeech} />
       </VoiceScreenView>
     </SafeView>
   );
