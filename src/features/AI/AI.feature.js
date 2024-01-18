@@ -15,13 +15,15 @@ import {
   AiInputText,
   AiText,
   AiVoiceText,
+  AiTextPreset,
 } from "./AI.style";
 import { FIREBASEDATABASE } from "../../../firebase.config";
 import { ref, set, onValue } from "firebase/database";
-import * as Speech from "expo-speech";
 import { Loading } from "../../utils/loading";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
+import { FlatList, ScrollView, Text, TouchableOpacity } from "react-native";
+import PresetComponent from "../../components/preset.component";
 
 export const AiScreen = ({ navigation }) => {
   const [text, setText] = useState("");
@@ -34,10 +36,9 @@ export const AiScreen = ({ navigation }) => {
   const convertTextToSpeech = async (textToConvert) => {
     try {
       const response = await fetch(
-        "http://192.168.0.106:3000/speech?text=" +
+        "http://192.168.0.107:3000/speech?text=" +
           encodeURIComponent(textToConvert)
       );
-      console.log("Backend server called successfully");
       const audioResponse = await response.blob();
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -56,7 +57,6 @@ export const AiScreen = ({ navigation }) => {
     onValue(ref(FIREBASEDATABASE, "audioText"), (snapshot) => {
       const responseText = snapshot.val()?.audioText || "";
       setAudio(responseText);
-      console.log(audio.length);
     });
     return () => {
       sound.unloadAsync(); // Unload the audio when the component unmounts
@@ -71,7 +71,7 @@ export const AiScreen = ({ navigation }) => {
     return null;
   }
 
-  const save = () => {
+  const save = (text) => {
     setSaveLoading(true);
     setTimeout(() => {
       set(ref(FIREBASEDATABASE, "audioText"), {
@@ -81,10 +81,10 @@ export const AiScreen = ({ navigation }) => {
       setSaveLoading(false);
     }, 2000);
   };
-  const speak = () => {
+  const speak = (textAudio) => {
     setSpeakLoading(true);
     setTimeout(() => {
-      convertTextToSpeech(audio);
+      convertTextToSpeech(textAudio);
       setSpeakLoading(false);
       setAudio("");
     }, 1000);
@@ -106,34 +106,59 @@ export const AiScreen = ({ navigation }) => {
           autoCorrect={false}
           multiline={true}
         />
-        {!text && (
-          <AiVoiceText>
-            Please save your text to generate a AI Voice
-          </AiVoiceText>
-        )}
 
         {saveloading ? (
           <Loading />
         ) : (
-          <AiInputButton onPress={save} style={{ marginBottom: 10 }}>
+          <AiInputButton
+            onPress={() => save(text)}
+            style={{ marginBottom: 20 }}>
             <AiInputText>Save</AiInputText>
           </AiInputButton>
         )}
 
+        <ScrollView>
+          <AiVoiceText>Preset Annoucnements</AiVoiceText>
+          <PresetComponent
+            speak={speak}
+            text={
+              "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
+            }
+          />
+          <PresetComponent speak={speak} text={"Tui hala asholei ekta gay"} />
+          <PresetComponent
+            speak={speak}
+            text={
+              "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
+            }
+          />
+          <PresetComponent
+            speak={speak}
+            text={
+              "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
+            }
+          />
+          <PresetComponent
+            speak={speak}
+            text={
+              "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
+            }
+          />
+        </ScrollView>
+
         {audio && (
           <>
-            <AiVoiceText>Generated AI Voice</AiVoiceText>
             {speakloading ? (
               <Loading /> // Replace with your loading component
             ) : (
-              <AiInputButton onPress={speak}>
+              <AiInputButton onPress={() => speak(audio)}>
                 <MaterialCommunityIcons
                   name="speaker-wireless"
                   size={30}
                   color="white"
                   style={{ textAlign: "center" }}
                 />
-                <AiInputText>Play the Audio</AiInputText>
+                <AiInputText>Play the AI Generatred Audio</AiInputText>
               </AiInputButton>
             )}
           </>
@@ -141,7 +166,7 @@ export const AiScreen = ({ navigation }) => {
 
         <AiInputButton
           onPress={() => navigation.navigate("Speaker Screen")}
-          style={{ marginTop: 30 }}>
+          style={{ margin: 10 + 0 }}>
           <AiInputText>Next</AiInputText>
         </AiInputButton>
       </AiScreenView>

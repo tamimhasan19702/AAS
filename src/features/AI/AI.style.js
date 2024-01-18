@@ -7,7 +7,7 @@ import { TextInput } from "react-native-paper";
 export const AiScreenView = styled(View)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   height: 100%;
   flex: 1;
 `;
@@ -34,6 +34,11 @@ export const AiInputButton = styled(TouchableOpacity)`
   text-align: center;
   padding: 15px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const AiInputText = styled(Text)`
@@ -47,6 +52,5 @@ export const AiVoiceText = styled(Text)`
   font-weight: 400;
   font-size: 20px;
   text-align: center;
-  padding: 20px 40px;
   font-family: "OverlockSC_400Regular";
 `;
