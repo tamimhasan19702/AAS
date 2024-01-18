@@ -21,6 +21,7 @@ import { ref, set, onValue } from "firebase/database";
 import * as Speech from "expo-speech";
 import { Loading } from "../../utils/loading";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Audio } from "expo-av";
 
 export const AiScreen = ({ navigation }) => {
   const [text, setText] = useState("");
@@ -28,12 +29,38 @@ export const AiScreen = ({ navigation }) => {
   const [saveloading, setSaveLoading] = useState(false);
   const [speakloading, setSpeakLoading] = useState(false);
 
+  const sound = new Audio.Sound();
+
+  const convertTextToSpeech = async (textToConvert) => {
+    try {
+      const response = await fetch(
+        "http://192.168.0.106:3000/speech?text=" +
+          encodeURIComponent(textToConvert)
+      );
+      console.log("Backend server called successfully");
+      const audioResponse = await response.blob();
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Data = reader.result;
+        await sound.unloadAsync(); // Unload any previous audio
+        await sound.loadAsync({ uri: base64Data }); // Load the new audio
+        await sound.playAsync(); // Play the audio
+      };
+      reader.readAsDataURL(audioResponse);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     onValue(ref(FIREBASEDATABASE, "audioText"), (snapshot) => {
       const responseText = snapshot.val()?.audioText || "";
       setAudio(responseText);
       console.log(audio.length);
     });
+    return () => {
+      sound.unloadAsync(); // Unload the audio when the component unmounts
+    };
   }, [audio]);
 
   let [fontsLoaded] = useFonts({
@@ -57,7 +84,7 @@ export const AiScreen = ({ navigation }) => {
   const speak = () => {
     setSpeakLoading(true);
     setTimeout(() => {
-      Speech.speak(audio, {});
+      convertTextToSpeech(audio);
       setSpeakLoading(false);
       setAudio("");
     }, 1000);

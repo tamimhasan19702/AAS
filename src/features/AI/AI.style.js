@@ -7,8 +7,9 @@ import { TextInput } from "react-native-paper";
 export const AiScreenView = styled(View)`
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
   height: 100%;
+  flex: 1;
 `;
 
 export const AiText = styled(Text)`
