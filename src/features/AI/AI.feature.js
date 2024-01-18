@@ -16,6 +16,7 @@ import {
   AiText,
   AiVoiceText,
   AiTextPreset,
+  AiScrollView,
 } from "./AI.style";
 import { FIREBASEDATABASE } from "../../../firebase.config";
 import { ref, set, onValue } from "firebase/database";
@@ -116,16 +117,8 @@ export const AiScreen = ({ navigation }) => {
             <AiInputText>Save</AiInputText>
           </AiInputButton>
         )}
-
-        <ScrollView>
-          <AiVoiceText>Preset Annoucnements</AiVoiceText>
-          <PresetComponent
-            speak={speak}
-            text={
-              "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
-            }
-          />
-          <PresetComponent speak={speak} text={"Tui hala asholei ekta gay"} />
+        <AiVoiceText>Preset Annoucnements</AiVoiceText>
+        <AiScrollView Vertical={true}>
           <PresetComponent
             speak={speak}
             text={
@@ -135,23 +128,47 @@ export const AiScreen = ({ navigation }) => {
           <PresetComponent
             speak={speak}
             text={
-              "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
+              "Please Submit all of your classwork and assignements to your respective teacher"
             }
           />
           <PresetComponent
             speak={speak}
             text={
-              "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
+              "Class representative from all the batch please contact me as soon as possible"
             }
           />
-        </ScrollView>
+          <PresetComponent
+            speak={speak}
+            text={
+              "this department is surrounded by CC tv camera and projector. please be on time"
+            }
+          />
+          <PresetComponent
+            speak={speak}
+            text={
+              "Everyone please submit your project to your respective teacher. Please be on time"
+            }
+          />
+          <PresetComponent
+            speak={speak}
+            text={"Good bye everyone. Have a nice day."}
+          />
+          <PresetComponent
+            speak={speak}
+            text={
+              "Welcome to the Department of Electrical and Electronic Enginneering of University of Chittagong"
+            }
+          />
+        </AiScrollView>
 
         {audio && (
           <>
             {speakloading ? (
               <Loading /> // Replace with your loading component
             ) : (
-              <AiInputButton onPress={() => speak(audio)}>
+              <AiInputButton
+                onPress={() => speak(audio)}
+                style={{ margin: 10 + 0 }}>
                 <MaterialCommunityIcons
                   name="speaker-wireless"
                   size={30}

@@ -1,5 +1,5 @@
 /** @format */
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
 import { TextInput } from "react-native-paper";
@@ -52,5 +52,10 @@ export const AiVoiceText = styled(Text)`
   font-weight: 400;
   font-size: 20px;
   text-align: center;
+  padding: 10px 0px;
   font-family: "OverlockSC_400Regular";
+`;
+
+export const AiScrollView = styled(ScrollView)`
+  margin: 0px 10px;
 `;
