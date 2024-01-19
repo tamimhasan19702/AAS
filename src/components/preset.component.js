@@ -26,7 +26,7 @@ const PresetInput = styled(View)`
   gap: 5px;
   align-items: center;
 `;
-export default function PresetComponent({ speak, text }) {
+export default function PresetComponent({ speak, text, setText }) {
   return (
     <PresetView>
       <TouchableOpacity

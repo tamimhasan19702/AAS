@@ -23,7 +23,13 @@ import { ref, set, onValue } from "firebase/database";
 import { Loading } from "../../utils/loading";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
-import { FlatList, ScrollView, Text, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import PresetComponent from "../../components/preset.component";
 
 export const AiScreen = ({ navigation }) => {
@@ -72,7 +78,7 @@ export const AiScreen = ({ navigation }) => {
     return null;
   }
 
-  const save = (text) => {
+  const save = () => {
     setSaveLoading(true);
     setTimeout(() => {
       set(ref(FIREBASEDATABASE, "audioText"), {
@@ -89,6 +95,10 @@ export const AiScreen = ({ navigation }) => {
       setSpeakLoading(false);
       setAudio("");
     }, 1000);
+  };
+
+  const PresetSave = ({ Inputtext }) => {
+    setText(Inputtext);
   };
 
   return (
@@ -112,52 +122,80 @@ export const AiScreen = ({ navigation }) => {
           <Loading />
         ) : (
           <AiInputButton
-            onPress={() => save(text)}
-            style={{ marginBottom: 20 }}>
+            style={{ marginBottom: 10 }}
+            onPress={() => save(toString(text))}>
             <AiInputText>Save</AiInputText>
           </AiInputButton>
         )}
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 5,
+            width: "100%",
+          }}>
+          <AiInputButton
+            onPress={() => {}}
+            style={{ marginBottom: 10, width: "40%" }}>
+            <AiInputText>Save as Preset</AiInputText>
+          </AiInputButton>
+          <AiInputButton
+            onPress={() => {}}
+            style={{ marginBottom: 10, width: "40%" }}>
+            <AiInputText>Clear Preset</AiInputText>
+          </AiInputButton>
+        </View>
+
         <AiVoiceText>Preset Annoucnements</AiVoiceText>
+
         <AiScrollView Vertical={true}>
           <PresetComponent
             speak={speak}
             text={
               "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
             }
+            setText={setText}
           />
           <PresetComponent
             speak={speak}
             text={
               "Please Submit all of your classwork and assignements to your respective teacher"
             }
+            setText={setText}
           />
           <PresetComponent
             speak={speak}
             text={
               "Class representative from all the batch please contact me as soon as possible"
             }
+            setText={setText}
           />
           <PresetComponent
             speak={speak}
             text={
               "this department is surrounded by CC tv camera and projector. please be on time"
             }
+            setText={setText}
           />
           <PresetComponent
             speak={speak}
             text={
               "Everyone please submit your project to your respective teacher. Please be on time"
             }
+            setText={setText}
           />
           <PresetComponent
             speak={speak}
             text={"Good bye everyone. Have a nice day."}
+            setText={setText}
           />
           <PresetComponent
             speak={speak}
             text={
               "Welcome to the Department of Electrical and Electronic Enginneering of University of Chittagong"
             }
+            setText={PresetSave}
           />
         </AiScrollView>
 
@@ -168,7 +206,7 @@ export const AiScreen = ({ navigation }) => {
             ) : (
               <AiInputButton
                 onPress={() => speak(audio)}
-                style={{ margin: 10 + 0 }}>
+                style={{ margin: 5 + 0 }}>
                 <MaterialCommunityIcons
                   name="speaker-wireless"
                   size={30}
