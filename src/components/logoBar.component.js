@@ -17,6 +17,7 @@ const LogoBarView = styled(View)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  z-index: 100;
 `;
 
 const LogoText = styled(Text)`

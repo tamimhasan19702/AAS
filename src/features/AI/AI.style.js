@@ -1,5 +1,5 @@
 /** @format */
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
 import { TextInput } from "react-native-paper";
@@ -7,7 +7,7 @@ import { TextInput } from "react-native-paper";
 export const AiScreenView = styled(View)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   height: 100%;
   flex: 1;
 `;
@@ -16,7 +16,7 @@ export const AiText = styled(Text)`
   font-weight: 400;
   font-size: 30px;
   text-align: center;
-  padding: 20px 0px;
+  padding: 10px 0px;
   font-family: "OverlockSC_400Regular";
 `;
 
@@ -34,6 +34,11 @@ export const AiInputButton = styled(TouchableOpacity)`
   text-align: center;
   padding: 15px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const AiInputText = styled(Text)`
@@ -47,6 +52,10 @@ export const AiVoiceText = styled(Text)`
   font-weight: 400;
   font-size: 20px;
   text-align: center;
-  padding: 20px 40px;
+  padding: 10px 0px;
   font-family: "OverlockSC_400Regular";
+`;
+
+export const AiScrollView = styled(ScrollView)`
+  margin: 0px 10px;
 `;
