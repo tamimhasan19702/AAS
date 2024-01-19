@@ -16,7 +16,7 @@ export const AiText = styled(Text)`
   font-weight: 400;
   font-size: 30px;
   text-align: center;
-  padding: 20px 0px;
+  padding: 10px 0px;
   font-family: "OverlockSC_400Regular";
 `;
 

@@ -26,12 +26,12 @@ const PresetInput = styled(View)`
   gap: 5px;
   align-items: center;
 `;
-export default function PresetComponent({ speak, text, setText }) {
+export default function PresetComponent({ saveAndSpeak, text }) {
   return (
     <PresetView>
       <TouchableOpacity
         onPress={() => {
-          speak(text);
+          saveAndSpeak({ presetText: text });
         }}>
         <PresetInput>
           <MaterialCommunityIcons
