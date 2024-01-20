@@ -86,6 +86,8 @@ export const AiScreen = ({ navigation }) => {
         audioText: text,
       });
       setText("");
+      convertTextToSpeech(text);
+      setAudio("");
       setSaveLoading(false);
     }, 2000);
   };
@@ -111,12 +113,17 @@ export const AiScreen = ({ navigation }) => {
     }, 1000);
   };
   const PresetSave = () => {
-    setPresetArray((prevArray) => [...prevArray, text]);
+    text ? setPresetArray((prevArray) => [...prevArray, text]) : null;
     return presetArray;
   };
 
   const clearPreset = () => {
     setPresetArray([]);
+    return presetArray;
+  };
+
+  const handleDelete = () => {
+    setPresetArray(presetArray.slice(0, -1));
     return presetArray;
   };
 
@@ -137,15 +144,42 @@ export const AiScreen = ({ navigation }) => {
           multiline={true}
         />
 
-        {saveloading ? (
-          <Loading />
-        ) : (
-          <AiInputButton
-            style={{ marginBottom: 5 }}
-            onPress={() => save(toString(text))}>
-            <AiInputText>Save</AiInputText>
-          </AiInputButton>
-        )}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 5,
+            width: "100%",
+          }}>
+          {saveloading ? (
+            <Loading />
+          ) : (
+            <AiInputButton
+              style={{ marginBottom: 5, width: "60%" }}
+              onPress={() => save(toString(text))}>
+              <AiInputText>Save</AiInputText>
+            </AiInputButton>
+          )}
+
+          {audio && (
+            <>
+              {speakloading ? (
+                <Loading /> // Replace with your loading component
+              ) : (
+                <AiInputButton
+                  onPress={() => speak(audio)}
+                  style={{ marginBottom: 5, width: "20%" }}>
+                  <MaterialCommunityIcons
+                    name="speaker-wireless"
+                    size={30}
+                    color="white"
+                    style={{ textAlign: "center" }}
+                  />
+                </AiInputButton>
+              )}
+            </>
+          )}
+        </View>
 
         <View
           style={{
@@ -178,35 +212,16 @@ export const AiScreen = ({ navigation }) => {
               <PresetComponent
                 key={index}
                 saveAndSpeak={saveAndSpeak}
-                text={
-                  "hello class this is your chairman sir here. please bring your laptop to the computer lab as soon as possible"
-                }
+                text={item}
+                handleDelete={() => handleDelete(index)}
               />
             ))
           ) : (
-            <Text>No Presets</Text>
+            <AiVoiceText style={{ textAlign: "center", fontSize: 15 }}>
+              No Preset Annoucement Added here ☺
+            </AiVoiceText>
           )}
         </AiScrollView>
-
-        {audio && (
-          <>
-            {speakloading ? (
-              <Loading /> // Replace with your loading component
-            ) : (
-              <AiInputButton
-                onPress={() => speak(audio)}
-                style={{ margin: 5 + 0 }}>
-                <MaterialCommunityIcons
-                  name="speaker-wireless"
-                  size={30}
-                  color="white"
-                  style={{ textAlign: "center" }}
-                />
-                <AiInputText>Play the AI Generatred Audio</AiInputText>
-              </AiInputButton>
-            )}
-          </>
-        )}
 
         <AiInputButton
           onPress={() => navigation.navigate("Speaker Screen")}
