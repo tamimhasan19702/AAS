@@ -19,7 +19,7 @@ import {
   AiScrollView,
 } from "./AI.style";
 import { FIREBASEDATABASE } from "../../../firebase.config";
-import { ref, set, onValue } from "firebase/database";
+import { ref, set, onValue, get } from "firebase/database";
 import { Loading } from "../../utils/loading";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
@@ -38,17 +38,34 @@ export const AiScreen = ({ navigation }) => {
   const [saveloading, setSaveLoading] = useState(false);
   const [speakloading, setSpeakLoading] = useState(false);
   const [presetArray, setPresetArray] = useState([]);
+  const [presetLoading, setPresetLoading] = useState(false);
 
   const sound = new Audio.Sound();
 
-  useEffect(() => {
-    onValue(ref(FIREBASEDATABASE, "audioText"), (snapshot) => {
+  const updateAudioText = async () => {
+    try {
+      const snapshot = await get(ref(FIREBASEDATABASE, "audioText"));
       const responseText = snapshot.val()?.audioText || "";
       setAudio(responseText);
-    });
-    return () => {
-      sound.unloadAsync(); // Unload the audio when the component unmounts
-    };
+    } catch (error) {
+      console.error("Error updating audio text:", error);
+    }
+  };
+
+  const getArrayFromFirebase = async () => {
+    try {
+      const snapshot = await get(ref(FIREBASEDATABASE, "presetArray"));
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        setPresetArray(data);
+      }
+    } catch (error) {
+      console.error("Error getting array from Firebase:", error);
+    }
+  };
+
+  useEffect(() => {
+    updateAudioText();
   }, [audio]);
 
   let [fontsLoaded] = useFonts({
@@ -59,6 +76,15 @@ export const AiScreen = ({ navigation }) => {
     return null;
   }
 
+  const updateArrayToFirebase = async () => {
+    try {
+      await set(ref(FIREBASEDATABASE, "presetArray"), presetArray);
+      console.log("Array updated to Firebase successfully");
+    } catch (error) {
+      console.error("Error updating array to Firebase:", error);
+    }
+  };
+
   const convertTextToSpeech = async (textToConvert) => {
     try {
       const response = await fetch(
@@ -66,6 +92,7 @@ export const AiScreen = ({ navigation }) => {
           encodeURIComponent(textToConvert)
       );
       const audioResponse = await response.blob();
+
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64Data = reader.result;
@@ -105,10 +132,10 @@ export const AiScreen = ({ navigation }) => {
       audioText: presetText,
     });
     setText("");
-    setSpeakLoading(true);
+    setPresetLoading(true);
     setTimeout(() => {
       convertTextToSpeech(presetText);
-      setSpeakLoading(false);
+      setPresetLoading(false);
       setAudio("");
     }, 1000);
   };
@@ -214,6 +241,8 @@ export const AiScreen = ({ navigation }) => {
                 saveAndSpeak={saveAndSpeak}
                 text={item}
                 handleDelete={() => handleDelete(index)}
+                index={index}
+                presetLoading={presetLoading}
               />
             ))
           ) : (
