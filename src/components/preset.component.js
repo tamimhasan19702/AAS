@@ -15,13 +15,13 @@ const PresetView = styled(View)`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
 `;
 
 const PresetText = styled(Text)`
   color: ${color.white};
   font-size: 15px;
   font-family: "OverlockSC_400Regular";
+  overflow: scroll;
 `;
 
 const PresetInput = styled(View)`
@@ -29,7 +29,6 @@ const PresetInput = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 5px;
 `;
 export default function PresetComponent({
   saveAndSpeak,
@@ -37,6 +36,7 @@ export default function PresetComponent({
   handleDelete,
   index,
   presetLoading,
+  loadTime = 2000,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -50,27 +50,27 @@ export default function PresetComponent({
     setTimeout(() => {
       saveAndSpeak({ presetText: text });
       setLoading(false); // Set loading to false after the delay
-    }, 2000); // 1-second delay
+    }, loadTime); // 1-second delay
   };
 
   return (
-    <View style={{ display: "flex", alignItems: "center", width: "100%" }}>
+    <>
       <PresetView>
-        {loading ? (
-          <PresetLoading />
-        ) : (
-          <TouchableOpacity onPress={handlePlayClick}>
-            <MaterialCommunityIcons name="play" size={35} color="white" />
-          </TouchableOpacity>
-        )}
-
         <PresetInput>
-          <PresetText>{text}</PresetText>
+          {loading ? (
+            <PresetLoading />
+          ) : (
+            <TouchableOpacity onPress={handlePlayClick}>
+              <MaterialCommunityIcons name="play" size={35} color="white" />
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity onPress={() => handleDelete(index)}>
             <MaterialCommunityIcons name="delete" size={24} color="white" />
           </TouchableOpacity>
         </PresetInput>
+        <PresetText>{text}</PresetText>
       </PresetView>
-    </View>
+    </>
   );
 }

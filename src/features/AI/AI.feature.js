@@ -40,8 +40,7 @@ export const AiScreen = ({ navigation }) => {
   const [speakloading, setSpeakLoading] = useState(false);
   const [presetArray, setPresetArray] = useState([]);
   const [presetLoading, setPresetLoading] = useState(false);
-
-  console.log(`presetArray: ${presetArray}`);
+  const [loadTime, setLoadTime] = useState(0);
 
   const sound = new Audio.Sound();
 
@@ -82,6 +81,7 @@ export const AiScreen = ({ navigation }) => {
 
   const convertTextToSpeech = async (textToConvert) => {
     try {
+      const startTime = performance.now();
       const response = await fetch(
         "https://azure-rhinoceros-tutu.cyclic.app/speech?text=" +
           encodeURIComponent(textToConvert)
@@ -94,6 +94,9 @@ export const AiScreen = ({ navigation }) => {
         await sound.unloadAsync(); // Unload any previous audio
         await sound.loadAsync({ uri: base64Data }); // Load the new audio
         await sound.playAsync(); // Play the audio
+
+        const endTime = performance.now();
+        const setLoadTime = endTime - startTime;
       };
       reader.readAsDataURL(audioResponse);
     } catch (error) {
@@ -113,7 +116,7 @@ export const AiScreen = ({ navigation }) => {
         setSaveLoading(false);
         return ""; // Return the updated state value
       });
-    }, 2000);
+    }, loadTime);
   };
 
   const speak = () => {
@@ -122,7 +125,7 @@ export const AiScreen = ({ navigation }) => {
       convertTextToSpeech(audio);
       setSpeakLoading(false);
       setAudio("");
-    }, 1000);
+    }, loadTime);
   };
 
   const saveAndSpeak = ({ presetText }) => {
@@ -142,7 +145,7 @@ export const AiScreen = ({ navigation }) => {
           presetText || prevArray[prevArray.length - 1] || "",
         ]; // Return the updated state value
       });
-    }, 1000);
+    }, loadTime);
   };
   const PresetSave = () => {
     setPresetArray((prevArray) => {
@@ -197,7 +200,7 @@ export const AiScreen = ({ navigation }) => {
             <Loading />
           ) : (
             <AiInputButton
-              style={{ marginBottom: 5, width: "60%" }}
+              style={{ marginBottom: 10, width: "40%" }}
               onPress={() => save(toString(text))}>
               <AiInputText>Save</AiInputText>
             </AiInputButton>
@@ -210,13 +213,14 @@ export const AiScreen = ({ navigation }) => {
               ) : (
                 <AiInputButton
                   onPress={() => speak(audio)}
-                  style={{ marginBottom: 5, width: "20%" }}>
+                  style={{ marginBottom: 10, width: "40%" }}>
                   <MaterialCommunityIcons
                     name="speaker-wireless"
-                    size={30}
+                    size={24}
                     color="white"
                     style={{ textAlign: "center" }}
                   />
+                  <AiInputText>Recent Voice</AiInputText>
                 </AiInputButton>
               )}
             </>
@@ -258,6 +262,7 @@ export const AiScreen = ({ navigation }) => {
                 handleDelete={() => handleDelete(index)}
                 index={index}
                 presetLoading={presetLoading}
+                loadTime={loadTime}
               />
             ))
           ) : (
