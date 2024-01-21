@@ -2,11 +2,14 @@
 
 import { View, Text } from "react-native";
 import React from "react";
+import { SafeView } from "../../utils/safeAreaView";
+import { LogoBar } from "../../components/logoBar.component";
 
-export const SpeakerScreen = () => {
+export const SpeakerScreen = ({ navigation }) => {
   return (
-    <View>
+    <SafeView>
+      <LogoBar link={navigation} icon={"arrow-left"} />
       <Text>speaker</Text>
-    </View>
+    </SafeView>
   );
 };

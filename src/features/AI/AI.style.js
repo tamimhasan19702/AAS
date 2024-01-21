@@ -59,3 +59,25 @@ export const AiVoiceText = styled(Text)`
 export const AiScrollView = styled(ScrollView)`
   margin: 0px 10px;
 `;
+
+export const TextContainer = styled(View)`
+  margin-bottom: 10px;
+  width: 100%;
+`;
+
+export const ButtonContainer = styled(View)`
+  flex-direction: row;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+`;
+
+export const VoiceText = styled(Text)`
+  text-align: center;
+  font-size: 15px;
+`;
+
+export const NextButton = styled(AiInputButton)`
+  margin-top: 5px;
+  margin-bottom: 5px;
+`;

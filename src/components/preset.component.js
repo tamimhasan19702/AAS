@@ -1,18 +1,23 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Loading } from "../utils/loading";
 import { PresetLoading } from "../utils/presetLoading";
+import { AiContext } from "../context/AI.context";
+
+const Preset = styled(View)`
+  width: 380px;
+  background-color: ${color.primary};
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px;
+`;
 
 const PresetView = styled(View)`
-  padding: 12px;
-  background-color: ${color.primary};
-  margin: 5px;
-  border-radius: 5px;
   display: flex;
   flex-direction: column;
 `;
@@ -29,15 +34,15 @@ const PresetInput = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 `;
 export default function PresetComponent({
   saveAndSpeak,
-  text,
   handleDelete,
   index,
-  presetLoading,
-  loadTime = 2000,
+  text,
 }) {
+  const { loadTime, presetLoading } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -46,15 +51,15 @@ export default function PresetComponent({
   }, [presetLoading]);
 
   const handlePlayClick = () => {
-    setLoading(true); // Set loading to true when the play button is clicked
+    setLoading(true);
     setTimeout(() => {
       saveAndSpeak({ presetText: text });
-      setLoading(false); // Set loading to false after the delay
-    }, loadTime); // 1-second delay
+      setLoading(false);
+    }, loadTime);
   };
 
   return (
-    <>
+    <Preset>
       <PresetView>
         <PresetInput>
           {loading ? (
@@ -64,13 +69,12 @@ export default function PresetComponent({
               <MaterialCommunityIcons name="play" size={35} color="white" />
             </TouchableOpacity>
           )}
-
           <TouchableOpacity onPress={() => handleDelete(index)}>
             <MaterialCommunityIcons name="delete" size={24} color="white" />
           </TouchableOpacity>
         </PresetInput>
         <PresetText>{text}</PresetText>
       </PresetView>
-    </>
+    </Preset>
   );
 }

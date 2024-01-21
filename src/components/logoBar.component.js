@@ -1,7 +1,7 @@
 /** @format */
 
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -34,7 +34,7 @@ const ContentView = styled(View)`
   gap: 5px;
 `;
 
-export const LogoBar = ({ link }) => {
+export const LogoBar = ({ link, icon }) => {
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,
   });
@@ -43,15 +43,15 @@ export const LogoBar = ({ link }) => {
     return null;
   }
 
+  const handleLogoClick = () => {
+    link.navigate("Start Screen");
+  };
+
   return (
     <LogoBarView>
-      <TouchableOpacity onPress={() => link("Start Screen")}>
+      <TouchableOpacity onPress={() => handleLogoClick("Start Screen")}>
         <ContentView>
-          <MaterialCommunityIcons
-            name="speaker-wireless"
-            size={24}
-            color="white"
-          />
+          <MaterialCommunityIcons name={icon} size={24} color="white" />
           <LogoText>AAS</LogoText>
         </ContentView>
       </TouchableOpacity>

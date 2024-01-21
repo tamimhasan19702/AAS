@@ -16,7 +16,7 @@ const VoiceScreenView = styled(View)`
 export const VoiceScreen = ({ navigation }) => {
   return (
     <SafeView>
-      <LogoBar link={navigation.navigate} />
+      <LogoBar link={navigation} icon={"arrow-left"} />
       <VoiceScreenView>
         <Text>VoiceScreen</Text>
       </VoiceScreenView>

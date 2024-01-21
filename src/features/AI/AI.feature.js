@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import {
@@ -17,30 +17,35 @@ import {
   AiVoiceText,
   AiTextPreset,
   AiScrollView,
+  NextButton,
+  ButtonContainer,
 } from "./AI.style";
-import { FIREBASEDATABASE, FIREBASEFIRESTORE } from "../../../firebase.config";
+import { FIREBASEDATABASE } from "../../../firebase.config";
 import { ref, set, onValue, get } from "firebase/database";
 import { Loading } from "../../utils/loading";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
-import {
-  FlatList,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { View } from "react-native";
 import PresetComponent from "../../components/preset.component";
-import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { AiContext } from "../../context/AI.context";
 
 export const AiScreen = ({ navigation }) => {
-  const [text, setText] = useState("");
-  const [audio, setAudio] = useState("");
-  const [saveloading, setSaveLoading] = useState(false);
-  const [speakloading, setSpeakLoading] = useState(false);
-  const [presetArray, setPresetArray] = useState([]);
-  const [presetLoading, setPresetLoading] = useState(false);
-  const [loadTime, setLoadTime] = useState(0);
+  const {
+    text,
+    setText,
+    audio,
+    setAudio,
+    saveloading,
+    setSaveLoading,
+    speakloading,
+    setSpeakLoading,
+    presetArray,
+    setPresetArray,
+    presetLoading,
+    setPresetLoading,
+    loadTime,
+    setLoadTime,
+  } = useContext(AiContext);
 
   const sound = new Audio.Sound();
 
@@ -82,9 +87,12 @@ export const AiScreen = ({ navigation }) => {
   const convertTextToSpeech = async (textToConvert) => {
     try {
       const startTime = performance.now();
+      const isLive = true;
+      const baseUrl = isLive
+        ? "https://azure-rhinoceros-tutu.cyclic.app"
+        : "http://http://192.168.63.129:3000/";
       const response = await fetch(
-        "https://azure-rhinoceros-tutu.cyclic.app/speech?text=" +
-          encodeURIComponent(textToConvert)
+        `${baseUrl}/speech?text=${encodeURIComponent(textToConvert)}`
       );
       const audioResponse = await response.blob();
 
@@ -96,7 +104,7 @@ export const AiScreen = ({ navigation }) => {
         await sound.playAsync(); // Play the audio
 
         const endTime = performance.now();
-        const setLoadTime = endTime - startTime;
+        setLoadTime(endTime - startTime);
       };
       reader.readAsDataURL(audioResponse);
     } catch (error) {
@@ -148,9 +156,13 @@ export const AiScreen = ({ navigation }) => {
     }, loadTime);
   };
   const PresetSave = () => {
+    if (text === "") {
+      return null;
+    }
     setPresetArray((prevArray) => {
-      set(ref(FIREBASEDATABASE, "presetArray"), [...prevArray, text]);
-      return [...prevArray, text]; // Return the updated state value
+      const updatedArray = [...prevArray, text];
+      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
+      return updatedArray; // Return the updated state value
     });
     setText("");
   };
@@ -174,7 +186,7 @@ export const AiScreen = ({ navigation }) => {
 
   return (
     <SafeView>
-      <LogoBar link={navigation.navigate} />
+      <LogoBar link={navigation} icon={"arrow-left"} />
       <AiScreenView>
         <AiText>Please enter your text to be Announced</AiText>
         <AiInputField
@@ -220,7 +232,7 @@ export const AiScreen = ({ navigation }) => {
                     color="white"
                     style={{ textAlign: "center" }}
                   />
-                  <AiInputText>Recent Voice</AiInputText>
+                  <AiInputText>Recent audio</AiInputText>
                 </AiInputButton>
               )}
             </>
@@ -261,8 +273,6 @@ export const AiScreen = ({ navigation }) => {
                 text={item}
                 handleDelete={() => handleDelete(index)}
                 index={index}
-                presetLoading={presetLoading}
-                loadTime={loadTime}
               />
             ))
           ) : (
@@ -272,11 +282,9 @@ export const AiScreen = ({ navigation }) => {
           )}
         </AiScrollView>
 
-        <AiInputButton
-          onPress={() => navigation.navigate("Speaker Screen")}
-          style={{ marginTop: 5, marginBottom: 5 }}>
+        <NextButton onPress={() => navigation.navigate("Speaker Screen")}>
           <AiInputText>Next</AiInputText>
-        </AiInputButton>
+        </NextButton>
       </AiScreenView>
     </SafeView>
   );
