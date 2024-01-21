@@ -13,10 +13,9 @@ const PresetView = styled(View)`
   background-color: ${color.primary};
   margin: 5px;
   border-radius: 5px;
-
   display: flex;
-  flex-direction: row;
-  gap: 15px;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 const PresetText = styled(Text)`
@@ -30,7 +29,7 @@ const PresetInput = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 88%;
+  gap: 5px;
 `;
 export default function PresetComponent({
   saveAndSpeak,
@@ -61,7 +60,7 @@ export default function PresetComponent({
           <PresetLoading />
         ) : (
           <TouchableOpacity onPress={handlePlayClick}>
-            <MaterialCommunityIcons name="play" size={30} color="white" />
+            <MaterialCommunityIcons name="play" size={35} color="white" />
           </TouchableOpacity>
         )}
 

@@ -18,7 +18,7 @@ import {
   AiTextPreset,
   AiScrollView,
 } from "./AI.style";
-import { FIREBASEDATABASE } from "../../../firebase.config";
+import { FIREBASEDATABASE, FIREBASEFIRESTORE } from "../../../firebase.config";
 import { ref, set, onValue, get } from "firebase/database";
 import { Loading } from "../../utils/loading";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -31,6 +31,7 @@ import {
   View,
 } from "react-native";
 import PresetComponent from "../../components/preset.component";
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 
 export const AiScreen = ({ navigation }) => {
   const [text, setText] = useState("");
@@ -39,6 +40,8 @@ export const AiScreen = ({ navigation }) => {
   const [speakloading, setSpeakLoading] = useState(false);
   const [presetArray, setPresetArray] = useState([]);
   const [presetLoading, setPresetLoading] = useState(false);
+
+  console.log(`presetArray: ${presetArray}`);
 
   const sound = new Audio.Sound();
 
@@ -66,6 +69,7 @@ export const AiScreen = ({ navigation }) => {
 
   useEffect(() => {
     updateAudioText();
+    getArrayFromFirebase();
   }, [audio]);
 
   let [fontsLoaded] = useFonts({
@@ -75,15 +79,6 @@ export const AiScreen = ({ navigation }) => {
   if (!fontsLoaded) {
     return null;
   }
-
-  const updateArrayToFirebase = async () => {
-    try {
-      await set(ref(FIREBASEDATABASE, "presetArray"), presetArray);
-      console.log("Array updated to Firebase successfully");
-    } catch (error) {
-      console.error("Error updating array to Firebase:", error);
-    }
-  };
 
   const convertTextToSpeech = async (textToConvert) => {
     try {
@@ -109,49 +104,69 @@ export const AiScreen = ({ navigation }) => {
   const save = () => {
     setSaveLoading(true);
     setTimeout(() => {
-      set(ref(FIREBASEDATABASE, "audioText"), {
-        audioText: text,
+      setText((prevText) => {
+        set(ref(FIREBASEDATABASE, "audioText"), {
+          audioText: prevText,
+        });
+        convertTextToSpeech(prevText);
+        setAudio("");
+        setSaveLoading(false);
+        return ""; // Return the updated state value
       });
-      setText("");
-      convertTextToSpeech(text);
-      setAudio("");
-      setSaveLoading(false);
     }, 2000);
   };
-  const speak = (textAudio) => {
+
+  const speak = () => {
     setSpeakLoading(true);
     setTimeout(() => {
-      convertTextToSpeech(textAudio);
+      convertTextToSpeech(audio);
       setSpeakLoading(false);
       setAudio("");
     }, 1000);
   };
 
   const saveAndSpeak = ({ presetText }) => {
-    set(ref(FIREBASEDATABASE, "audioText"), {
-      audioText: presetText,
-    });
-    setText("");
     setPresetLoading(true);
     setTimeout(() => {
-      convertTextToSpeech(presetText);
-      setPresetLoading(false);
-      setAudio("");
+      setPresetArray((prevArray) => {
+        set(ref(FIREBASEDATABASE, "audioText"), {
+          audioText: presetText || prevArray[prevArray.length - 1] || "",
+        });
+        convertTextToSpeech(
+          presetText || prevArray[prevArray.length - 1] || ""
+        );
+        setAudio("");
+        setPresetLoading(false);
+        return [
+          ...prevArray,
+          presetText || prevArray[prevArray.length - 1] || "",
+        ]; // Return the updated state value
+      });
     }, 1000);
   };
   const PresetSave = () => {
-    text ? setPresetArray((prevArray) => [...prevArray, text]) : null;
-    return presetArray;
+    setPresetArray((prevArray) => {
+      set(ref(FIREBASEDATABASE, "presetArray"), [...prevArray, text]);
+      return [...prevArray, text]; // Return the updated state value
+    });
+    setText("");
   };
 
   const clearPreset = () => {
-    setPresetArray([]);
-    return presetArray;
+    setPresetArray((prevArray) => {
+      set(ref(FIREBASEDATABASE, "presetArray"), []);
+      return []; // Return the updated state value
+    });
   };
 
-  const handleDelete = () => {
-    setPresetArray(presetArray.slice(0, -1));
-    return presetArray;
+  const handleDelete = (index) => {
+    setPresetArray((prevArray) => {
+      const updatedArray = prevArray
+        .slice(0, index)
+        .concat(prevArray.slice(index + 1));
+      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
+      return updatedArray; // Return the updated state value
+    });
   };
 
   return (
