@@ -1,12 +1,13 @@
 /** @format */
 
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import { SpeakerComponent } from "../../components/speaker.component";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
+import { SpeakerContext } from "../../context/Speaker.context";
 
 const SpeakerText = styled(Text)`
   font-weight: 400;
@@ -54,31 +55,8 @@ const AllSpeakerView = styled(View)`
 `;
 
 export const SpeakerScreen = ({ navigation }) => {
-  const [speakers, setSpeakers] = useState([
-    { no: 1, isOn: false },
-    { no: 2, isOn: false },
-    { no: 3, isOn: false },
-    { no: 4, isOn: false },
-    { no: 5, isOn: false },
-  ]);
-
-  const toggleHandler = (speakerNo) => {
-    setSpeakers((prevSpeakers) =>
-      prevSpeakers.map((speaker) =>
-        speaker.no === speakerNo ? { ...speaker, isOn: !speaker.isOn } : speaker
-      )
-    );
-  };
-
-  const toggleHandlerAll = () => {
-    setSpeakers((prevSpeakers) =>
-      prevSpeakers.map((speaker) => ({
-        ...speaker,
-        isOn: !speakers.every((s) => s.isOn),
-      }))
-    );
-  };
-
+  const {speakers, toggleHandler, toggleHandlerAll} = useContext(SpeakerContext);
+  
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
