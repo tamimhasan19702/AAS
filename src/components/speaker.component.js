@@ -11,20 +11,24 @@ import { AiContext } from "../context/AI.context";
 
 const Speaker = styled(View)`
   width: 400px;
-  background-color: ${color.primary};
+  background-color: ${({ toggleSpeaker }) => {
+    return toggleSpeaker ? color.primary : color.gray;
+  }};
   padding: 12px;
-  border-radius: 5px;
+  border-radius: 10px;
   margin: 5px;
 `;
 
 const SpeakerView = styled(View)`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 `;
 
 const SpeakerBoxText = styled(Text)`
   color: ${color.white};
-  font-size: 15px;
+  font-size: 20px;
   font-family: "OverlockSC_400Regular";
   overflow: scroll;
 `;
@@ -45,22 +49,49 @@ const SpeakerText = styled(Text)`
   font-family: "OverlockSC_400Regular";
 `;
 export const SpeakerComponent = () => {
+  const [toggleSpeaker, setToggleSpeaker] = useState(false);
+  console.log(toggleSpeaker);
+
+  const toggleHandler = () => {
+    setToggleSpeaker((prevToggle) => !prevToggle);
+  };
   return (
     <>
       <SpeakerText>Choose which speaker you want to use</SpeakerText>
-      <Speaker>
-        <SpeakerView>
-          <SpeakerInput>
-            <TouchableOpacity onPress={() => {}}>
-              <MaterialCommunityIcons name="play" size={35} color="white" />
+      <Speaker toggleSpeaker={toggleSpeaker}>
+        <SpeakerInput>
+          {toggleSpeaker ? (
+            <TouchableOpacity onPress={toggleHandler}>
+              <SpeakerView>
+                <MaterialCommunityIcons
+                  name="speaker"
+                  size={35}
+                  color="white"
+                />
+                <SpeakerBoxText>Turn On</SpeakerBoxText>
+              </SpeakerView>
             </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={toggleHandler}>
+              <SpeakerView>
+                <MaterialCommunityIcons
+                  name="speaker-off"
+                  size={35}
+                  color="white"
+                />
+                <SpeakerBoxText>Turn Off</SpeakerBoxText>
+              </SpeakerView>
+            </TouchableOpacity>
+          )}
 
-            <TouchableOpacity onPress={() => {}}>
-              <MaterialCommunityIcons name="delete" size={26} color="white" />
-            </TouchableOpacity>
-          </SpeakerInput>
-          <SpeakerBoxText>speaker</SpeakerBoxText>
-        </SpeakerView>
+          <TouchableOpacity onPress={() => {}}>
+            <MaterialCommunityIcons
+              name="arrow-right-circle"
+              size={26}
+              color="white"
+            />
+          </TouchableOpacity>
+        </SpeakerInput>
       </Speaker>
     </>
   );
