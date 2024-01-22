@@ -21,8 +21,7 @@ export const AiText = styled(Text)`
 `;
 
 export const AiInputField = styled(TextInput)`
-  width: 80%;
-  min-height: 100px;
+  width: 100%;
   margin: 10px 0px;
   padding: 10px 0px;
   text-vertical-align: top;
@@ -80,4 +79,7 @@ export const VoiceText = styled(Text)`
 export const NextButton = styled(AiInputButton)`
   margin-top: 5px;
   margin-bottom: 5px;
+`;
+export const AiTextInputView = styled(View)`
+  width: 80%;
 `;

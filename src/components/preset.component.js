@@ -12,7 +12,7 @@ import { AiContext } from "../context/AI.context";
 const Preset = styled(View)`
   width: 380px;
   background-color: ${color.primary};
-  padding: 8px;
+  padding: 12px;
   border-radius: 5px;
   margin: 5px;
 `;
@@ -70,7 +70,7 @@ export default function PresetComponent({
             </TouchableOpacity>
           )}
           <TouchableOpacity onPress={() => handleDelete(index)}>
-            <MaterialCommunityIcons name="delete" size={24} color="white" />
+            <MaterialCommunityIcons name="delete" size={26} color="white" />
           </TouchableOpacity>
         </PresetInput>
         <PresetText>{text}</PresetText>
