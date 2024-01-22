@@ -24,6 +24,7 @@ const SpeakerView = styled(View)`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  gap: 6px;
 `;
 
 const SpeakerBoxText = styled(Text)`
@@ -48,16 +49,13 @@ const SpeakerText = styled(Text)`
   padding: 10px 0px;
   font-family: "OverlockSC_400Regular";
 `;
-export const SpeakerComponent = () => {
+export const SpeakerComponent = ({ No }) => {
   const [toggleSpeaker, setToggleSpeaker] = useState(false);
-  console.log(toggleSpeaker);
-
   const toggleHandler = () => {
     setToggleSpeaker((prevToggle) => !prevToggle);
   };
   return (
     <>
-      <SpeakerText>Choose which speaker you want to use</SpeakerText>
       <Speaker toggleSpeaker={toggleSpeaker}>
         <SpeakerInput>
           {toggleSpeaker ? (
@@ -85,11 +83,14 @@ export const SpeakerComponent = () => {
           )}
 
           <TouchableOpacity onPress={() => {}}>
-            <MaterialCommunityIcons
-              name="arrow-right-circle"
-              size={26}
-              color="white"
-            />
+            <SpeakerView>
+              <SpeakerBoxText>Speaker No {No}</SpeakerBoxText>
+              <MaterialCommunityIcons
+                name="arrow-right-circle"
+                size={26}
+                color="white"
+              />
+            </SpeakerView>
           </TouchableOpacity>
         </SpeakerInput>
       </Speaker>

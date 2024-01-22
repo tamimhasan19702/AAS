@@ -157,7 +157,7 @@ export const AiScreen = ({ navigation }) => {
         </AiScrollView>
 
         <NextButton onPress={() => navigation.navigate("Speaker Screen")}>
-          <AiInputText>Next</AiInputText>
+          <AiInputText>Next Step</AiInputText>
         </NextButton>
       </AiScreenView>
     </SafeView>
