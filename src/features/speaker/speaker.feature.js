@@ -54,20 +54,50 @@ const AllSpeakerView = styled(View)`
 `;
 
 export const SpeakerScreen = ({ navigation }) => {
+  const [speakers, setSpeakers] = useState([
+    { no: 1, isOn: false },
+    { no: 2, isOn: false },
+    { no: 3, isOn: false },
+    { no: 4, isOn: false },
+    { no: 5, isOn: false },
+  ]);
+
+  const toggleHandler = (speakerNo) => {
+    setSpeakers((prevSpeakers) =>
+      prevSpeakers.map((speaker) =>
+        speaker.no === speakerNo ? { ...speaker, isOn: !speaker.isOn } : speaker
+      )
+    );
+  };
+
+  const toggleHandlerAll = () => {
+    setSpeakers((prevSpeakers) =>
+      prevSpeakers.map((speaker) => ({
+        ...speaker,
+        isOn: !speakers.every((s) => s.isOn),
+      }))
+    );
+  };
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <SpeakerText>Choose which speaker you want to use</SpeakerText>
       <ScrollView>
-        <SpeakerComponent No={1} />
-        <SpeakerComponent No={2} />
-        <SpeakerComponent No={3} />
-        <SpeakerComponent No={4} />
-        <SpeakerComponent No={5} />
+        {speakers.map((speaker) => (
+          <SpeakerComponent
+            key={speaker.no}
+            No={speaker.no}
+            isOn={speaker.isOn}
+            toggleHandler={() => toggleHandler(speaker.no)}
+          />
+        ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText>Turn on All</AllSpeakerText>
+          <AllSpeakerText onPress={toggleHandlerAll}>
+            Turn {speakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
+          </AllSpeakerText>
         </AllSpeakerButton>
         <NextSpeakerButton>
           <AllSpeakerText>Next Step</AllSpeakerText>

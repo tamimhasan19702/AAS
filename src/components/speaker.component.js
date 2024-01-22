@@ -49,16 +49,12 @@ const SpeakerText = styled(Text)`
   padding: 10px 0px;
   font-family: "OverlockSC_400Regular";
 `;
-export const SpeakerComponent = ({ No }) => {
-  const [toggleSpeaker, setToggleSpeaker] = useState(false);
-  const toggleHandler = () => {
-    setToggleSpeaker((prevToggle) => !prevToggle);
-  };
+export const SpeakerComponent = ({ No, isOn, toggleHandler }) => {
   return (
     <>
-      <Speaker toggleSpeaker={toggleSpeaker}>
+      <Speaker toggleSpeaker={isOn}>
         <SpeakerInput>
-          {toggleSpeaker ? (
+          {isOn ? (
             <TouchableOpacity onPress={toggleHandler}>
               <SpeakerView>
                 <MaterialCommunityIcons
