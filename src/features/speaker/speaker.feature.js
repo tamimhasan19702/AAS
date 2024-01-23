@@ -8,7 +8,7 @@ import { SpeakerComponent } from "../../components/speaker.component";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
 import { SpeakerContext } from "../../context/Speaker.context";
-
+import { AiContext } from "../../context/AI.context";
 const SpeakerText = styled(Text)`
   font-weight: 400;
   font-size: 20px;
@@ -56,8 +56,10 @@ const AllSpeakerView = styled(View)`
 `;
 
 export const SpeakerScreen = ({ navigation }) => {
+  const { audio } = useContext(AiContext);
   const { speakers, toggleHandler, toggleHandlerAll } =
     useContext(SpeakerContext);
+  console.log(speakers);
 
   return (
     <SafeView>
@@ -69,13 +71,13 @@ export const SpeakerScreen = ({ navigation }) => {
             key={speaker.no}
             No={speaker.no}
             isOn={speaker.isOn}
-            toggleHandler={() => toggleHandler(speaker.no)}
+            toggleHandler={() => toggleHandler(speaker.no, audio)}
           />
         ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText onPress={toggleHandlerAll}>
+          <AllSpeakerText onPress={() => toggleHandlerAll(audio)}>
             Turn {speakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>

@@ -147,6 +147,7 @@ export const AiContextProvider = ({ children }) => {
     saveloading,
     speakloading,
     presetArray,
+    loadTime,
     updateAudioText,
     getArrayFromFirebase,
     presetLoading,
@@ -159,6 +160,11 @@ export const AiContextProvider = ({ children }) => {
   };
 
   return (
-    <AiContext.Provider value={contextValue}>{children}</AiContext.Provider>
+    <AiContext.Provider
+      value={{
+        ...contextValue,
+      }}>
+      {children}
+    </AiContext.Provider>
   );
 };

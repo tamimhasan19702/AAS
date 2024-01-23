@@ -42,13 +42,8 @@ export default function PresetComponent({
   index,
   text,
 }) {
-  const { loadTime, presetLoading } = useContext(AiContext);
+  const { loadTime } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Set loading to false when presetLoading changes
-    setLoading(false);
-  }, [presetLoading]);
 
   const handlePlayClick = () => {
     setLoading(true);
