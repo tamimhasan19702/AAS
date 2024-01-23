@@ -30,7 +30,8 @@ const AllSpeakerButton = styled(TouchableOpacity)`
 `;
 const NextSpeakerButton = styled(TouchableOpacity)`
   width: 90%;
-  background-color: ${color.primary};
+  background-color: ${({ allSpeakersOn }) =>
+    allSpeakersOn ? color.primary : color.gray};
   text-align: center;
   padding: 15px;
   border-radius: 5px;
@@ -55,8 +56,9 @@ const AllSpeakerView = styled(View)`
 `;
 
 export const SpeakerScreen = ({ navigation }) => {
-  const {speakers, toggleHandler, toggleHandlerAll} = useContext(SpeakerContext);
-  
+  const { speakers, toggleHandler, toggleHandlerAll } =
+    useContext(SpeakerContext);
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -77,7 +79,7 @@ export const SpeakerScreen = ({ navigation }) => {
             Turn {speakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>
-        <NextSpeakerButton>
+        <NextSpeakerButton allSpeakersOn={speakers.some((s) => s.isOn)}>
           <AllSpeakerText>Next Step</AllSpeakerText>
         </NextSpeakerButton>
       </AllSpeakerView>
