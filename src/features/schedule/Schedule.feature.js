@@ -15,7 +15,7 @@ const ScheduleView = styled(View)`
 export const ScheduleScreen = ({ navigation }) => {
   return (
     <SafeView>
-      <LogoBar link={navigation.navigate} />
+      <LogoBar link={navigation} icon={"arrow-left"} />
       <ScheduleView>
         <Text>ScheduleScreen</Text>
       </ScheduleView>

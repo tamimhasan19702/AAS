@@ -29,7 +29,7 @@ export const StartPage = ({ navigation }) => {
   };
   return (
     <SafeView>
-      <LogoBar link={navigation.navigate} />
+      <LogoBar link={navigation} icon={"speaker-wireless"} />
       <StartPageView>
         <BoxContainer>
           <TouchableOpacity onPress={navigateToAIScreen}>

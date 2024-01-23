@@ -16,7 +16,7 @@ const HistoryView = styled(View)`
 export const HistoryScreen = ({ navigation }) => {
   return (
     <SafeView>
-      <LogoBar link={navigation.navigate} />
+      <LogoBar link={navigation} icon={"arrow-left"} />
       <HistoryView>
         <Text>HistoryScreen</Text>
       </HistoryView>
