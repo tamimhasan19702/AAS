@@ -15,6 +15,7 @@ export const AiContextProvider = ({ children }) => {
   const [presetArray, setPresetArray] = useState([]);
   const [presetLoading, setPresetLoading] = useState(false);
   const [loadTime, setLoadTime] = useState(0);
+  console.log(presetArray);
 
   const sound = new Audio.Sound();
 
@@ -91,38 +92,37 @@ export const AiContextProvider = ({ children }) => {
       setAudio("");
     }, loadTime);
   };
-
   const saveAndSpeak = useCallback(
     ({ presetText }) => {
       setPresetLoading(true);
+      convertTextToSpeech(presetText || ""); // Convert text to speech immediately
+
       setTimeout(() => {
         setPresetArray((prevArray) => {
-          set(ref(FIREBASEDATABASE, "audioText"), {
-            audioText: presetText || prevArray[prevArray.length - 1] || "",
-          });
-          convertTextToSpeech(
-            presetText || prevArray[prevArray.length - 1] || ""
-          );
+          const newElement =
+            presetText || prevArray[prevArray.length - 1] || "";
+          set(ref(FIREBASEDATABASE, "audioText"), { audioText: newElement });
           setAudio("");
           setPresetLoading(false);
-          return [
-            ...prevArray,
-            presetText || prevArray[prevArray.length - 1] || "",
-          ]; // Return the updated state value
+          return [...prevArray, newElement];
         });
       }, loadTime);
     },
     [convertTextToSpeech, loadTime]
   );
+
   const PresetSave = () => {
     if (text === "") {
       return null;
     }
+
     setPresetArray((prevArray) => {
-      const updatedArray = [...prevArray, text];
+      const updatedArray = [text, ...prevArray];
+
       set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-      return updatedArray; // Return the updated state value
+      return updatedArray;
     });
+
     setText("");
   };
 
