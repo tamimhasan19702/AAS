@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useCallback } from "react";
 import { Audio } from "expo-av";
 import { ref, set, onValue, get } from "firebase/database";
 import { FIREBASEDATABASE } from "../../firebase.config";
@@ -92,25 +92,28 @@ export const AiContextProvider = ({ children }) => {
     }, loadTime);
   };
 
-  const saveAndSpeak = ({ presetText }) => {
-    setPresetLoading(true);
-    setTimeout(() => {
-      setPresetArray((prevArray) => {
-        set(ref(FIREBASEDATABASE, "audioText"), {
-          audioText: presetText || prevArray[prevArray.length - 1] || "",
+  const saveAndSpeak = useCallback(
+    ({ presetText }) => {
+      setPresetLoading(true);
+      setTimeout(() => {
+        setPresetArray((prevArray) => {
+          set(ref(FIREBASEDATABASE, "audioText"), {
+            audioText: presetText || prevArray[prevArray.length - 1] || "",
+          });
+          convertTextToSpeech(
+            presetText || prevArray[prevArray.length - 1] || ""
+          );
+          setAudio("");
+          setPresetLoading(false);
+          return [
+            ...prevArray,
+            presetText || prevArray[prevArray.length - 1] || "",
+          ]; // Return the updated state value
         });
-        convertTextToSpeech(
-          presetText || prevArray[prevArray.length - 1] || ""
-        );
-        setAudio("");
-        setPresetLoading(false);
-        return [
-          ...prevArray,
-          presetText || prevArray[prevArray.length - 1] || "",
-        ]; // Return the updated state value
-      });
-    }, loadTime);
-  };
+      }, loadTime);
+    },
+    [convertTextToSpeech, loadTime]
+  );
   const PresetSave = () => {
     if (text === "") {
       return null;

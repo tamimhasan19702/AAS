@@ -19,8 +19,8 @@ export const SpeakerProvider = ({ children }) => {
         speaker.no === speakerNo
           ? {
               ...speaker,
-              isOn: !speaker.isOn,
-              text: speaker.isOn ? audio : "",
+              isOn: speaker.isOn ? false : true,
+              text: speaker.isOn ? "" : audio,
             }
           : speaker
       )

@@ -60,7 +60,6 @@ export const SpeakerScreen = ({ navigation }) => {
   const { speakers, toggleHandler, toggleHandlerAll } =
     useContext(SpeakerContext);
   console.log(speakers);
-
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
