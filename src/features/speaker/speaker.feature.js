@@ -57,7 +57,7 @@ const AllSpeakerView = styled(View)`
 
 export const SpeakerScreen = ({ navigation }) => {
   const { audio } = useContext(AiContext);
-  const { speakers, toggleHandler, toggleHandlerAll } =
+  const { speakers, toggleHandler, toggleHandlerAll, showAlert } =
     useContext(SpeakerContext);
   console.log(speakers);
   const allSpeakersOn = speakers.some((s) => s.isOn);
@@ -89,7 +89,7 @@ export const SpeakerScreen = ({ navigation }) => {
         </AllSpeakerButton>
         <NextSpeakerButton
           allSpeakersOn={allSpeakersOn}
-          onPress={allSpeakersOn ? handleNextStepPress : () => null}>
+          onPress={allSpeakersOn ? handleNextStepPress : showAlert}>
           <AllSpeakerText>Next Step</AllSpeakerText>
         </NextSpeakerButton>
       </AllSpeakerView>

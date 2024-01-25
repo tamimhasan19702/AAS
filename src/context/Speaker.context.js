@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { createContext, useState } from "react";
-
+import { Alert } from "react-native";
 export const SpeakerContext = createContext();
 
 export const SpeakerProvider = ({ children }) => {
@@ -27,6 +27,19 @@ export const SpeakerProvider = ({ children }) => {
     );
   };
 
+  const showAlert = () => {
+    Alert.alert(
+      "Alert",
+      "Please choose atleast one speaker to proceed",
+      [{ text: "ok" }],
+      {
+        style: "custom",
+        backgroundColor: "lightcoral",
+        color: "black",
+      }
+    );
+  };
+
   const toggleHandlerAll = (audio) => {
     setSpeakers((prevSpeakers) =>
       prevSpeakers.map((speaker) => ({
@@ -43,6 +56,7 @@ export const SpeakerProvider = ({ children }) => {
         speakers,
         toggleHandler,
         toggleHandlerAll,
+        showAlert,
       }}>
       {children}
     </SpeakerContext.Provider>
