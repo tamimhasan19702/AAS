@@ -60,9 +60,16 @@ export const SpeakerScreen = ({ navigation }) => {
   const { speakers, toggleHandler, toggleHandlerAll } =
     useContext(SpeakerContext);
   console.log(speakers);
+  const allSpeakersOn = speakers.some((s) => s.isOn);
+  const handleNextStepPress = () => {
+    if (allSpeakersOn) {
+      navigation.navigate("Send Speaker");
+    }
+  };
+
   return (
     <SafeView>
-      <LogoBar link={navigation} icon={"arrow-left"} />
+      <LogoBar link={navigation} icon={"arrow-left"} route={"AI Screen"} />
       <SpeakerText>Choose which speaker you want to use</SpeakerText>
       <ScrollView>
         {speakers.map((speaker) => (
@@ -80,7 +87,9 @@ export const SpeakerScreen = ({ navigation }) => {
             Turn {speakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>
-        <NextSpeakerButton allSpeakersOn={speakers.some((s) => s.isOn)}>
+        <NextSpeakerButton
+          allSpeakersOn={allSpeakersOn}
+          onPress={allSpeakersOn ? handleNextStepPress : () => null}>
           <AllSpeakerText>Next Step</AllSpeakerText>
         </NextSpeakerButton>
       </AllSpeakerView>

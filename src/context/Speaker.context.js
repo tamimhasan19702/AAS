@@ -39,7 +39,11 @@ export const SpeakerProvider = ({ children }) => {
 
   return (
     <SpeakerContext.Provider
-      value={{ speakers, toggleHandler, toggleHandlerAll }}>
+      value={{
+        speakers,
+        toggleHandler,
+        toggleHandlerAll,
+      }}>
       {children}
     </SpeakerContext.Provider>
   );
