@@ -8,7 +8,7 @@ import { SpeakerComponent } from "../../components/speaker.component";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
 import { SpeakerContext } from "../../context/Speaker.context";
-
+import { AiContext } from "../../context/AI.context";
 const SpeakerText = styled(Text)`
   font-weight: 400;
   font-size: 20px;
@@ -30,7 +30,8 @@ const AllSpeakerButton = styled(TouchableOpacity)`
 `;
 const NextSpeakerButton = styled(TouchableOpacity)`
   width: 90%;
-  background-color: ${color.primary};
+  background-color: ${({ allSpeakersOn }) =>
+    allSpeakersOn ? color.primary : color.gray};
   text-align: center;
   padding: 15px;
   border-radius: 5px;
@@ -55,11 +56,20 @@ const AllSpeakerView = styled(View)`
 `;
 
 export const SpeakerScreen = ({ navigation }) => {
-  const {speakers, toggleHandler, toggleHandlerAll} = useContext(SpeakerContext);
-  
+  const { audio } = useContext(AiContext);
+  const { speakers, toggleHandler, toggleHandlerAll, showAlert } =
+    useContext(SpeakerContext);
+  console.log(speakers);
+  const allSpeakersOn = speakers.some((s) => s.isOn);
+  const handleNextStepPress = () => {
+    if (allSpeakersOn) {
+      navigation.navigate("Send Speaker");
+    }
+  };
+
   return (
     <SafeView>
-      <LogoBar link={navigation} icon={"arrow-left"} />
+      <LogoBar link={navigation} icon={"arrow-left"} route={"AI Screen"} />
       <SpeakerText>Choose which speaker you want to use</SpeakerText>
       <ScrollView>
         {speakers.map((speaker) => (
@@ -67,17 +77,19 @@ export const SpeakerScreen = ({ navigation }) => {
             key={speaker.no}
             No={speaker.no}
             isOn={speaker.isOn}
-            toggleHandler={() => toggleHandler(speaker.no)}
+            toggleHandler={() => toggleHandler(speaker.no, audio)}
           />
         ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText onPress={toggleHandlerAll}>
+          <AllSpeakerText onPress={() => toggleHandlerAll(audio)}>
             Turn {speakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>
-        <NextSpeakerButton>
+        <NextSpeakerButton
+          allSpeakersOn={allSpeakersOn}
+          onPress={allSpeakersOn ? handleNextStepPress : showAlert}>
           <AllSpeakerText>Next Step</AllSpeakerText>
         </NextSpeakerButton>
       </AllSpeakerView>

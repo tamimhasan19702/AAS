@@ -9,12 +9,12 @@ import { SpeakerProvider } from "./src/context/Speaker.context";
 export default function App() {
   return (
     <>
-      <SpeakerProvider>
-        <AiContextProvider>
+      <AiContextProvider>
+        <SpeakerProvider>
           <Navigation />
           <ExpoStatusBar style="auto" />
-        </AiContextProvider>
-      </SpeakerProvider>
+        </SpeakerProvider>
+      </AiContextProvider>
     </>
   );
 }

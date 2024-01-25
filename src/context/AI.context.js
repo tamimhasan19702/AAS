@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useCallback } from "react";
 import { Audio } from "expo-av";
 import { ref, set, onValue, get } from "firebase/database";
 import { FIREBASEDATABASE } from "../../firebase.config";
@@ -15,6 +15,7 @@ export const AiContextProvider = ({ children }) => {
   const [presetArray, setPresetArray] = useState([]);
   const [presetLoading, setPresetLoading] = useState(false);
   const [loadTime, setLoadTime] = useState(0);
+  console.log(presetArray);
 
   const sound = new Audio.Sound();
 
@@ -91,35 +92,37 @@ export const AiContextProvider = ({ children }) => {
       setAudio("");
     }, loadTime);
   };
+  const saveAndSpeak = useCallback(
+    ({ presetText }) => {
+      setPresetLoading(true);
+      convertTextToSpeech(presetText || ""); // Convert text to speech immediately
 
-  const saveAndSpeak = ({ presetText }) => {
-    setPresetLoading(true);
-    setTimeout(() => {
-      setPresetArray((prevArray) => {
-        set(ref(FIREBASEDATABASE, "audioText"), {
-          audioText: presetText || prevArray[prevArray.length - 1] || "",
+      setTimeout(() => {
+        setPresetArray((prevArray) => {
+          const newElement =
+            presetText || prevArray[prevArray.length - 1] || "";
+          set(ref(FIREBASEDATABASE, "audioText"), { audioText: newElement });
+          setAudio("");
+          setPresetLoading(false);
+          return [...prevArray, newElement];
         });
-        convertTextToSpeech(
-          presetText || prevArray[prevArray.length - 1] || ""
-        );
-        setAudio("");
-        setPresetLoading(false);
-        return [
-          ...prevArray,
-          presetText || prevArray[prevArray.length - 1] || "",
-        ]; // Return the updated state value
-      });
-    }, loadTime);
-  };
+      }, loadTime);
+    },
+    [convertTextToSpeech, loadTime]
+  );
+
   const PresetSave = () => {
     if (text === "") {
       return null;
     }
+
     setPresetArray((prevArray) => {
-      const updatedArray = [...prevArray, text];
+      const updatedArray = [text, ...prevArray];
+
       set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-      return updatedArray; // Return the updated state value
+      return updatedArray;
     });
+
     setText("");
   };
 
@@ -147,6 +150,7 @@ export const AiContextProvider = ({ children }) => {
     saveloading,
     speakloading,
     presetArray,
+    loadTime,
     updateAudioText,
     getArrayFromFirebase,
     presetLoading,
@@ -159,6 +163,11 @@ export const AiContextProvider = ({ children }) => {
   };
 
   return (
-    <AiContext.Provider value={contextValue}>{children}</AiContext.Provider>
+    <AiContext.Provider
+      value={{
+        ...contextValue,
+      }}>
+      {children}
+    </AiContext.Provider>
   );
 };

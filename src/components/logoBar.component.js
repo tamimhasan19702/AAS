@@ -9,6 +9,7 @@ import {
   useFonts,
   OverlockSC_400Regular,
 } from "@expo-google-fonts/overlock-sc";
+import { useNavigation } from "@react-navigation/native";
 
 const LogoBarView = styled(View)`
   background-color: ${color.primary};
@@ -34,7 +35,7 @@ const ContentView = styled(View)`
   gap: 5px;
 `;
 
-export const LogoBar = ({ link, icon }) => {
+export const LogoBar = ({ link, icon, route = "Start Screen" }) => {
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,
   });
@@ -43,19 +44,19 @@ export const LogoBar = ({ link, icon }) => {
     return null;
   }
 
-  const handleLogoClick = () => {
-    link.navigate("Start Screen");
+  const handleLogoClick = (prop) => {
+    link.navigate(prop);
   };
 
   return (
     <LogoBarView>
-      <TouchableOpacity onPress={() => handleLogoClick("Start Screen")}>
+      <TouchableOpacity onPress={() => handleLogoClick(route)}>
         <ContentView>
           <MaterialCommunityIcons name={icon} size={24} color="white" />
           <LogoText>AAS</LogoText>
         </ContentView>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => link("Nortification Screen")}>
+      <TouchableOpacity onPress={() => link.navigate("Nortification Screen")}>
         <View>
           <MaterialCommunityIcons name="bell" size={24} color="white" />
         </View>
