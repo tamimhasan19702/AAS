@@ -15,7 +15,6 @@ export const AiContextProvider = ({ children }) => {
   const [presetArray, setPresetArray] = useState([]);
   const [presetLoading, setPresetLoading] = useState(false);
   const [loadTime, setLoadTime] = useState(0);
-  console.log(presetArray);
 
   const sound = new Audio.Sound();
 
