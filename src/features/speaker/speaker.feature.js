@@ -67,25 +67,15 @@ export const SpeakerScreen = ({ navigation }) => {
     showAlert,
     showSuccessAlert,
   } = useContext(SpeakerContext);
-  console.log(speakers);
+
   const allSpeakersOn = speakers.some((s) => s.isOn);
   const handleNextStepPress = () => {
     if (allSpeakersOn) {
-      set(ref(FIREBASEDATABASE, "speakers"), speakers, (error) => {
-        if (error) {
-          console.error("Error updating Firebase:", error);
-        } else {
-          console.log("Speakers updated successfully!");
-
-          // Show success alert for 3 seconds
-          showSuccessAlert();
-
-          // Delay the navigation for 3 seconds
-          setTimeout(() => {
-            navigation.navigate("Start Screen");
-          }, 3000);
-        }
-      });
+      set(ref(FIREBASEDATABASE, "speakers"), speakers);
+      showSuccessAlert();
+      setTimeout(() => {
+        navigation.navigate("Start Screen");
+      }, 3000);
     }
   };
 

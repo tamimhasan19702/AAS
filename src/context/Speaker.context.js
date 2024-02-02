@@ -41,8 +41,8 @@ export const SpeakerProvider = ({ children }) => {
   };
 
   const showSuccessAlert = () => {
-    Alert.alert("Success", "Your action was successful", undefined, {
-      style: "success",
+    setTimeout(() => {
+      Alert.alert("Success", "Data sent to database Successfully");
     });
   };
 
