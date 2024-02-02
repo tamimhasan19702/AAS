@@ -9,6 +9,9 @@ import styled from "styled-components";
 import { color } from "../../utils/colors";
 import { SpeakerContext } from "../../context/Speaker.context";
 import { AiContext } from "../../context/AI.context";
+import { FIREBASEDATABASE } from "../../../firebase.config";
+import { set, ref } from "firebase/database";
+
 const SpeakerText = styled(Text)`
   font-weight: 400;
   font-size: 20px;
@@ -57,13 +60,32 @@ const AllSpeakerView = styled(View)`
 
 export const SpeakerScreen = ({ navigation }) => {
   const { audio } = useContext(AiContext);
-  const { speakers, toggleHandler, toggleHandlerAll, showAlert } =
-    useContext(SpeakerContext);
+  const {
+    speakers,
+    toggleHandler,
+    toggleHandlerAll,
+    showAlert,
+    showSuccessAlert,
+  } = useContext(SpeakerContext);
   console.log(speakers);
   const allSpeakersOn = speakers.some((s) => s.isOn);
   const handleNextStepPress = () => {
     if (allSpeakersOn) {
-      navigation.navigate("Send Speaker");
+      set(ref(FIREBASEDATABASE, "speakers"), speakers, (error) => {
+        if (error) {
+          console.error("Error updating Firebase:", error);
+        } else {
+          console.log("Speakers updated successfully!");
+
+          // Show success alert for 3 seconds
+          showSuccessAlert();
+
+          // Delay the navigation for 3 seconds
+          setTimeout(() => {
+            navigation.navigate("Start Screen");
+          }, 3000);
+        }
+      });
     }
   };
 
@@ -90,7 +112,7 @@ export const SpeakerScreen = ({ navigation }) => {
         <NextSpeakerButton
           allSpeakersOn={allSpeakersOn}
           onPress={allSpeakersOn ? handleNextStepPress : showAlert}>
-          <AllSpeakerText>Next Step</AllSpeakerText>
+          <AllSpeakerText>Send to Speaker</AllSpeakerText>
         </NextSpeakerButton>
       </AllSpeakerView>
     </SafeView>

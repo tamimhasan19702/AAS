@@ -40,6 +40,12 @@ export const SpeakerProvider = ({ children }) => {
     );
   };
 
+  const showSuccessAlert = () => {
+    Alert.alert("Success", "Your action was successful", undefined, {
+      style: "success",
+    });
+  };
+
   const toggleHandlerAll = (audio) => {
     setSpeakers((prevSpeakers) =>
       prevSpeakers.map((speaker) => ({
@@ -57,6 +63,7 @@ export const SpeakerProvider = ({ children }) => {
         toggleHandler,
         toggleHandlerAll,
         showAlert,
+        showSuccessAlert,
       }}>
       {children}
     </SpeakerContext.Provider>
