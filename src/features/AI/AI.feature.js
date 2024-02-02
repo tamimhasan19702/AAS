@@ -41,6 +41,7 @@ export const AiScreen = ({ navigation }) => {
     PresetSave,
     clearPreset,
     handleDelete,
+    clearAudio,
   } = useContext(AiContext);
 
   useEffect(() => {
@@ -156,7 +157,14 @@ export const AiScreen = ({ navigation }) => {
           )}
         </AiScrollView>
 
-        <NextButton onPress={() => navigation.navigate("Speaker Screen")}>
+        <NextButton
+          onPress={() => {
+            if (audio) {
+              navigation.navigate("Speaker Screen");
+            }
+          }}
+          hasAudio={Boolean(audio)} // Pass the audio prop here
+        >
           <AiInputText>Next Step</AiInputText>
         </NextButton>
       </AiScreenView>

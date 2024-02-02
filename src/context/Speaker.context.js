@@ -40,6 +40,22 @@ export const SpeakerProvider = ({ children }) => {
     );
   };
 
+  const showSuccessAlert = (navigation) => {
+    Alert.alert(
+      "Success",
+      "Data sent to database Successfully",
+      [
+        {
+          text: "Back to home",
+          onPress: () => {
+            navigation.navigate("Start Screen");
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const toggleHandlerAll = (audio) => {
     setSpeakers((prevSpeakers) =>
       prevSpeakers.map((speaker) => ({
@@ -57,6 +73,7 @@ export const SpeakerProvider = ({ children }) => {
         toggleHandler,
         toggleHandlerAll,
         showAlert,
+        showSuccessAlert,
       }}>
       {children}
     </SpeakerContext.Provider>

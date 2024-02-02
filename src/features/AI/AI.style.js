@@ -77,6 +77,8 @@ export const VoiceText = styled(Text)`
 `;
 
 export const NextButton = styled(AiInputButton)`
+  background-color: ${({ hasAudio }) =>
+    hasAudio ? color.primary : color.gray} !important;
   margin-top: 5px;
   margin-bottom: 5px;
 `;
