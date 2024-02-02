@@ -1,7 +1,7 @@
 /** @format */
 
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import { SpeakerComponent } from "../../components/speaker.component";
@@ -72,10 +72,7 @@ export const SpeakerScreen = ({ navigation }) => {
   const handleNextStepPress = () => {
     if (allSpeakersOn) {
       set(ref(FIREBASEDATABASE, "speakers"), speakers);
-      showSuccessAlert();
-      setTimeout(() => {
-        navigation.navigate("Start Screen");
-      }, 3000);
+      showSuccessAlert(navigation);
     }
   };
 

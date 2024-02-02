@@ -40,10 +40,20 @@ export const SpeakerProvider = ({ children }) => {
     );
   };
 
-  const showSuccessAlert = () => {
-    setTimeout(() => {
-      Alert.alert("Success", "Data sent to database Successfully");
-    });
+  const showSuccessAlert = (navigation) => {
+    Alert.alert(
+      "Success",
+      "Data sent to database Successfully",
+      [
+        {
+          text: "Back to home",
+          onPress: () => {
+            navigation.navigate("Start Screen");
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const toggleHandlerAll = (audio) => {
