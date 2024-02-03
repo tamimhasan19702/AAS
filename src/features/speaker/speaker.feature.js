@@ -1,6 +1,12 @@
 /** @format */
 
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
@@ -58,8 +64,21 @@ const AllSpeakerView = styled(View)`
   align-items: center;
 `;
 
+const Overlay = styled(View)`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
+
 export const SpeakerScreen = ({ navigation }) => {
   const { audio } = useContext(AiContext);
+  const [loading, setLoading] = useState(false);
   const {
     speakers,
     toggleHandler,
@@ -71,8 +90,14 @@ export const SpeakerScreen = ({ navigation }) => {
   const allSpeakersOn = speakers.some((s) => s.isOn);
   const handleNextStepPress = () => {
     if (allSpeakersOn) {
-      set(ref(FIREBASEDATABASE, "speakers"), speakers);
-      showSuccessAlert(navigation);
+      setLoading(true); // Set loading to true
+
+      // Simulate a delay (replace this with your asynchronous operation)
+      setTimeout(() => {
+        set(ref(FIREBASEDATABASE, "speakers"), speakers);
+        setLoading(false); // Set loading back to false
+        showSuccessAlert(navigation);
+      }, 3000);
     }
   };
 
@@ -102,6 +127,15 @@ export const SpeakerScreen = ({ navigation }) => {
           <AllSpeakerText>Send to Speaker</AllSpeakerText>
         </NextSpeakerButton>
       </AllSpeakerView>
+      {loading && (
+        <Overlay>
+          <ActivityIndicator
+            animating={true}
+            color={color.white}
+            size="large"
+          />
+        </Overlay>
+      )}
     </SafeView>
   );
 };
