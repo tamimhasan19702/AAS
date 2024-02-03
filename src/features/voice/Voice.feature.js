@@ -20,7 +20,8 @@ export const VoiceScreen = ({ navigation }) => {
   const [sound, setSound] = useState();
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const [isPlaying, setIsPlaying] = useState(false);
-
+  const [myRecord, setMyRecord] = useState(null);
+  console.log(myRecord);
   async function startRecording() {
     try {
       if (permissionResponse.status !== "granted") {
@@ -53,8 +54,7 @@ export const VoiceScreen = ({ navigation }) => {
         allowsRecordingIOS: false,
       });
       const uri = recording.getURI();
-      console.log("Recording stopped and stored at", uri);
-      await playSound(uri); // Play the recorded sound
+      setMyRecord(uri);
     } catch (err) {
       console.error("Failed to stop recording", err);
     }
@@ -72,6 +72,11 @@ export const VoiceScreen = ({ navigation }) => {
 
       console.log("Playing sound..");
       await sound.playAsync();
+
+      // Automatically turn off the sound after playing once
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
     } catch (error) {
       console.error("Error playing sound", error);
     }
@@ -79,15 +84,10 @@ export const VoiceScreen = ({ navigation }) => {
 
   async function stopSound() {
     try {
-      if (sound) {
-        if (isPlaying) {
-          console.log("Stopping sound..");
-          await sound.stopAsync();
-        } else {
-          console.log("Resuming sound..");
-          await sound.playAsync();
-        }
-        setIsPlaying(!isPlaying);
+      if (sound && isPlaying) {
+        console.log("Stopping sound..");
+        await sound.stopAsync();
+        setIsPlaying(false);
       }
     } catch (error) {
       console.error("Error stopping sound", error);
@@ -113,10 +113,8 @@ export const VoiceScreen = ({ navigation }) => {
           title={recording ? "Stop Recording" : "Start Recording"}
           onPress={recording ? stopRecording : startRecording}
         />
-        <Button
-          title={isPlaying ? "Stop Sound" : "Start Sound"}
-          onPress={stopSound}
-        />
+        <Button title="play sound" onPress={() => playSound(myRecord)} />
+        <Button title="stop sound" onPress={stopSound} />
       </VoiceScreenView>
     </SafeView>
   );
