@@ -5,16 +5,19 @@ import { StyleSheet, Text, View } from "react-native";
 import { Navigation } from "./src/components/Navigation";
 import { AiContextProvider } from "./src/context/AI.context";
 import { SpeakerProvider } from "./src/context/Speaker.context";
+import { PVoiceContextProvider } from "./src/context/PVoice.context";
 
 export default function App() {
   return (
     <>
-      <AiContextProvider>
-        <SpeakerProvider>
-          <Navigation />
-          <ExpoStatusBar style="auto" />
-        </SpeakerProvider>
-      </AiContextProvider>
+      <PVoiceContextProvider>
+        <AiContextProvider>
+          <SpeakerProvider>
+            <Navigation />
+            <ExpoStatusBar style="auto" />
+          </SpeakerProvider>
+        </AiContextProvider>
+      </PVoiceContextProvider>
     </>
   );
 }

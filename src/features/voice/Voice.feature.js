@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
 import { AiContext } from "../../context/AI.context";
 import { Audio } from "expo-av";
+import { PVoiceContext } from "../../context/PVoice.context";
 
 const VoiceScreenView = styled(View)`
   display: flex;
@@ -16,83 +17,15 @@ const VoiceScreenView = styled(View)`
 `;
 
 export const VoiceScreen = ({ navigation }) => {
-  const [recording, setRecording] = useState();
-  const [sound, setSound] = useState();
-  const [permissionResponse, requestPermission] = Audio.usePermissions();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [myRecord, setMyRecord] = useState(null);
-  console.log(myRecord);
-  async function startRecording() {
-    try {
-      if (permissionResponse.status !== "granted") {
-        console.log("Requesting permission..");
-        await requestPermission();
-      }
-
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
-
-      console.log("Starting recording..");
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-      setRecording(recording);
-      console.log("Recording started");
-    } catch (err) {
-      console.error("Failed to start recording", err);
-    }
-  }
-
-  async function stopRecording() {
-    try {
-      console.log("Stopping recording..");
-      setRecording(undefined);
-      await recording.stopAndUnloadAsync();
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-      });
-      const uri = recording.getURI();
-      setMyRecord(uri);
-    } catch (err) {
-      console.error("Failed to stop recording", err);
-    }
-  }
-
-  async function playSound(uri) {
-    try {
-      console.log("Loading sound..");
-      const { sound } = await Audio.Sound.createAsync(
-        { uri },
-        { shouldPlay: true }
-      );
-      setSound(sound);
-      setIsPlaying(true);
-
-      console.log("Playing sound..");
-      await sound.playAsync();
-
-      // Automatically turn off the sound after playing once
-      await sound.unloadAsync();
-      setSound(null);
-      setIsPlaying(false);
-    } catch (error) {
-      console.error("Error playing sound", error);
-    }
-  }
-
-  async function stopSound() {
-    try {
-      if (sound && isPlaying) {
-        console.log("Stopping sound..");
-        await sound.stopAsync();
-        setIsPlaying(false);
-      }
-    } catch (error) {
-      console.error("Error stopping sound", error);
-    }
-  }
+  const {
+    recording,
+    sound,
+    startRecording,
+    stopRecording,
+    playSound,
+    stopSound,
+    myRecord,
+  } = useContext(PVoiceContext);
 
   useEffect(() => {
     // Cleanup function to stop sound when component unmounts
