@@ -10,7 +10,7 @@ export const PVoiceContextProvider = ({ children }) => {
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const [isPlaying, setIsPlaying] = useState(false);
   const [myRecord, setMyRecord] = useState(null);
-
+  console.log(myRecord);
   async function startRecording() {
     try {
       if (permissionResponse.status !== "granted") {
@@ -86,18 +86,15 @@ export const PVoiceContextProvider = ({ children }) => {
   const contextValue = {
     recording,
     sound,
-    myRecord,
     startRecording,
     stopRecording,
     playSound,
     stopSound,
+    myRecord,
   };
 
   return (
-    <PVoiceContext.Provider
-      value={{
-        ...contextValue,
-      }}>
+    <PVoiceContext.Provider value={{ ...contextValue }}>
       {children}
     </PVoiceContext.Provider>
   );
