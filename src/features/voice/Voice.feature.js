@@ -7,12 +7,16 @@ import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
 import { PVoiceContext } from "../../context/PVoice.context";
 import { StartStopRecorder } from "../../components/Start&StopRecorder.component";
+import { PlayVoice } from "../../components/playVoice.component";
 
 const VoiceScreenView = styled(View)`
+  margin-top: 20px;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   height: 100%;
+  gap: 10px;
 `;
 
 export const VoiceScreen = ({ navigation }) => {
@@ -29,7 +33,7 @@ export const VoiceScreen = ({ navigation }) => {
           }
           onPress={recording ? stopRecording : startRecording}
         />
-        {sound && <Button title="Play Recording" onPress={playRecording} />}
+        {sound && <PlayVoice title="Play Recording" onPress={playRecording} />}
       </VoiceScreenView>
     </SafeView>
   );
