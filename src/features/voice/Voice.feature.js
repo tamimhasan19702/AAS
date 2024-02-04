@@ -18,26 +18,25 @@ const VoiceScreenView = styled(View)`
 export const VoiceScreen = ({ navigation }) => {
   const [recording, setRecording] = useState();
   const [sound, setSound] = useState();
-  const [permissionResponse, requestPermission] = Audio.usePermissions();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [myRecord, setMyRecord] = useState(null);
-  console.log(myRecord);
+
   async function startRecording() {
     try {
-      if (permissionResponse.status !== "granted") {
+      const { status } = await Audio.requestPermissionsAsync();
+      if (status !== "granted") {
         console.log("Requesting permission..");
-        await requestPermission();
+        return;
       }
-
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
 
       console.log("Starting recording..");
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(
+        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
       );
+      await recording.startAsync();
       setRecording(recording);
       console.log("Recording started");
     } catch (err) {
@@ -46,63 +45,21 @@ export const VoiceScreen = ({ navigation }) => {
   }
 
   async function stopRecording() {
-    try {
-      console.log("Stopping recording..");
-      setRecording(undefined);
-      await recording.stopAndUnloadAsync();
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-      });
-      const uri = recording.getURI();
-      setMyRecord(uri);
-    } catch (err) {
-      console.error("Failed to stop recording", err);
-    }
+    console.log("Stopping recording..");
+    await recording.stopAndUnloadAsync();
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+    });
+    const { sound } = await recording.createNewLoadedSoundAsync();
+    setSound(sound);
+    console.log("Recording stopped and sound created");
   }
 
-  async function playSound(uri) {
-    try {
-      console.log("Loading sound..");
-      const { sound } = await Audio.Sound.createAsync(
-        { uri },
-        { shouldPlay: true }
-      );
-      setSound(sound);
-      setIsPlaying(true);
-
-      console.log("Playing sound..");
-      await sound.playAsync();
-
-      // Automatically turn off the sound after playing once
-      await sound.unloadAsync();
-      setSound(null);
-      setIsPlaying(false);
-    } catch (error) {
-      console.error("Error playing sound", error);
-    }
+  async function playRecording() {
+    console.log("Playing recording..");
+    await sound.playAsync();
+    console.log("Recording playing");
   }
-
-  async function stopSound() {
-    try {
-      if (sound && isPlaying) {
-        console.log("Stopping sound..");
-        await sound.stopAsync();
-        setIsPlaying(false);
-      }
-    } catch (error) {
-      console.error("Error stopping sound", error);
-    }
-  }
-
-  useEffect(() => {
-    // Cleanup function to stop sound when component unmounts
-    return async () => {
-      await stopSound();
-      if (recording) {
-        await recording.stopAndUnloadAsync();
-      }
-    };
-  }, [recording, sound]);
 
   return (
     <SafeView>
@@ -113,8 +70,7 @@ export const VoiceScreen = ({ navigation }) => {
           title={recording ? "Stop Recording" : "Start Recording"}
           onPress={recording ? stopRecording : startRecording}
         />
-        <Button title="play sound" onPress={() => playSound(myRecord)} />
-        <Button title="stop sound" onPress={stopSound} />
+        {sound && <Button title="Play Recording" onPress={playRecording} />}
       </VoiceScreenView>
     </SafeView>
   );
