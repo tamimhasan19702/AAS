@@ -6,6 +6,7 @@ import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
 import { PVoiceContext } from "../../context/PVoice.context";
+import { StartStopRecorder } from "../../components/Start&StopRecorder.component";
 
 const VoiceScreenView = styled(View)`
   display: flex;
@@ -22,9 +23,10 @@ export const VoiceScreen = ({ navigation }) => {
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <VoiceScreenView>
-        <Text>VoiceScreen</Text>
-        <Button
-          title={recording ? "Stop Recording" : "Start Recording"}
+        <StartStopRecorder
+          title={
+            recording ? "Press for Stop Recording" : "Press for Start Recording"
+          }
           onPress={recording ? stopRecording : startRecording}
         />
         {sound && <Button title="Play Recording" onPress={playRecording} />}
