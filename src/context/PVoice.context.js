@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { Audio } from "expo-av";
 export const PVoiceContext = createContext();
 
@@ -8,7 +8,16 @@ export const PVoiceContextProvider = ({ children }) => {
   const [recording, setRecording] = useState();
   const [sound, setSound] = useState();
   const [myRecording, setMyRecording] = useState();
-  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [recordingDuration, setRecordingDuration] = useState({
+    duration: 0,
+    timerId: null,
+  });
+
+  useEffect(() => {
+    return () => {
+      clearInterval(recordingDuration.timerId); // Cleanup on component unmount
+    };
+  }, []);
 
   async function startRecording() {
     try {
@@ -31,6 +40,18 @@ export const PVoiceContextProvider = ({ children }) => {
       console.log(recording);
       setRecording(recording);
 
+      // Start timer to track recording duration
+      const id = setInterval(() => {
+        setRecordingDuration((prevDuration) => ({
+          ...prevDuration,
+          duration: prevDuration.duration + 1,
+        }));
+      }, 1000); // Update every second
+      setRecordingDuration((prevDuration) => ({
+        ...prevDuration,
+        timerId: id,
+      }));
+
       console.log("Recording started");
     } catch (err) {
       console.error("Failed to start recording", err);
@@ -48,6 +69,9 @@ export const PVoiceContextProvider = ({ children }) => {
       setSound(sound);
       setRecording(false);
       setMyRecording(sound); // Save the sound in myRecording state
+
+      // Clear timer when recording stops
+      clearInterval(recordingDuration.timerId);
       console.log("Recording stopped and sound created");
     } catch (err) {
       console.error("Failed to stop recording", err);
@@ -65,8 +89,9 @@ export const PVoiceContextProvider = ({ children }) => {
       console.error("Error playing recording", err);
     }
   }
+
   const contextValue = {
-    recordingDuration,
+    recordingDuration: recordingDuration.duration,
     myRecording,
     recording,
     sound,
