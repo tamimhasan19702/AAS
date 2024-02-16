@@ -14,14 +14,14 @@ import { PVoiceContext } from "../context/PVoice.context";
 import { PresetLoading } from "../utils/presetLoading";
 
 const PlayVoiceView = styled(View)`
-  width: 90%;
+  width: 350px;
 `;
 
 const PlayVoiceButton = styled(TouchableOpacity)`
   background-color: ${color.primary};
+
   display: flex;
   flex-direction: row;
-  gap: 10px;
   align-items: center;
   justify-content: space-between;
   padding: 15px;

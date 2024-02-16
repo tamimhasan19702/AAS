@@ -29,7 +29,6 @@ export const VoiceScreen = ({ navigation }) => {
     recordedSounds,
     clearRecordedSounds,
   } = useContext(PVoiceContext);
-  console.log(recordedSounds.length);
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -49,11 +48,14 @@ export const VoiceScreen = ({ navigation }) => {
           {recordedSounds.length > 0 &&
             recordedSounds.map((sound, index) => {
               return (
-                <PlayVoice
-                  key={index}
-                  title={`Play Recording ${index + 1}`}
-                  onPress={() => playRecording(sound)}
-                />
+                <>
+                  <PlayVoice
+                    key={index}
+                    title={`Play Recording ${index + 1}`}
+                    onPress={() => playRecording(sound)}
+                  />
+                  <View style={{ height: 10 }} />
+                </>
               );
             })}
         </ScrollView>
