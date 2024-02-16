@@ -7,13 +7,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const PVoiceContextProvider = ({ children }) => {
   const [recording, setRecording] = useState();
-  const [Sound, setSound] = useState();
   const [myRecording, setMyRecording] = useState();
   const [recordingDuration, setRecordingDuration] = useState({
     duration: 0,
     timerId: null,
   });
   const [recordingTime, setRecordingTime] = useState(null);
+  const [recordedSounds, setRecordedSounds] = useState([]);
 
   useEffect(() => {
     return () => {
@@ -71,26 +71,22 @@ export const PVoiceContextProvider = ({ children }) => {
         allowsRecordingIOS: false,
       });
       const { sound } = await recording.createNewLoadedSoundAsync();
-      setSound(sound);
       setRecording(false);
       setMyRecording(sound); // Save the sound in myRecording state
 
-      await saveRecordingToAsyncStorage(sound);
+      // Save the recorded sound to the array
+      setRecordedSounds([...recordedSounds, sound]);
+
+      // Save the array of recorded sounds to AsyncStorage
+      await AsyncStorage.setItem(
+        "recordedSounds",
+        JSON.stringify(recordedSounds)
+      );
       // Clear timer when recording stops
       clearInterval(recordingDuration.timerId);
       console.log("Recording stopped and sound created");
     } catch (err) {
       console.error("Failed to stop recording", err);
-    }
-  }
-
-  async function saveRecordingToAsyncStorage(sound) {
-    try {
-      const uri = sound.getURI();
-      await AsyncStorage.setItem("recordedAudio", uri);
-      console.log("Recording saved to AsyncStorage:", uri);
-    } catch (error) {
-      console.error("Error saving recording to AsyncStorage:", error);
     }
   }
 
@@ -106,15 +102,48 @@ export const PVoiceContextProvider = ({ children }) => {
     }
   }
 
+  async function clearRecordedSounds() {
+    try {
+      await AsyncStorage.removeItem("recordedSounds");
+      setRecordedSounds([]);
+      console.log("Recorded sounds cleared");
+    } catch (error) {
+      console.error("Error clearing recorded sounds:", error);
+    }
+  }
+
+  useEffect(() => {
+    // Load recorded sounds from AsyncStorage on component mount
+    const loadRecordedSounds = async () => {
+      try {
+        const recordedSoundsString = await AsyncStorage.getItem(
+          "recordedSounds"
+        );
+        if (recordedSoundsString) {
+          const recordedSoundsArray = JSON.parse(recordedSoundsString);
+          setRecordedSounds(recordedSoundsArray);
+        }
+      } catch (error) {
+        console.error(
+          "Error loading recorded sounds from AsyncStorage:",
+          error
+        );
+      }
+    };
+
+    loadRecordedSounds();
+  }, []);
+
   const contextValue = {
     recordingDuration: recordingDuration.duration,
     myRecording,
     recording,
-    Sound,
     startRecording,
     stopRecording,
     playRecording,
     recordingTime,
+    recordedSounds,
+    clearRecordedSounds,
   };
 
   return (
