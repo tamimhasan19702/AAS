@@ -12,6 +12,7 @@ export const PVoiceContextProvider = ({ children }) => {
     duration: 0,
     timerId: null,
   });
+  const [recordingTime, setRecordingTime] = useState(null);
 
   useEffect(() => {
     return () => {
@@ -51,6 +52,9 @@ export const PVoiceContextProvider = ({ children }) => {
         ...prevDuration,
         timerId: id,
       }));
+
+      // Set recording time to current time
+      setRecordingTime(new Date().getTime());
 
       console.log("Recording started");
     } catch (err) {
@@ -98,6 +102,7 @@ export const PVoiceContextProvider = ({ children }) => {
     startRecording,
     stopRecording,
     playRecording,
+    recordingTime,
   };
 
   return (

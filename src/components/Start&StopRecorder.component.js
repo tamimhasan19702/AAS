@@ -55,7 +55,6 @@ export const StartStopRecorder = ({ title, onPress }) => {
         ) : (
           <Entypo name="mic" size={50} color="white" />
         )}
-
         <StartStopRecorderText>{title}</StartStopRecorderText>
       </StartStopRecorderView>
     </TouchableOpacity>

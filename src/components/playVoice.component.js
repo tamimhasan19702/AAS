@@ -19,11 +19,26 @@ const PlayVoiceButton = styled(TouchableOpacity)`
   flex-direction: row;
   gap: 10px;
   align-items: center;
+  justify-content: space-between;
   padding: 15px;
   border-radius: 5px;
 `;
 const PlayVoiceText = styled(Text)`
   color: ${color.white};
+`;
+
+const PlayVoiceLeftView = styled(View)`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+`;
+const PlayVoiceRightView = styled(View)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const PlayVoice = ({ title, onPress }) => {
@@ -35,31 +50,29 @@ export const PlayVoice = ({ title, onPress }) => {
     stopRecording,
     recordingDuration,
     playRecording,
+    recordingTime,
   } = useContext(PVoiceContext);
-  const totalRecordingDuration = 60; // Assuming total recording duration is 60 seconds, you can change this according to your requirement
-
-  // UseState to hold animated value
-  const [animatedProgress, setAnimatedProgress] = useState(0);
-
-  useEffect(() => {
-    // Calculate progress for each second
-    const interval = setInterval(() => {
-      setAnimatedProgress((prevProgress) =>
-        prevProgress >= 100 ? 100 : prevProgress + 20
-      );
-    }, 1000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
+  console.log(recordingTime);
+  const recordingDate = new Date(parseInt(recordingTime)).toLocaleDateString(
+    "en-US"
+  );
+  const formattedTime = new Date(parseInt(recordingTime)).toLocaleString(
+    "en-US",
+    { hour: "numeric", minute: "numeric", hour12: true }
+  );
   return (
     <PlayVoiceView>
       <PlayVoiceButton onPress={onPress}>
-        <AntDesign name="caretright" size={30} color="white" />
-
-        <PlayVoiceText>{title}</PlayVoiceText>
-        {/* Use Animated progress value */}
-        <ProgressBar progress={animatedProgress / 100} color={"white"} />
+        <PlayVoiceLeftView>
+          <AntDesign name="caretright" size={30} color="white" />
+          <PlayVoiceText>{title}</PlayVoiceText>
+        </PlayVoiceLeftView>
+        <PlayVoiceRightView>
+          <PlayVoiceText>Voice Recorded on</PlayVoiceText>
+          <PlayVoiceText>
+            {formattedTime} - {recordingDate}
+          </PlayVoiceText>
+        </PlayVoiceRightView>
       </PlayVoiceButton>
     </PlayVoiceView>
   );
