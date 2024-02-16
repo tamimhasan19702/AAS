@@ -1,13 +1,17 @@
 /** @format */
 
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ProgressBarAndroidBase,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { AntDesign } from "@expo/vector-icons";
 import { PVoiceContext } from "../context/PVoice.context";
 import { PresetLoading } from "../utils/presetLoading";
-import { ProgressBar, MD3Colors } from "react-native-paper";
 
 const PlayVoiceView = styled(View)`
   width: 90%;
@@ -45,14 +49,13 @@ export const PlayVoice = ({ title, onPress }) => {
   const {
     myRecording,
     recording,
-    sound,
+    Sound,
     startRecording,
     stopRecording,
     recordingDuration,
     playRecording,
     recordingTime,
   } = useContext(PVoiceContext);
-  console.log(recordingTime);
   const recordingDate = new Date(parseInt(recordingTime)).toLocaleDateString(
     "en-US"
   );

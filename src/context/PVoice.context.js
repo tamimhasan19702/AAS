@@ -3,10 +3,11 @@
 import React, { createContext, useState, useEffect } from "react";
 import { Audio } from "expo-av";
 export const PVoiceContext = createContext();
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const PVoiceContextProvider = ({ children }) => {
   const [recording, setRecording] = useState();
-  const [sound, setSound] = useState();
+  const [Sound, setSound] = useState();
   const [myRecording, setMyRecording] = useState();
   const [recordingDuration, setRecordingDuration] = useState({
     duration: 0,
@@ -74,11 +75,22 @@ export const PVoiceContextProvider = ({ children }) => {
       setRecording(false);
       setMyRecording(sound); // Save the sound in myRecording state
 
+      await saveRecordingToAsyncStorage(sound);
       // Clear timer when recording stops
       clearInterval(recordingDuration.timerId);
       console.log("Recording stopped and sound created");
     } catch (err) {
       console.error("Failed to stop recording", err);
+    }
+  }
+
+  async function saveRecordingToAsyncStorage(sound) {
+    try {
+      const uri = sound.getURI();
+      await AsyncStorage.setItem("recordedAudio", uri);
+      console.log("Recording saved to AsyncStorage:", uri);
+    } catch (error) {
+      console.error("Error saving recording to AsyncStorage:", error);
     }
   }
 
@@ -98,7 +110,7 @@ export const PVoiceContextProvider = ({ children }) => {
     recordingDuration: recordingDuration.duration,
     myRecording,
     recording,
-    sound,
+    Sound,
     startRecording,
     stopRecording,
     playRecording,

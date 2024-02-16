@@ -20,7 +20,7 @@ const VoiceScreenView = styled(View)`
 `;
 
 export const VoiceScreen = ({ navigation }) => {
-  const { recording, sound, startRecording, stopRecording, playRecording } =
+  const { recording, Sound, startRecording, stopRecording, playRecording } =
     useContext(PVoiceContext);
 
   return (
@@ -33,7 +33,7 @@ export const VoiceScreen = ({ navigation }) => {
           }
           onPress={recording ? stopRecording : startRecording}
         />
-        {sound && <PlayVoice title="Play Recording" onPress={playRecording} />}
+        {Sound && <PlayVoice title="Play Recording" onPress={playRecording} />}
       </VoiceScreenView>
     </SafeView>
   );
