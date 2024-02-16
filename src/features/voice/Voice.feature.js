@@ -52,7 +52,7 @@ export const VoiceScreen = ({ navigation }) => {
                   <PlayVoice
                     key={index}
                     title={`Play Recording ${index + 1}`}
-                    onPress={() => playRecording(sound)}
+                    onPress={() => playRecording(index)}
                   />
                   <View style={{ height: 10 }} />
                 </>

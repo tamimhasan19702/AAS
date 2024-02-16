@@ -71,9 +71,11 @@ export const PlayVoice = ({ title, onPress }) => {
           <PlayVoiceText>{title}</PlayVoiceText>
         </PlayVoiceLeftView>
         <PlayVoiceRightView>
-          <PlayVoiceText>Voice Recorded on</PlayVoiceText>
           <PlayVoiceText>
             {formattedTime} - {recordingDate}
+          </PlayVoiceText>
+          <PlayVoiceText>
+            {recordingDuration ? recordingDuration : "00:00:00"}
           </PlayVoiceText>
         </PlayVoiceRightView>
       </PlayVoiceButton>

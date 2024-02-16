@@ -90,12 +90,14 @@ export const PVoiceContextProvider = ({ children }) => {
     }
   }
 
-  async function playRecording() {
+  async function playRecording(index) {
     try {
-      if (myRecording) {
-        console.log("Playing recording..");
-        await myRecording.replayAsync(); // Replay the sound
+      if (recordedSounds[index]) {
+        console.log(`Playing recording at index ${index}..`);
+        await recordedSounds[index].replayAsync(); // Replay the sound at the specified index
         console.log("Recording playing");
+      } else {
+        console.error(`No recording found at index ${index}`);
       }
     } catch (err) {
       console.error("Error playing recording", err);
