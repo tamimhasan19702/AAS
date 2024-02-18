@@ -72,16 +72,20 @@ export const PVoiceContextProvider = ({ children }) => {
       });
       const { sound } = await recording.createNewLoadedSoundAsync();
       setRecording(false);
-      setMyRecording(sound); // Save the sound in myRecording state
-
+      setMyRecording(sound);
       // Save the recorded sound to the array
-      setRecordedSounds([...recordedSounds, sound]);
+
+      setRecordedSounds((prevRecordedSounds) => [
+        ...prevRecordedSounds,
+        { sound },
+      ]);
 
       // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
         "recordedSounds",
-        JSON.stringify(recordedSounds)
+        JSON.stringify([...recordedSounds, { sound }])
       );
+
       // Clear timer when recording stops
       clearInterval(recordingDuration.timerId);
       console.log("Recording stopped and sound created");
@@ -92,9 +96,9 @@ export const PVoiceContextProvider = ({ children }) => {
 
   async function playRecording(index) {
     try {
-      if (recordedSounds[index]) {
+      if (recordedSounds[index] && recordedSounds[index].sound) {
         console.log(`Playing recording at index ${index}..`);
-        await recordedSounds[index].replayAsync(); // Replay the sound at the specified index
+        await recordedSounds[index].sound.replayAsync(); // Replay the sound at the specified index
         console.log("Recording playing");
       } else {
         console.error(`No recording found at index ${index}`);
