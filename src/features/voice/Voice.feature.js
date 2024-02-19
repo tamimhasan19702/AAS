@@ -46,13 +46,15 @@ export const VoiceScreen = ({ navigation }) => {
         )}
         <ScrollView>
           {recordedSounds.length > 0 &&
-            recordedSounds.map((sound, index) => {
+            recordedSounds.map((soundItem, index) => {
+              const { sound, duration } = soundItem;
               return (
                 <>
                   <PlayVoice
                     key={index}
                     title={`Play Recording ${index + 1}`}
                     onPress={() => playRecording(index)}
+                    duration={duration}
                   />
                   <View style={{ height: 10 }} />
                 </>

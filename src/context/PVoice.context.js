@@ -42,20 +42,19 @@ export const PVoiceContextProvider = ({ children }) => {
       console.log(recording);
       setRecording(recording);
 
-      // Start timer to track recording duration
-      const id = setInterval(() => {
+      // Start the timer
+      const timerId = setInterval(() => {
         setRecordingDuration((prevDuration) => ({
           ...prevDuration,
-          duration: prevDuration.duration + 1,
+          duration: prevDuration.duration + 1000, // Increment by 1 second (1000 milliseconds)
         }));
       }, 1000); // Update every second
+
+      // Store the timer reference in a state
       setRecordingDuration((prevDuration) => ({
         ...prevDuration,
-        timerId: id,
+        timerId: timerId,
       }));
-
-      // Set recording time to current time
-      setRecordingTime(new Date().getTime());
 
       console.log("Recording started");
     } catch (err) {
@@ -70,26 +69,34 @@ export const PVoiceContextProvider = ({ children }) => {
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
       });
-      const { sound, durationMillis } =
-        await recording.createNewLoadedSoundAsync();
+      const { sound } = await recording.createNewLoadedSoundAsync();
       setRecording(false);
       setMyRecording(sound);
-      // Save the recorded sound to the array
 
+      // Clear the interval timer
+      clearInterval(recordingDuration.timerId);
+
+      // Save the recorded sound to the array
       setRecordedSounds((prevRecordedSounds) => [
         ...prevRecordedSounds,
-        { sound, duration: durationMillis },
+        { sound, duration: recordingDuration.duration / 1000 },
       ]);
 
       // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
         "recordedSounds",
-        JSON.stringify([...recordedSounds, { sound, duration: durationMillis }])
+        JSON.stringify([
+          ...recordedSounds,
+          { sound, duration: recordingDuration.duration / 1000 },
+        ])
       );
       console.log(recordedSounds);
-      // Clear timer when recording stops
-      clearInterval(recordingDuration.timerId);
+      console.log(recordingDuration.duration);
       console.log("Recording stopped and sound created");
+      // Set recording time to current time
+      setRecordingTime(new Date().getTime());
+      // Reset the recording duration
+      setRecordingDuration({ duration: 0, timerId: null });
     } catch (err) {
       console.error("Failed to stop recording", err);
     }
