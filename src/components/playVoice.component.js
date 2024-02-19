@@ -45,7 +45,7 @@ const PlayVoiceRightView = styled(View)`
   justify-content: center;
 `;
 
-export const PlayVoice = ({ title, onPress }) => {
+export const PlayVoice = ({ title, onPress, duration }) => {
   const {
     myRecording,
     recording,
@@ -75,7 +75,7 @@ export const PlayVoice = ({ title, onPress }) => {
             {formattedTime} - {recordingDate}
           </PlayVoiceText>
           <PlayVoiceText>
-            {recordingDuration ? recordingDuration : "00:00:00"}
+            Duration - {duration ? duration : "00:00:00"}s
           </PlayVoiceText>
         </PlayVoiceRightView>
       </PlayVoiceButton>
