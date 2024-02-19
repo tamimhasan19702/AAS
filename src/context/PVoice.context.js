@@ -78,8 +78,8 @@ export const PVoiceContextProvider = ({ children }) => {
 
       // Save the recorded sound to the array
       setRecordedSounds((prevRecordedSounds) => [
-        ...prevRecordedSounds,
         { sound, duration: recordingDuration.duration / 1000 },
+        ...recordedSounds,
       ]);
 
       // Save the array of recorded sounds to AsyncStorage
