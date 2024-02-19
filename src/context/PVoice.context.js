@@ -70,22 +70,23 @@ export const PVoiceContextProvider = ({ children }) => {
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
       });
-      const { sound } = await recording.createNewLoadedSoundAsync();
+      const { sound, durationMillis } =
+        await recording.createNewLoadedSoundAsync();
       setRecording(false);
       setMyRecording(sound);
       // Save the recorded sound to the array
 
       setRecordedSounds((prevRecordedSounds) => [
         ...prevRecordedSounds,
-        { sound },
+        { sound, duration: durationMillis },
       ]);
 
       // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
         "recordedSounds",
-        JSON.stringify([...recordedSounds, { sound }])
+        JSON.stringify([...recordedSounds, { sound, duration: durationMillis }])
       );
-
+      console.log(recordedSounds);
       // Clear timer when recording stops
       clearInterval(recordingDuration.timerId);
       console.log("Recording stopped and sound created");

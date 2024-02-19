@@ -56,11 +56,6 @@ export const LogoBar = ({ link, icon, route = "Start Screen" }) => {
           <LogoText>AAS</LogoText>
         </ContentView>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => link.navigate("Nortification Screen")}>
-        <View>
-          <MaterialCommunityIcons name="bell" size={24} color="white" />
-        </View>
-      </TouchableOpacity>
     </LogoBarView>
   );
 };
