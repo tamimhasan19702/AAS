@@ -44,7 +44,9 @@ export const StartStopRecorder = ({ title, onPress }) => {
   }
   return (
     <TouchableOpacity onPress={onPress}>
-      <StartStopRecorderView>
+      <StartStopRecorderView
+        key={recording ? "recording" : "not-recording"}
+        recording={recording}>
         {recording ? (
           <AnimationView
             autoPlay
@@ -56,7 +58,7 @@ export const StartStopRecorder = ({ title, onPress }) => {
         ) : (
           <Entypo name="mic" size={50} color="white" />
         )}
-        <StartStopRecorderText>{title}</StartStopRecorderText>
+        <StartStopRecorderText recording>{title}</StartStopRecorderText>
       </StartStopRecorderView>
     </TouchableOpacity>
   );

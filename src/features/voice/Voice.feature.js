@@ -8,6 +8,7 @@ import { LogoBar } from "../../components/logoBar.component";
 import { PVoiceContext } from "../../context/PVoice.context";
 import { StartStopRecorder } from "../../components/Start&StopRecorder.component";
 import { PlayVoice } from "../../components/playVoice.component";
+import { color } from "../../utils/colors";
 
 const VoiceScreenView = styled(View)`
   margin-top: 30px;
@@ -25,6 +26,29 @@ const VoiceScreenText = styled(Text)`
   text-align: center;
   padding: 10px 0px;
   font-family: "OverlockSC_400Regular";
+`;
+
+const VoiceBottomView = styled(View)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+  gap: 5px;
+`;
+
+const VoiceBottomButton = styled(TouchableOpacity)`
+  background-color: ${color.primary};
+  width: 150px;
+  color: ${color.white};
+  text-align: center;
+  padding: 5px 20px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const VoiceScreen = ({ navigation }) => {
@@ -47,11 +71,10 @@ export const VoiceScreen = ({ navigation }) => {
           }
           onPress={recording ? stopRecording : startRecording}
         />
-        {recordedSounds.length > 0 && (
-          <TouchableOpacity onPress={clearRecordedSounds}>
-            <Text>clear Voice</Text>
-          </TouchableOpacity>
-        )}
+
+        <VoiceScreenText style={{ fontSize: 25 }}>
+          Recording List 🎙
+        </VoiceScreenText>
         <ScrollView>
           {recordedSounds.length > 0 ? (
             recordedSounds.map((soundItem, index) => {
@@ -75,6 +98,21 @@ export const VoiceScreen = ({ navigation }) => {
             <VoiceScreenText> No New Recording Found!! ☺</VoiceScreenText>
           )}
         </ScrollView>
+        {recordedSounds.length > 0 && (
+          <VoiceBottomView>
+            <VoiceBottomButton onPress={clearRecordedSounds}>
+              <VoiceScreenText style={{ color: color.white, fontSize: 16 }}>
+                clear List
+              </VoiceScreenText>
+            </VoiceBottomButton>
+            <VoiceBottomButton
+              onPress={() => navigation.navigate("Speaker Voice")}>
+              <VoiceScreenText style={{ color: color.white, fontSize: 16 }}>
+                Next Step
+              </VoiceScreenText>
+            </VoiceBottomButton>
+          </VoiceBottomView>
+        )}
       </VoiceScreenView>
     </SafeView>
   );
