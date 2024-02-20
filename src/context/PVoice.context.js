@@ -75,10 +75,13 @@ export const PVoiceContextProvider = ({ children }) => {
 
       // Clear the interval timer
       clearInterval(recordingDuration.timerId);
+      // Set recording time to current time
+      setRecordingTime(new Date().getTime());
+      const time = recordingTime;
 
       // Save the recorded sound to the array
       setRecordedSounds((prevRecordedSounds) => [
-        { sound, duration: recordingDuration.duration / 1000 },
+        { sound, duration: recordingDuration.duration / 1000, time },
         ...recordedSounds,
       ]);
 
@@ -87,14 +90,13 @@ export const PVoiceContextProvider = ({ children }) => {
         "recordedSounds",
         JSON.stringify([
           ...recordedSounds,
-          { sound, duration: recordingDuration.duration / 1000 },
+          { sound, duration: recordingDuration.duration / 1000, time },
         ])
       );
       console.log(recordedSounds);
       console.log(recordingDuration.duration);
       console.log("Recording stopped and sound created");
-      // Set recording time to current time
-      setRecordingTime(new Date().getTime());
+
       // Reset the recording duration
       setRecordingDuration({ duration: 0, timerId: null });
     } catch (err) {
