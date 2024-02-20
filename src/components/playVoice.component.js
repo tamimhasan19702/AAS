@@ -1,25 +1,15 @@
 /** @format */
 
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ProgressBarAndroidBase,
-} from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import React from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { AntDesign } from "@expo/vector-icons";
-import { PVoiceContext } from "../context/PVoice.context";
-import { PresetLoading } from "../utils/presetLoading";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const PlayVoiceView = styled(View)`
-  width: 350px;
-`;
-
-const PlayVoiceButton = styled(TouchableOpacity)`
   background-color: ${color.primary};
-
+  width: 380px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -45,40 +35,40 @@ const PlayVoiceRightView = styled(View)`
   justify-content: center;
 `;
 
-export const PlayVoice = ({ title, onPress, duration }) => {
-  const {
-    myRecording,
-    recording,
-    Sound,
-    startRecording,
-    stopRecording,
-    recordingDuration,
-    playRecording,
-    recordingTime,
-  } = useContext(PVoiceContext);
-  const recordingDate = new Date(parseInt(recordingTime)).toLocaleDateString(
-    "en-US"
-  );
-  const formattedTime = new Date(parseInt(recordingTime)).toLocaleString(
-    "en-US",
-    { hour: "numeric", minute: "numeric", hour12: true }
-  );
+const PlayVoiceButton = styled(TouchableOpacity)`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 2px;
+`;
+
+export const PlayVoice = ({ title, onPress, duration, time, handleDelete }) => {
+  const recordingDate = new Date(parseInt(time)).toLocaleDateString("en-US");
+  const formattedTime = new Date(parseInt(time)).toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
   return (
     <PlayVoiceView>
-      <PlayVoiceButton onPress={onPress}>
-        <PlayVoiceLeftView>
+      <PlayVoiceLeftView>
+        <PlayVoiceButton onPress={onPress}>
           <AntDesign name="caretright" size={30} color="white" />
           <PlayVoiceText>{title}</PlayVoiceText>
-        </PlayVoiceLeftView>
-        <PlayVoiceRightView>
-          <PlayVoiceText>
-            {formattedTime} - {recordingDate}
-          </PlayVoiceText>
-          <PlayVoiceText>
-            Duration - {duration ? duration : "00:00:00"}s
-          </PlayVoiceText>
-        </PlayVoiceRightView>
-      </PlayVoiceButton>
+        </PlayVoiceButton>
+      </PlayVoiceLeftView>
+      <PlayVoiceRightView>
+        <PlayVoiceText>
+          {formattedTime} - {recordingDate}
+        </PlayVoiceText>
+        <PlayVoiceText>
+          Duration - {duration ? duration : "00:00:00"}s
+        </PlayVoiceText>
+      </PlayVoiceRightView>
+      <TouchableOpacity onPress={handleDelete}>
+        <MaterialCommunityIcons name="delete" size={26} color="white" />
+      </TouchableOpacity>
     </PlayVoiceView>
   );
 };

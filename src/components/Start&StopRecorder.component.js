@@ -13,7 +13,8 @@ import {
 import { PVoiceContext } from "../context/PVoice.context";
 
 const StartStopRecorderView = styled(View)`
-  background-color: ${color.primary};
+  background-color: ${({ recording }) =>
+    recording ? color.red : color.primary};
   padding: 40px 40px;
   border-radius: 5px;
   align-items: center;
@@ -43,7 +44,9 @@ export const StartStopRecorder = ({ title, onPress }) => {
   }
   return (
     <TouchableOpacity onPress={onPress}>
-      <StartStopRecorderView>
+      <StartStopRecorderView
+        key={recording ? "recording" : "not-recording"}
+        recording={recording}>
         {recording ? (
           <AnimationView
             autoPlay
@@ -55,7 +58,7 @@ export const StartStopRecorder = ({ title, onPress }) => {
         ) : (
           <Entypo name="mic" size={50} color="white" />
         )}
-        <StartStopRecorderText>{title}</StartStopRecorderText>
+        <StartStopRecorderText recording>{title}</StartStopRecorderText>
       </StartStopRecorderView>
     </TouchableOpacity>
   );
