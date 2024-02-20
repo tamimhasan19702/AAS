@@ -13,7 +13,8 @@ import {
 import { PVoiceContext } from "../context/PVoice.context";
 
 const StartStopRecorderView = styled(View)`
-  background-color: ${color.primary};
+  background-color: ${({ recording }) =>
+    recording ? color.red : color.primary};
   padding: 40px 40px;
   border-radius: 5px;
   align-items: center;

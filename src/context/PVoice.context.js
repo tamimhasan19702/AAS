@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const PVoiceContextProvider = ({ children }) => {
   const [recording, setRecording] = useState();
-  const [myRecording, setMyRecording] = useState();
+  const [finalRecording, setFinalRecording] = useState();
   const [recordingDuration, setRecordingDuration] = useState({
     duration: 0,
     timerId: null,
@@ -69,32 +69,40 @@ export const PVoiceContextProvider = ({ children }) => {
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
       });
+
       const { sound } = await recording.createNewLoadedSoundAsync();
       setRecording(false);
-      setMyRecording(sound);
 
       // Clear the interval timer
       clearInterval(recordingDuration.timerId);
+
       // Set recording time to current time
-      setRecordingTime(new Date().getTime());
-      const time = recordingTime;
+      const time = new Date().getTime();
+      setRecordingTime(time);
 
       // Save the recorded sound to the array
       setRecordedSounds((prevRecordedSounds) => [
-        { sound, duration: recordingDuration.duration / 1000, time },
-        ...recordedSounds,
+        {
+          sound,
+          duration: recordingDuration.duration / 1000,
+          time,
+        },
+        ...prevRecordedSounds,
       ]);
 
       // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
         "recordedSounds",
         JSON.stringify([
+          {
+            sound,
+            duration: recordingDuration.duration / 1000,
+            time,
+          },
           ...recordedSounds,
-          { sound, duration: recordingDuration.duration / 1000, time },
         ])
       );
-      console.log(recordedSounds);
-      console.log(recordingDuration.duration);
+
       console.log("Recording stopped and sound created");
 
       // Reset the recording duration
@@ -110,6 +118,7 @@ export const PVoiceContextProvider = ({ children }) => {
         console.log(`Playing recording at index ${index}..`);
         await recordedSounds[index].sound.replayAsync(); // Replay the sound at the specified index
         console.log("Recording playing");
+        setFinalRecording(recordedSounds[index].sound);
       } else {
         console.error(`No recording found at index ${index}`);
       }
@@ -125,6 +134,24 @@ export const PVoiceContextProvider = ({ children }) => {
       console.log("Recorded sounds cleared");
     } catch (error) {
       console.error("Error clearing recorded sounds:", error);
+    }
+  }
+
+  async function deleteRecordedSound(index) {
+    try {
+      // Make a copy of the recordedSounds array
+      const updatedSounds = [...recordedSounds];
+      // Remove the element at the specified index
+      updatedSounds.splice(index, 1);
+      // Update the recordedSounds state with the modified array
+      setRecordedSounds(updatedSounds);
+      // Update AsyncStorage with the modified array
+      await AsyncStorage.setItem(
+        "recordedSounds",
+        JSON.stringify(updatedSounds)
+      );
+    } catch (error) {
+      console.error("Error deleting recorded sound:", error);
     }
   }
 
@@ -152,7 +179,7 @@ export const PVoiceContextProvider = ({ children }) => {
 
   const contextValue = {
     recordingDuration: recordingDuration.duration,
-    myRecording,
+    finalRecording,
     recording,
     startRecording,
     stopRecording,
@@ -160,6 +187,7 @@ export const PVoiceContextProvider = ({ children }) => {
     recordingTime,
     recordedSounds,
     clearRecordedSounds,
+    deleteRecordedSound,
   };
 
   return (

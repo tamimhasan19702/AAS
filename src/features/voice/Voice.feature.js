@@ -19,15 +19,23 @@ const VoiceScreenView = styled(View)`
   gap: 10px;
 `;
 
+const VoiceScreenText = styled(Text)`
+  font-weight: 400;
+  font-size: 20px;
+  text-align: center;
+  padding: 10px 0px;
+  font-family: "OverlockSC_400Regular";
+`;
+
 export const VoiceScreen = ({ navigation }) => {
   const {
     recording,
-    myRecording,
     startRecording,
     stopRecording,
     playRecording,
     recordedSounds,
     clearRecordedSounds,
+    deleteRecordedSound,
   } = useContext(PVoiceContext);
   return (
     <SafeView>
@@ -35,7 +43,7 @@ export const VoiceScreen = ({ navigation }) => {
       <VoiceScreenView>
         <StartStopRecorder
           title={
-            recording ? "Press for Stop Recording" : "Press for Start Recording"
+            recording ? "Press to Stop Recording" : "Press to Start Recording"
           }
           onPress={recording ? stopRecording : startRecording}
         />
@@ -45,7 +53,7 @@ export const VoiceScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
         <ScrollView>
-          {recordedSounds.length > 0 &&
+          {recordedSounds.length > 0 ? (
             recordedSounds.map((soundItem, index) => {
               const { sound, duration, time } = soundItem;
               const reverseIndex = recordedSounds.length - index;
@@ -57,11 +65,15 @@ export const VoiceScreen = ({ navigation }) => {
                     onPress={() => playRecording(index)}
                     duration={duration}
                     time={time}
+                    handleDelete={() => deleteRecordedSound(index)}
                   />
                   <View style={{ height: 10 }} />
                 </>
               );
-            })}
+            })
+          ) : (
+            <VoiceScreenText> No New Recording Found!! ☺</VoiceScreenText>
+          )}
         </ScrollView>
       </VoiceScreenView>
     </SafeView>
