@@ -86,10 +86,16 @@ export const AiContextProvider = ({ children }) => {
         // Convert text to speech
         convertTextToSpeech(newText);
 
+        // Find the index of the active item
+        const activeIndex = presetArray.findIndex((item) => item.isActive);
+
         // Update preset array in Firebase
         const updatedPresetArray = [
           { text: newText, isActive: true },
-          ...presetArray.map((item) => ({ ...item, isActive: false })),
+          ...presetArray.map((item, index) => ({
+            ...item,
+            isActive: index === activeIndex ? false : item.isActive,
+          })),
         ];
         set(ref(FIREBASEDATABASE, "presetArray"), updatedPresetArray);
 
@@ -105,16 +111,21 @@ export const AiContextProvider = ({ children }) => {
     try {
       await convertTextToSpeech(presetText || ""); // Convert text to speech immediately
 
-      setPresetArray((prevArray) => {
-        const updatedArray = prevArray.map((item) => ({
-          text: item.text,
-          isActive: item.text === presetText, // Set isActive to true for the current presetText
-        }));
-        set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-        setAudio("");
-        setPresetLoading(false);
-        return updatedArray;
+      // Update preset array in Firebase
+      const updatedArray = presetArray.map((item) => ({
+        text: item.text,
+        isActive: item.text === presetText,
+      }));
+      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
+
+      // Update audio text in Firebase
+      set(ref(FIREBASEDATABASE, "audioText"), {
+        audioText: presetText,
       });
+
+      setAudio("");
+      setPresetLoading(false);
+      setPresetArray(updatedArray);
     } catch (error) {
       console.error("Error converting text to speech:", error);
       setPresetLoading(false);
