@@ -37,6 +37,20 @@ const PresetInput = styled(View)`
   align-items: center;
   width: 100%;
 `;
+
+const ActiveView = styled(View)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+`;
+
+const ActiveText = styled(Text)`
+  color: ${color.white};
+  font-size: 23px;
+  font-family: "OverlockSC_400Regular";
+`;
 export default function PresetComponent({
   speak,
   handleDelete,
@@ -62,10 +76,14 @@ export default function PresetComponent({
           {loading ? (
             <PresetLoading />
           ) : (
-            <TouchableOpacity onPress={handlePlayClick}>
-              <MaterialCommunityIcons name="play" size={35} color="white" />
-            </TouchableOpacity>
+            <ActiveView>
+              <TouchableOpacity onPress={handlePlayClick}>
+                <MaterialCommunityIcons name="play" size={35} color="white" />
+              </TouchableOpacity>
+              {isActive && <ActiveText>Active Now</ActiveText>}
+            </ActiveView>
           )}
+
           <TouchableOpacity onPress={() => handleDelete(index)}>
             <MaterialCommunityIcons name="delete" size={26} color="white" />
           </TouchableOpacity>
