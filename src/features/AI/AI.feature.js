@@ -20,28 +20,22 @@ import {
   AiTextInputView,
 } from "./AI.style";
 import { Loading } from "../../utils/loading";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View } from "react-native";
 import PresetComponent from "../../components/preset.component";
 import { AiContext } from "../../context/AI.context";
-
 export const AiScreen = ({ navigation }) => {
   const {
     text,
     setText,
     audio,
     saveloading,
-    speakloading,
     presetArray,
     updateAudioText,
     getArrayFromFirebase,
     save,
     speak,
-    saveAndSpeak,
-    PresetSave,
     clearPreset,
     handleDelete,
-    clearAudio,
   } = useContext(AiContext);
 
   useEffect(() => {
@@ -105,7 +99,11 @@ export const AiScreen = ({ navigation }) => {
             onPress={() => {
               clearPreset();
             }}
-            style={{ marginBottom: 10, width: "80%" }}>
+            style={{
+              marginBottom: 10,
+              width: "80%",
+              backgroundColor: color.red,
+            }}>
             <AiInputText>Clear List</AiInputText>
           </AiInputButton>
         </View>
@@ -117,7 +115,7 @@ export const AiScreen = ({ navigation }) => {
             presetArray.map((item, index) => (
               <PresetComponent
                 key={index}
-                saveAndSpeak={saveAndSpeak}
+                speak={speak}
                 text={item}
                 handleDelete={() => handleDelete(index)}
                 index={index}

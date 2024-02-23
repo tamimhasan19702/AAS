@@ -36,19 +36,14 @@ const PresetInput = styled(View)`
   align-items: center;
   width: 100%;
 `;
-export default function PresetComponent({
-  saveAndSpeak,
-  handleDelete,
-  index,
-  text,
-}) {
+export default function PresetComponent({ speak, handleDelete, index, text }) {
   const { loadTime } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
 
   const handlePlayClick = () => {
     setLoading(true);
     setTimeout(() => {
-      saveAndSpeak({ presetText: text });
+      speak({ presetText: text });
       setLoading(false);
     }, loadTime);
   };

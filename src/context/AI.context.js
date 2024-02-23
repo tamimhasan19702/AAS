@@ -97,46 +97,22 @@ export const AiContextProvider = ({ children }) => {
     }, loadTime);
   };
 
-  const speak = () => {
-    setSpeakLoading(true);
-    setTimeout(() => {
-      convertTextToSpeech(audio);
-      setSpeakLoading(false);
-      setAudio("");
-    }, loadTime);
-  };
-  const saveAndSpeak = useCallback(
-    ({ presetText }) => {
-      setPresetLoading(true);
-      convertTextToSpeech(presetText || ""); // Convert text to speech immediately
+  const speak = async ({ presetText }) => {
+    setPresetLoading(true);
+    try {
+      await convertTextToSpeech(presetText || ""); // Convert text to speech immediately
 
-      setTimeout(() => {
-        setPresetArray((prevArray) => {
-          const newElement =
-            presetText || prevArray[prevArray.length - 1] || "";
-          set(ref(FIREBASEDATABASE, "audioText"), { audioText: newElement });
-          setAudio("");
-          setPresetLoading(false);
-          return [...prevArray, newElement];
-        });
-      }, loadTime);
-    },
-    [convertTextToSpeech, loadTime]
-  );
-
-  const PresetSave = () => {
-    if (text === "") {
-      return null;
+      setPresetArray((prevArray) => {
+        const newElement = presetText || prevArray[prevArray.length - 1] || "";
+        set(ref(FIREBASEDATABASE, "audioText"), { audioText: newElement });
+        setAudio("");
+        setPresetLoading(false);
+        return [...prevArray, newElement];
+      });
+    } catch (error) {
+      console.error("Error converting text to speech:", error);
+      setPresetLoading(false);
     }
-
-    setPresetArray((prevArray) => {
-      const updatedArray = [text, ...prevArray];
-
-      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-      return updatedArray;
-    });
-
-    setText("");
   };
 
   const clearPreset = () => {
@@ -169,8 +145,6 @@ export const AiContextProvider = ({ children }) => {
     presetLoading,
     save,
     speak,
-    saveAndSpeak,
-    PresetSave,
     clearPreset,
     handleDelete,
   };

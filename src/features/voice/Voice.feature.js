@@ -100,8 +100,14 @@ export const VoiceScreen = ({ navigation }) => {
         </ScrollView>
         {recordedSounds.length > 0 && (
           <VoiceBottomView>
-            <VoiceBottomButton onPress={clearRecordedSounds}>
-              <VoiceScreenText style={{ color: color.white, fontSize: 16 }}>
+            <VoiceBottomButton
+              onPress={clearRecordedSounds}
+              style={{ backgroundColor: color.red }}>
+              <VoiceScreenText
+                style={{
+                  color: color.white,
+                  fontSize: 16,
+                }}>
                 clear List
               </VoiceScreenText>
             </VoiceBottomButton>
