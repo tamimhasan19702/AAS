@@ -78,7 +78,7 @@ export const VoiceScreen = ({ navigation }) => {
         <ScrollView>
           {recordedSounds.length > 0 ? (
             recordedSounds.map((soundItem, index) => {
-              const { sound, duration, time } = soundItem;
+              const { sound, duration, time, isActive } = soundItem;
               const reverseIndex = recordedSounds.length - index;
               return (
                 <>
@@ -89,6 +89,7 @@ export const VoiceScreen = ({ navigation }) => {
                     duration={duration}
                     time={time}
                     handleDelete={() => deleteRecordedSound(index)}
+                    isActive={isActive}
                   />
                   <View style={{ height: 10 }} />
                 </>

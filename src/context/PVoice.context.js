@@ -119,6 +119,13 @@ export const PVoiceContextProvider = ({ children }) => {
         await recordedSounds[index].sound.replayAsync(); // Replay the sound at the specified index
         console.log("Recording playing");
         setFinalRecording(recordedSounds[index].sound);
+
+        // Update isActive parameter
+        const updatedRecordedSounds = recordedSounds.map((item, i) => ({
+          ...item,
+          isActive: i === index, // Set isActive to true for the played recording, false for others
+        }));
+        setRecordedSounds(updatedRecordedSounds);
       } else {
         console.error(`No recording found at index ${index}`);
       }
