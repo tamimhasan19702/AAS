@@ -72,11 +72,25 @@ export const AiContextProvider = ({ children }) => {
     setSaveLoading(true);
     setTimeout(() => {
       setText((prevText) => {
+        const newText = prevText.trim();
+        if (newText === "") {
+          setSaveLoading(false);
+          return "";
+        }
+
+        // Update audio text in Firebase
         set(ref(FIREBASEDATABASE, "audioText"), {
-          audioText: prevText,
+          audioText: newText,
         });
-        convertTextToSpeech(prevText);
-        setAudio("");
+
+        // Convert text to speech
+        convertTextToSpeech(newText);
+
+        // Update preset array in Firebase
+        const updatedPresetArray = [newText, ...presetArray];
+        set(ref(FIREBASEDATABASE, "presetArray"), updatedPresetArray);
+
+        setPresetArray(updatedPresetArray);
         setSaveLoading(false);
         return ""; // Return the updated state value
       });

@@ -87,30 +87,10 @@ export const AiScreen = ({ navigation }) => {
             <Loading />
           ) : (
             <AiInputButton
-              style={{ marginBottom: 10, width: "40%" }}
+              style={{ marginBottom: 5, width: "80%" }}
               onPress={() => save(toString(text))}>
               <AiInputText>Generate audio</AiInputText>
             </AiInputButton>
-          )}
-
-          {audio && (
-            <>
-              {speakloading ? (
-                <Loading /> // Replace with your loading component
-              ) : (
-                <AiInputButton
-                  onPress={() => speak(audio)}
-                  style={{ marginBottom: 10, width: "40%" }}>
-                  <MaterialCommunityIcons
-                    name="speaker-wireless"
-                    size={24}
-                    color="white"
-                    style={{ textAlign: "center" }}
-                  />
-                  <AiInputText>Listen audio</AiInputText>
-                </AiInputButton>
-              )}
-            </>
           )}
         </View>
 
@@ -123,21 +103,14 @@ export const AiScreen = ({ navigation }) => {
           }}>
           <AiInputButton
             onPress={() => {
-              PresetSave();
-            }}
-            style={{ marginBottom: 10, width: "40%" }}>
-            <AiInputText>Save as Preset</AiInputText>
-          </AiInputButton>
-          <AiInputButton
-            onPress={() => {
               clearPreset();
             }}
-            style={{ marginBottom: 10, width: "40%" }}>
-            <AiInputText>Clear Preset</AiInputText>
+            style={{ marginBottom: 10, width: "80%" }}>
+            <AiInputText>Clear List</AiInputText>
           </AiInputButton>
         </View>
 
-        <AiVoiceText>Preset Annoucnements</AiVoiceText>
+        <AiVoiceText>AI Genareted Annoucnements</AiVoiceText>
 
         <AiScrollView Vertical={true}>
           {presetArray.length !== 0 ? (
