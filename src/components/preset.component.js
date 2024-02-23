@@ -11,7 +11,8 @@ import { AiContext } from "../context/AI.context";
 
 const Preset = styled(View)`
   width: 380px;
-  background-color: ${color.primary};
+  background-color: ${(props) =>
+    props.isActive ? color.green : color.primary};
   padding: 12px;
   border-radius: 5px;
   margin: 5px;
@@ -36,7 +37,13 @@ const PresetInput = styled(View)`
   align-items: center;
   width: 100%;
 `;
-export default function PresetComponent({ speak, handleDelete, index, text }) {
+export default function PresetComponent({
+  speak,
+  handleDelete,
+  index,
+  text,
+  isActive,
+}) {
   const { loadTime } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +56,7 @@ export default function PresetComponent({ speak, handleDelete, index, text }) {
   };
 
   return (
-    <Preset>
+    <Preset isActive={isActive}>
       <PresetView>
         <PresetInput>
           {loading ? (

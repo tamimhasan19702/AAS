@@ -116,9 +116,10 @@ export const AiScreen = ({ navigation }) => {
               <PresetComponent
                 key={index}
                 speak={speak}
-                text={item}
+                text={item.text}
                 handleDelete={() => handleDelete(index)}
                 index={index}
+                isActive={item.isActive}
               />
             ))
           ) : (

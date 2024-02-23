@@ -87,7 +87,10 @@ export const AiContextProvider = ({ children }) => {
         convertTextToSpeech(newText);
 
         // Update preset array in Firebase
-        const updatedPresetArray = [newText, ...presetArray];
+        const updatedPresetArray = [
+          { text: newText, isActive: true },
+          ...presetArray.map((item) => ({ ...item, isActive: false })),
+        ];
         set(ref(FIREBASEDATABASE, "presetArray"), updatedPresetArray);
 
         setPresetArray(updatedPresetArray);
@@ -103,11 +106,14 @@ export const AiContextProvider = ({ children }) => {
       await convertTextToSpeech(presetText || ""); // Convert text to speech immediately
 
       setPresetArray((prevArray) => {
-        const newElement = presetText || prevArray[prevArray.length - 1] || "";
-        set(ref(FIREBASEDATABASE, "audioText"), { audioText: newElement });
+        const updatedArray = prevArray.map((item) => ({
+          text: item.text,
+          isActive: item.text === presetText, // Set isActive to true for the current presetText
+        }));
+        set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
         setAudio("");
         setPresetLoading(false);
-        return [...prevArray, newElement];
+        return updatedArray;
       });
     } catch (error) {
       console.error("Error converting text to speech:", error);
