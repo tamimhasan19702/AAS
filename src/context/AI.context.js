@@ -72,57 +72,64 @@ export const AiContextProvider = ({ children }) => {
     setSaveLoading(true);
     setTimeout(() => {
       setText((prevText) => {
+        const newText = prevText.trim();
+        if (newText === "") {
+          setSaveLoading(false);
+          return "";
+        }
+
+        // Update audio text in Firebase
         set(ref(FIREBASEDATABASE, "audioText"), {
-          audioText: prevText,
+          audioText: newText,
         });
-        convertTextToSpeech(prevText);
-        setAudio("");
+
+        // Convert text to speech
+        convertTextToSpeech(newText);
+
+        // Find the index of the active item
+        const activeIndex = presetArray.findIndex((item) => item.isActive);
+
+        // Update preset array in Firebase
+        const updatedPresetArray = [
+          { text: newText, isActive: true },
+          ...presetArray.map((item, index) => ({
+            ...item,
+            isActive: index === activeIndex ? false : item.isActive,
+          })),
+        ];
+        set(ref(FIREBASEDATABASE, "presetArray"), updatedPresetArray);
+
+        setPresetArray(updatedPresetArray);
         setSaveLoading(false);
         return ""; // Return the updated state value
       });
     }, loadTime);
   };
 
-  const speak = () => {
-    setSpeakLoading(true);
-    setTimeout(() => {
-      convertTextToSpeech(audio);
-      setSpeakLoading(false);
-      setAudio("");
-    }, loadTime);
-  };
-  const saveAndSpeak = useCallback(
-    ({ presetText }) => {
-      setPresetLoading(true);
-      convertTextToSpeech(presetText || ""); // Convert text to speech immediately
+  const speak = async ({ presetText }) => {
+    setPresetLoading(true);
+    try {
+      await convertTextToSpeech(presetText || ""); // Convert text to speech immediately
 
-      setTimeout(() => {
-        setPresetArray((prevArray) => {
-          const newElement =
-            presetText || prevArray[prevArray.length - 1] || "";
-          set(ref(FIREBASEDATABASE, "audioText"), { audioText: newElement });
-          setAudio("");
-          setPresetLoading(false);
-          return [...prevArray, newElement];
-        });
-      }, loadTime);
-    },
-    [convertTextToSpeech, loadTime]
-  );
-
-  const PresetSave = () => {
-    if (text === "") {
-      return null;
-    }
-
-    setPresetArray((prevArray) => {
-      const updatedArray = [text, ...prevArray];
-
+      // Update preset array in Firebase
+      const updatedArray = presetArray.map((item) => ({
+        text: item.text,
+        isActive: item.text === presetText,
+      }));
       set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-      return updatedArray;
-    });
 
-    setText("");
+      // Update audio text in Firebase
+      set(ref(FIREBASEDATABASE, "audioText"), {
+        audioText: presetText,
+      });
+
+      setAudio("");
+      setPresetLoading(false);
+      setPresetArray(updatedArray);
+    } catch (error) {
+      console.error("Error converting text to speech:", error);
+      setPresetLoading(false);
+    }
   };
 
   const clearPreset = () => {
@@ -155,8 +162,6 @@ export const AiContextProvider = ({ children }) => {
     presetLoading,
     save,
     speak,
-    saveAndSpeak,
-    PresetSave,
     clearPreset,
     handleDelete,
   };
