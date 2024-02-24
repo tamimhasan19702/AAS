@@ -81,18 +81,15 @@ export const VoiceScreen = ({ navigation }) => {
               const { sound, duration, time, isActive } = soundItem;
               const reverseIndex = recordedSounds.length - index;
               return (
-                <>
-                  <PlayVoice
-                    key={index}
-                    title={`Play Recording ${reverseIndex}`}
-                    onPress={() => playRecording(index)}
-                    duration={duration}
-                    time={time}
-                    handleDelete={() => deleteRecordedSound(index)}
-                    isActive={isActive}
-                  />
-                  <View style={{ height: 10 }} />
-                </>
+                <PlayVoice
+                  key={index}
+                  title={`Play Recording ${reverseIndex}`}
+                  onPress={() => playRecording(index)}
+                  duration={duration}
+                  time={time}
+                  handleDelete={() => deleteRecordedSound(index)}
+                  isActive={isActive}
+                />
               );
             })
           ) : (

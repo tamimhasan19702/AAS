@@ -120,7 +120,8 @@ export const AiContextProvider = ({ children }) => {
       setPresetArray((prevArray) => {
         const updatedArray = prevArray.map((item) => ({
           text: item.text,
-          isActive: item.text === presetText, // Set isActive to true for the current presetText
+          isActive: item.text === presetText,
+          updateTime: item.updateTime,
         }));
         set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
         setAudio("");

@@ -18,6 +18,8 @@ const PlayVoiceView = styled(View)`
   justify-content: space-between;
   padding: 15px;
   border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 const PlayVoiceText = styled(Text)`
   color: ${color.white};
@@ -73,7 +75,7 @@ export const PlayVoice = ({
     setTimeout(() => {
       onPress();
       setLoading(false);
-    }, duration * 1000);
+    }, 2000);
   };
 
   return (
