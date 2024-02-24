@@ -86,20 +86,26 @@ export const AiContextProvider = ({ children }) => {
         // Convert text to speech
         convertTextToSpeech(newText);
 
-        // Find the index of the active item
-        const activeIndex = presetArray.findIndex((item) => item.isActive);
+        // Get the current date and time
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+        const day = String(currentDate.getDate()).padStart(2, "0");
+        const hours = String(currentDate.getHours()).padStart(2, "0");
+        const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+
+        // Format the date and time string
+        const formattedTime = `${day}/${month}/${year} - ${hours}:${minutes}`;
 
         // Update preset array in Firebase
         const updatedPresetArray = [
-          { text: newText, isActive: true },
-          ...presetArray.map((item, index) => ({
-            ...item,
-            isActive: index === activeIndex ? false : item.isActive,
-          })),
+          { text: newText, isActive: true, updateTime: formattedTime }, // Include updateTime for the new item
+          ...presetArray.map((item) => ({ ...item, isActive: false })),
         ];
         set(ref(FIREBASEDATABASE, "presetArray"), updatedPresetArray);
 
         setPresetArray(updatedPresetArray);
+
         setSaveLoading(false);
         return ""; // Return the updated state value
       });
@@ -111,21 +117,22 @@ export const AiContextProvider = ({ children }) => {
     try {
       await convertTextToSpeech(presetText || ""); // Convert text to speech immediately
 
-      // Update preset array in Firebase
-      const updatedArray = presetArray.map((item) => ({
-        text: item.text,
-        isActive: item.text === presetText,
-      }));
-      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-
       // Update audio text in Firebase
       set(ref(FIREBASEDATABASE, "audioText"), {
-        audioText: presetText,
+        audioText: presetText || "",
       });
 
-      setAudio("");
-      setPresetLoading(false);
-      setPresetArray(updatedArray);
+      setPresetArray((prevArray) => {
+        const updatedArray = prevArray.map((item) => ({
+          text: item.text,
+          isActive: item.text === presetText,
+          updateTime: item.updateTime,
+        }));
+        set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
+        setAudio("");
+        setPresetLoading(false);
+        return updatedArray;
+      });
     } catch (error) {
       console.error("Error converting text to speech:", error);
       setPresetLoading(false);

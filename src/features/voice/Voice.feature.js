@@ -78,20 +78,18 @@ export const VoiceScreen = ({ navigation }) => {
         <ScrollView>
           {recordedSounds.length > 0 ? (
             recordedSounds.map((soundItem, index) => {
-              const { sound, duration, time } = soundItem;
+              const { sound, duration, time, isActive } = soundItem;
               const reverseIndex = recordedSounds.length - index;
               return (
-                <>
-                  <PlayVoice
-                    key={index}
-                    title={`Play Recording ${reverseIndex}`}
-                    onPress={() => playRecording(index)}
-                    duration={duration}
-                    time={time}
-                    handleDelete={() => deleteRecordedSound(index)}
-                  />
-                  <View style={{ height: 10 }} />
-                </>
+                <PlayVoice
+                  key={index}
+                  title={`Play Recording ${reverseIndex}`}
+                  onPress={() => playRecording(index)}
+                  duration={duration}
+                  time={time}
+                  handleDelete={() => deleteRecordedSound(index)}
+                  isActive={isActive}
+                />
               );
             })
           ) : (

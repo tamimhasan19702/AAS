@@ -120,6 +120,7 @@ export const AiScreen = ({ navigation }) => {
                 handleDelete={() => handleDelete(index)}
                 index={index}
                 isActive={item.isActive}
+                time={item.updateTime}
               />
             ))
           ) : (

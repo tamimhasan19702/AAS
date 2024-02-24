@@ -51,12 +51,27 @@ const ActiveText = styled(Text)`
   font-size: 23px;
   font-family: "OverlockSC_400Regular";
 `;
+
+const TimeView = styled(View)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+`;
+
+const TimeText = styled(Text)`
+  color: ${color.white};
+  font-size: 15px;
+  font-family: "OverlockSC_400Regular";
+`;
 export default function PresetComponent({
   speak,
   handleDelete,
   index,
   text,
   isActive,
+  time,
 }) {
   const { loadTime } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
@@ -83,10 +98,12 @@ export default function PresetComponent({
               {isActive && <ActiveText>Active Now</ActiveText>}
             </ActiveView>
           )}
-
-          <TouchableOpacity onPress={() => handleDelete(index)}>
-            <MaterialCommunityIcons name="delete" size={26} color="white" />
-          </TouchableOpacity>
+          <TimeView>
+            {time && <TimeText>{time}</TimeText>}
+            <TouchableOpacity onPress={() => handleDelete(index)}>
+              <MaterialCommunityIcons name="delete" size={26} color="white" />
+            </TouchableOpacity>
+          </TimeView>
         </PresetInput>
         <PresetText>{text}</PresetText>
       </PresetView>

@@ -94,7 +94,6 @@ export const SpeakerVoice = ({ navigation }) => {
 
       // Simulate a delay (replace this with your asynchronous operation)
       setTimeout(() => {
-        set(ref(FIREBASEDATABASE, "speakers"), speakers);
         setLoading(false); // Set loading back to false
         showSuccessAlert(navigation);
       }, 3000);

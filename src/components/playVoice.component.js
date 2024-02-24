@@ -1,14 +1,16 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { PresetLoading } from "../utils/presetLoading";
 
 const PlayVoiceView = styled(View)`
-  background-color: ${color.primary};
+  background-color: ${(props) =>
+    props.isActive ? color.green : color.primary};
   width: 380px;
   display: flex;
   flex-direction: row;
@@ -16,9 +18,13 @@ const PlayVoiceView = styled(View)`
   justify-content: space-between;
   padding: 15px;
   border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 const PlayVoiceText = styled(Text)`
   color: ${color.white};
+
+  font-family: "OverlockSC_400Regular";
 `;
 
 const PlayVoiceLeftView = styled(View)`
@@ -30,9 +36,10 @@ const PlayVoiceLeftView = styled(View)`
 `;
 const PlayVoiceRightView = styled(View)`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 10px;
 `;
 
 const PlayVoiceButton = styled(TouchableOpacity)`
@@ -42,7 +49,22 @@ const PlayVoiceButton = styled(TouchableOpacity)`
   gap: 2px;
 `;
 
-export const PlayVoice = ({ title, onPress, duration, time, handleDelete }) => {
+const PlayVoiceTime = styled(View)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const PlayVoice = ({
+  title,
+  onPress,
+  duration,
+  time,
+  handleDelete,
+  isActive,
+}) => {
+  const [loading, setLoading] = useState(false);
   const recordingDate = new Date(parseInt(time)).toLocaleDateString("en-US");
   const formattedTime = new Date(parseInt(time)).toLocaleString("en-US", {
     hour: "numeric",
@@ -50,25 +72,40 @@ export const PlayVoice = ({ title, onPress, duration, time, handleDelete }) => {
     hour12: true,
   });
 
+  const handlePlayClick = () => {
+    setLoading(true);
+    setTimeout(() => {
+      onPress();
+      setLoading(false);
+    }, 2000);
+  };
+
   return (
-    <PlayVoiceView>
+    <PlayVoiceView isActive={isActive}>
       <PlayVoiceLeftView>
-        <PlayVoiceButton onPress={onPress}>
-          <AntDesign name="caretright" size={30} color="white" />
-          <PlayVoiceText>{title}</PlayVoiceText>
-        </PlayVoiceButton>
+        {loading ? (
+          <PresetLoading />
+        ) : (
+          <PlayVoiceButton onPress={handlePlayClick}>
+            <AntDesign name="caretright" size={30} color="white" />
+            <PlayVoiceText>{isActive ? "Active Now" : title}</PlayVoiceText>
+          </PlayVoiceButton>
+        )}
       </PlayVoiceLeftView>
       <PlayVoiceRightView>
-        <PlayVoiceText>
-          {formattedTime} - {recordingDate}
-        </PlayVoiceText>
-        <PlayVoiceText>
-          Duration - {duration ? duration : "00:00:00"}s
-        </PlayVoiceText>
+        <PlayVoiceTime>
+          <PlayVoiceText>
+            {recordingDate} - {formattedTime}
+          </PlayVoiceText>
+          <PlayVoiceText>
+            Duration - {duration ? duration : "00:00:00"}s
+          </PlayVoiceText>
+        </PlayVoiceTime>
+
+        <TouchableOpacity onPress={handleDelete}>
+          <MaterialCommunityIcons name="delete" size={26} color="white" />
+        </TouchableOpacity>
       </PlayVoiceRightView>
-      <TouchableOpacity onPress={handleDelete}>
-        <MaterialCommunityIcons name="delete" size={26} color="white" />
-      </TouchableOpacity>
     </PlayVoiceView>
   );
 };
