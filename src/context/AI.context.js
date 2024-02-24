@@ -15,7 +15,6 @@ export const AiContextProvider = ({ children }) => {
   const [presetArray, setPresetArray] = useState([]);
   const [presetLoading, setPresetLoading] = useState(false);
   const [loadTime, setLoadTime] = useState(0);
-  const [time, setTime] = useState(0);
 
   const sound = new Audio.Sound();
 
@@ -106,6 +105,7 @@ export const AiContextProvider = ({ children }) => {
         set(ref(FIREBASEDATABASE, "presetArray"), updatedPresetArray);
 
         setPresetArray(updatedPresetArray);
+
         setSaveLoading(false);
         return ""; // Return the updated state value
       });
@@ -116,6 +116,11 @@ export const AiContextProvider = ({ children }) => {
     setPresetLoading(true);
     try {
       await convertTextToSpeech(presetText || ""); // Convert text to speech immediately
+
+      // Update audio text in Firebase
+      set(ref(FIREBASEDATABASE, "audioText"), {
+        audioText: presetText || "",
+      });
 
       setPresetArray((prevArray) => {
         const updatedArray = prevArray.map((item) => ({

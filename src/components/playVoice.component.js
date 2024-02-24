@@ -23,6 +23,8 @@ const PlayVoiceView = styled(View)`
 `;
 const PlayVoiceText = styled(Text)`
   color: ${color.white};
+
+  font-family: "OverlockSC_400Regular";
 `;
 
 const PlayVoiceLeftView = styled(View)`
