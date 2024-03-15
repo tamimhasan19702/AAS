@@ -15,7 +15,7 @@ import styled from "styled-components";
 import { color } from "../../utils/colors";
 import { SpeakerContext } from "../../context/Speaker.context";
 import { AiContext } from "../../context/AI.context";
-import { FIREBASEDATABASE } from "../../../firebase.config";
+import { FIREBASESTORAGE } from "../../../firebase.config";
 import { set, ref } from "firebase/database";
 import { PSpeakerContext } from "../../context/PSpeaker.context";
 
@@ -78,41 +78,53 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerVoice = ({ navigation }) => {
-  const { audio } = useContext(AiContext);
+  const { finalRecording } = useContext(PSpeakerContext);
   const [loading, setLoading] = useState(false);
-  const {} = useContext(PSpeakerContext);
+  const [audio, setAudio] = useState(null);
+  const {
+    pspeakers,
+    toggleHandlerPS,
+    toggleHandlerAllPS,
+    showAlert,
+    showSuccessAlert,
+  } = useContext(PSpeakerContext);
 
-  const allSpeakersOn = speakers.some((s) => s.isOn);
+  const allSpeakersOn = pspeakers.some((s) => s.isOn);
   const handleNextStepPress = () => {
     if (allSpeakersOn) {
       setLoading(true); // Set loading to true
 
       // Simulate a delay (replace this with your asynchronous operation)
       setTimeout(() => {
+        console.log(pspeakers);
         setLoading(false); // Set loading back to false
         showSuccessAlert(navigation);
       }, 3000);
     }
   };
 
+  useEffect(() => {
+    setAudio(finalRecording);
+  }, [finalRecording]);
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} route={"Voice Screen"} />
-      <SpeakerText>This is Voice Screen</SpeakerText>
+      <SpeakerText>Personal Voice Screen</SpeakerText>
       <ScrollView>
-        {speakers.map((speaker) => (
+        {pspeakers.map((speaker) => (
           <SpeakerComponent
             key={speaker.no}
             No={speaker.no}
             isOn={speaker.isOn}
-            toggleHandler={() => toggleHandler(speaker.no, audio)}
+            toggleHandler={() => toggleHandlerPS(speaker.no, audio)}
           />
         ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText onPress={() => toggleHandlerAll(audio)}>
-            Turn {speakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
+          <AllSpeakerText onPress={() => toggleHandlerAllPS(audio)}>
+            Turn {pspeakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>
         <NextSpeakerButton
