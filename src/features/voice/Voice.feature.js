@@ -60,7 +60,11 @@ export const VoiceScreen = ({ navigation }) => {
     recordedSounds,
     clearRecordedSounds,
     deleteRecordedSound,
+    finalRecording,
   } = useContext(PVoiceContext);
+  useEffect(() => {
+    console.log("finalRecording updated:", finalRecording);
+  }, [finalRecording]);
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />

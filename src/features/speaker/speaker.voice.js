@@ -17,6 +17,7 @@ import { SpeakerContext } from "../../context/Speaker.context";
 import { AiContext } from "../../context/AI.context";
 import { FIREBASEDATABASE } from "../../../firebase.config";
 import { set, ref } from "firebase/database";
+import { PSpeakerContext } from "../../context/PSpeaker.context";
 
 const SpeakerText = styled(Text)`
   font-weight: 400;
@@ -79,13 +80,7 @@ const Overlay = styled(View)`
 export const SpeakerVoice = ({ navigation }) => {
   const { audio } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
-  const {
-    speakers,
-    toggleHandler,
-    toggleHandlerAll,
-    showAlert,
-    showSuccessAlert,
-  } = useContext(SpeakerContext);
+  const {} = useContext(PSpeakerContext);
 
   const allSpeakersOn = speakers.some((s) => s.isOn);
   const handleNextStepPress = () => {

@@ -3,6 +3,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -21,6 +22,7 @@ const firebaseConfig = {
 export const FIRBASEAPP = initializeApp(firebaseConfig);
 export const FIREBASEDATABASE = getDatabase(FIRBASEAPP);
 export const FIREBASEFIRESTORE = getFirestore(FIRBASEAPP);
+export const FIREBASESTORAGE = getStorage(FIRBASEAPP);
 
 export const OPEN_AI_API_KEY =
   "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";

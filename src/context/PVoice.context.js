@@ -94,6 +94,9 @@ export const PVoiceContextProvider = ({ children }) => {
         ...prevRecordedSounds,
       ]);
 
+      //saving a final recording
+      setFinalRecording(sound);
+
       // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
         "recordedSounds",
@@ -143,6 +146,8 @@ export const PVoiceContextProvider = ({ children }) => {
               isActive: i === index,
             }))
           );
+          //saving a final recording
+          setFinalRecording(recordedSoundsArray[index].sound);
         } else {
           console.error(`No recording found at index ${index}`);
         }
