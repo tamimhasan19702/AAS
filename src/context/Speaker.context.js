@@ -12,13 +12,6 @@ export const SpeakerProvider = ({ children }) => {
     { no: 4, isOn: false, text: "" },
     { no: 5, isOn: false, text: "" },
   ]);
-  const [pspeakers, setPSpeakers] = useState([
-    { no: 1, isOn: false, voice: "" },
-    { no: 2, isOn: false, voice: "" },
-    { no: 3, isOn: false, voice: "" },
-    { no: 4, isOn: false, voice: "" },
-    { no: 5, isOn: false, voice: "" },
-  ]);
 
   const toggleHandler = (speakerNo, audio) => {
     setSpeakers((prevSpeakers) =>
@@ -77,7 +70,6 @@ export const SpeakerProvider = ({ children }) => {
     <SpeakerContext.Provider
       value={{
         speakers,
-        pspeakers,
         toggleHandler,
         toggleHandlerAll,
         showAlert,

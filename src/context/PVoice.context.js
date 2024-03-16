@@ -71,7 +71,7 @@ export const PVoiceContextProvider = ({ children }) => {
       });
 
       // Get the URI of the recorded audio file
-      const sound = recording.getURI();
+      const sound = await recording.getURI();
       console.log("Sound URI:", sound);
 
       setRecording(false);

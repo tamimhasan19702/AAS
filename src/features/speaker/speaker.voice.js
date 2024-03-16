@@ -103,10 +103,6 @@ export const SpeakerVoice = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    setAudio(finalRecording);
-  }, [finalRecording]);
-
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} route={"Voice Screen"} />
@@ -117,13 +113,13 @@ export const SpeakerVoice = ({ navigation }) => {
             key={speaker.no}
             No={speaker.no}
             isOn={speaker.isOn}
-            toggleHandler={() => toggleHandlerPS(speaker.no, audio)}
+            toggleHandler={() => toggleHandlerPS(speaker.no, finalRecording)}
           />
         ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText onPress={() => toggleHandlerAllPS(audio)}>
+          <AllSpeakerText onPress={() => toggleHandlerAllPS(finalRecording)}>
             Turn {pspeakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>

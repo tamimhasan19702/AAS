@@ -20,7 +20,7 @@ export const PSpeakerProvider = ({ children }) => {
           ? {
               ...speaker,
               isOn: speaker.isOn ? false : true,
-              text: speaker.isOn ? "" : audio,
+              voice: speaker.isOn ? "" : audio,
             }
           : speaker
       )
@@ -60,8 +60,8 @@ export const PSpeakerProvider = ({ children }) => {
     setPSpeakers((prevSpeakers) =>
       prevSpeakers.map((speaker) => ({
         ...speaker,
-        isOn: !speakers.every((s) => s.isOn),
-        text: speaker.isOn ? audio : "",
+        isOn: !pspeakers.every((s) => s.isOn),
+        voice: speaker.isOn ? audio : "",
       }))
     );
   };
