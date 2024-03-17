@@ -13,12 +13,10 @@ import { LogoBar } from "../../components/logoBar.component";
 import { SpeakerComponent } from "../../components/speaker.component";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
-import { SpeakerContext } from "../../context/Speaker.context";
-import { AiContext } from "../../context/AI.context";
 import { FIREBASESTORAGE } from "../../../firebase.config";
-import { set, ref } from "firebase/database";
 import { PSpeakerContext } from "../../context/PSpeaker.context";
 import { PVoiceContext } from "../../context/PVoice.context";
+import { uploadString, ref } from "firebase/storage";
 
 const SpeakerText = styled(Text)`
   font-weight: 400;
@@ -79,9 +77,9 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerVoice = ({ navigation }) => {
-  const { finalRecording, recording } = useContext(PVoiceContext);
+  const { finalRecording } = useContext(PVoiceContext);
   const [loading, setLoading] = useState(false);
-  const [audio, setAudio] = useState(null);
+  const [audioMp3, setAudioMp3] = useState("");
   const {
     pspeakers,
     toggleHandlerPS,
@@ -90,20 +88,22 @@ export const SpeakerVoice = ({ navigation }) => {
     showSuccessAlert,
   } = useContext(PSpeakerContext);
 
-  useEffect(() => {
-    console.log("speaker voice", finalRecording);
-  }, [finalRecording]);
-
   const allSpeakersOn = pspeakers.some((s) => s.isOn);
-  const handleNextStepPress = () => {
+
+  const handleNextStepPress = async () => {
     if (allSpeakersOn) {
       setLoading(true); // Set loading to true
 
       // Simulate a delay (replace this with your asynchronous operation)
-      setTimeout(() => {
+      setTimeout(async () => {
         console.log(pspeakers);
-        setLoading(false); // Set loading back to false
-        showSuccessAlert(navigation);
+        try {
+          setLoading(false);
+
+          showSuccessAlert(navigation);
+        } catch (err) {
+          console.log(err);
+        }
       }, 3000);
     }
   };
