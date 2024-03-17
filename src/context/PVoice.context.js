@@ -207,6 +207,8 @@ export const PVoiceContextProvider = ({ children }) => {
     };
 
     loadRecordedSounds();
+
+    
   }, []);
 
   const contextValue = {

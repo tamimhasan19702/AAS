@@ -18,6 +18,7 @@ import { AiContext } from "../../context/AI.context";
 import { FIREBASESTORAGE } from "../../../firebase.config";
 import { set, ref } from "firebase/database";
 import { PSpeakerContext } from "../../context/PSpeaker.context";
+import { PVoiceContext } from "../../context/PVoice.context";
 
 const SpeakerText = styled(Text)`
   font-weight: 400;
@@ -78,7 +79,7 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerVoice = ({ navigation }) => {
-  const { finalRecording } = useContext(PSpeakerContext);
+  const { finalRecording, recording } = useContext(PVoiceContext);
   const [loading, setLoading] = useState(false);
   const [audio, setAudio] = useState(null);
   const {
@@ -88,6 +89,10 @@ export const SpeakerVoice = ({ navigation }) => {
     showAlert,
     showSuccessAlert,
   } = useContext(PSpeakerContext);
+
+  useEffect(() => {
+    console.log("speaker voice", finalRecording);
+  }, [finalRecording]);
 
   const allSpeakersOn = pspeakers.some((s) => s.isOn);
   const handleNextStepPress = () => {
