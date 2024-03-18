@@ -1,12 +1,13 @@
 /** @format */
 
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import styled from "styled-components";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import { color } from "../../utils/colors";
 import { TextInput } from "react-native-paper";
+import Timer from "../../components/Timer.component";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -33,13 +34,32 @@ const ScheduleInputField = styled(TextInput)`
   padding: 10px 0px;
   text-vertical-align: top;
 `;
+const ScheduleInputButton = styled(TouchableOpacity)`
+  width: 100%;
+  background-color: ${color.primary};
+  text-align: center;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ScheduleInputText = styled(Text)`
+  text-align: center;
+  font-size: 20px;
+  color: ${color.white};
+  font-family: "OverlockSC_400Regular";
+`;
 
 export const ScheduleScreen = ({ navigation }) => {
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <ScheduleView>
-        <ScheduleText>Schedule a Annoucnements</ScheduleText>
+        <ScheduleText>Schedule Annoucnements</ScheduleText>
         <ScheduleInputView>
           <ScheduleInputField
             placeholder="Please Enter Text Here"
@@ -50,6 +70,15 @@ export const ScheduleScreen = ({ navigation }) => {
             autoCapitalize="none"
             autoCorrect={false}
             multiline={true}
+          />
+          <ScheduleInputButton>
+            <ScheduleInputText>save</ScheduleInputText>
+          </ScheduleInputButton>
+          <Timer
+            initialDuration={60}
+            onTimerEnd={() => {
+              console.log("timer ended");
+            }}
           />
         </ScheduleInputView>
       </ScheduleView>
