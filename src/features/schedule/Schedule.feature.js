@@ -7,7 +7,7 @@ import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import { color } from "../../utils/colors";
 import { TextInput } from "react-native-paper";
-import Timer from "../../components/Timer.component";
+import TimerComponent from "../../components/Timer.component";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -74,12 +74,8 @@ export const ScheduleScreen = ({ navigation }) => {
           <ScheduleInputButton>
             <ScheduleInputText>save</ScheduleInputText>
           </ScheduleInputButton>
-          <Timer
-            initialDuration={60}
-            onTimerEnd={() => {
-              console.log("timer ended");
-            }}
-          />
+
+          <TimerComponent />
         </ScheduleInputView>
       </ScheduleView>
     </SafeView>

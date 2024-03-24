@@ -1,67 +1,79 @@
 /** @format */
 
 import React, { useState } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { TimerPickerModal } from "react-native-timer-picker";
 
-const Timer = ({ initialDuration, onTimerEnd }) => {
-  const [seconds, setSeconds] = useState(initialDuration);
-  const [isActive, setIsActive] = useState(false);
-  const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const [selectedHour, setSelectedHour] = useState(0); // 24-hour format
-  const [selectedMinute, setSelectedMinute] = useState(0);
+const TimerComponent = () => {
+  const [showTimerPicker, setShowTimerPicker] = useState(false);
+  const [timerDuration, setTimerDuration] = useState(0);
 
-  const convertToSeconds = (hours, minutes) => {
-    return hours * 3600 + minutes * 60;
-  };
+  const formatTime = (duration) => {
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
+    const seconds = duration % 60;
 
-  const handleConfirm = (date) => {
-    const current = new Date();
-    const selected = new Date(date);
+    let formattedTime = "";
 
-    if (selected > current) {
-      const hours = selected.getHours() + (selected.getHours() < 12 ? 0 : 12); // Convert 24-hour to 12-hour
-      const minutes = selected.getMinutes();
-      setSelectedHour(hours);
-      setSelectedMinute(minutes);
-      const newDuration = convertToSeconds(hours, minutes);
-      setSeconds(newDuration);
+    if (hours > 0) {
+      formattedTime += `${hours} hour${hours > 1 ? "s" : ""} `;
+    }
+    if (minutes > 0) {
+      formattedTime += `${minutes} min `;
+    }
+    if (seconds >= 0) {
+      formattedTime += `${seconds} sec`;
     }
 
-    setIsPickerVisible(false);
-  };
-
-  const showPicker = () => {
-    setIsPickerVisible(true);
-  };
-
-  const hidePicker = () => {
-    setIsPickerVisible(false);
-  };
-
-  const startTimer = () => {
-    setIsActive(true);
-  };
-
-  const pauseTimer = () => {
-    setIsActive(false);
-  };
-
-  const resetTimer = () => {
-    setIsActive(false);
-    setSeconds(initialDuration);
+    return formattedTime.trim(); // Trim to remove any leading/trailing whitespace
   };
 
   return (
-    <View>
-      <Text>Timer: {seconds} seconds</Text>
-      <Button
-        title={isActive ? "Pause" : "Start"}
-        onPress={isActive ? pauseTimer : startTimer}
-      />
-      <Button title="Set Duration" onPress={showPicker} />
-      <Button title="Reset" onPress={resetTimer} />
+    <View
+      style={{ marginTop: 20, alignItems: "center", justifyContent: "center" }}>
+      <Text style={{ fontSize: 18, color: "#202020" }}>
+        {timerDuration !== 0 ? "Timer set for" : "No timer set"}
+      </Text>
+      {timerDuration !== 0 && (
+        <Text style={{ fontSize: 24, marginTop: 10 }}>
+          {formatTime(timerDuration)}
+        </Text>
+      )}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => setShowTimerPicker(true)}>
+        <View style={{ alignItems: "center", marginTop: 20 }}>
+          <Text
+            style={{
+              paddingVertical: 10,
+              paddingHorizontal: 18,
+              borderWidth: 1,
+              borderRadius: 10,
+              fontSize: 16,
+              overflow: "hidden",
+              color: "black",
+            }}>
+            Set Time ⏲️
+          </Text>
+          <TimerPickerModal
+            visible={showTimerPicker}
+            setIsVisible={setShowTimerPicker}
+            onConfirm={(pickedDuration) => {
+              const durationInSeconds =
+                pickedDuration.hours * 3600 +
+                pickedDuration.minutes * 60 +
+                pickedDuration.seconds;
+              setTimerDuration(durationInSeconds);
+              setShowTimerPicker(false);
+            }}
+            onCancel={() => setShowTimerPicker(false)}
+            modalTitle="Set Timer"
+            closeOnOverlayPress
+          />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
 
-export default Timer;
+export default TimerComponent;
