@@ -7,20 +7,23 @@ import { AiContextProvider } from "./src/context/AI.context";
 import { SpeakerProvider } from "./src/context/Speaker.context";
 import { PVoiceContextProvider } from "./src/context/PVoice.context";
 import { PSpeakerProvider } from "./src/context/PSpeaker.context";
+import { ScheduleProvider } from "./src/context/Schedule.context";
 
 export default function App() {
   return (
     <>
-      <PSpeakerProvider>
-        <PVoiceContextProvider>
-          <AiContextProvider>
-            <SpeakerProvider>
-              <Navigation />
-              <ExpoStatusBar style="auto" />
-            </SpeakerProvider>
-          </AiContextProvider>
-        </PVoiceContextProvider>
-      </PSpeakerProvider>
+      <ScheduleProvider>
+        <PSpeakerProvider>
+          <PVoiceContextProvider>
+            <AiContextProvider>
+              <SpeakerProvider>
+                <Navigation />
+                <ExpoStatusBar style="auto" />
+              </SpeakerProvider>
+            </AiContextProvider>
+          </PVoiceContextProvider>
+        </PSpeakerProvider>
+      </ScheduleProvider>
     </>
   );
 }

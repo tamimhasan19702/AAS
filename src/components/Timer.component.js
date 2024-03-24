@@ -2,7 +2,46 @@
 
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import styled from "styled-components/native";
 import { TimerPickerModal } from "react-native-timer-picker";
+import { color } from "../utils/colors";
+
+const Container = styled.View`
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Title = styled.Text`
+  font-size: 18px;
+  color: #202020;
+`;
+
+const TimerText = styled.Text`
+  font-size: 24px;
+  margin-top: 10px;
+`;
+
+const Button = styled.TouchableOpacity`
+  margin-top: 10px;
+  width: 100%;
+  background-color: ${color.primary};
+  text-align: center;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ButtonText = styled.Text`
+  text-align: center;
+  font-size: 20px;
+  color: ${color.white};
+  font-family: "OverlockSC_400Regular";
+`;
 
 const TimerComponent = () => {
   const [showTimerPicker, setShowTimerPicker] = useState(false);
@@ -29,50 +68,30 @@ const TimerComponent = () => {
   };
 
   return (
-    <View
-      style={{ marginTop: 20, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ fontSize: 18, color: "#202020" }}>
-        {timerDuration !== 0 ? "Timer set for" : "No timer set"}
-      </Text>
+    <Container>
+      <Title>{timerDuration !== 0 ? "Timer set for" : "No timer set"}</Title>
       {timerDuration !== 0 && (
-        <Text style={{ fontSize: 24, marginTop: 10 }}>
-          {formatTime(timerDuration)}
-        </Text>
+        <TimerText>{formatTime(timerDuration)}</TimerText>
       )}
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => setShowTimerPicker(true)}>
-        <View style={{ alignItems: "center", marginTop: 20 }}>
-          <Text
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 18,
-              borderWidth: 1,
-              borderRadius: 10,
-              fontSize: 16,
-              overflow: "hidden",
-              color: "black",
-            }}>
-            Set Time ⏲️
-          </Text>
-          <TimerPickerModal
-            visible={showTimerPicker}
-            setIsVisible={setShowTimerPicker}
-            onConfirm={(pickedDuration) => {
-              const durationInSeconds =
-                pickedDuration.hours * 3600 +
-                pickedDuration.minutes * 60 +
-                pickedDuration.seconds;
-              setTimerDuration(durationInSeconds);
-              setShowTimerPicker(false);
-            }}
-            onCancel={() => setShowTimerPicker(false)}
-            modalTitle="Set Timer"
-            closeOnOverlayPress
-          />
-        </View>
-      </TouchableOpacity>
-    </View>
+      <Button activeOpacity={0.7} onPress={() => setShowTimerPicker(true)}>
+        <ButtonText>Set Time ⏲️</ButtonText>
+      </Button>
+      <TimerPickerModal
+        visible={showTimerPicker}
+        setIsVisible={setShowTimerPicker}
+        onConfirm={(pickedDuration) => {
+          const durationInSeconds =
+            pickedDuration.hours * 3600 +
+            pickedDuration.minutes * 60 +
+            pickedDuration.seconds;
+          setTimerDuration(durationInSeconds);
+          setShowTimerPicker(false);
+        }}
+        onCancel={() => setShowTimerPicker(false)}
+        modalTitle="Set Timer"
+        closeOnOverlayPress
+      />
+    </Container>
   );
 };
 

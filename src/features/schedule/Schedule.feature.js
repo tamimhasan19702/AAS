@@ -1,13 +1,15 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import { color } from "../../utils/colors";
 import { TextInput } from "react-native-paper";
 import TimerComponent from "../../components/Timer.component";
+import { AiContext } from "../../context/AI.context";
+import { Loading } from "../../utils/loading";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -55,6 +57,20 @@ const ScheduleInputText = styled(Text)`
 `;
 
 export const ScheduleScreen = ({ navigation }) => {
+  const {
+    text,
+    setText,
+    audio,
+    saveloading,
+    presetArray,
+    updateAudioText,
+    getArrayFromFirebase,
+    save,
+    speak,
+    clearPreset,
+    handleDelete,
+  } = useContext(AiContext);
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -71,9 +87,13 @@ export const ScheduleScreen = ({ navigation }) => {
             autoCorrect={false}
             multiline={true}
           />
-          <ScheduleInputButton>
-            <ScheduleInputText>save</ScheduleInputText>
-          </ScheduleInputButton>
+          {saveloading ? (
+            <Loading />
+          ) : (
+            <ScheduleInputButton onPress={() => save(toString(text))}>
+              <ScheduleInputText>Generate Audio</ScheduleInputText>
+            </ScheduleInputButton>
+          )}
 
           <TimerComponent />
         </ScheduleInputView>
