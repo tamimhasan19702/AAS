@@ -57,23 +57,15 @@ const ScheduleInputText = styled(Text)`
 `;
 
 export const ScheduleScreen = ({ navigation }) => {
-  const {
-    text,
-    setText,
-    audio,
-    saveloading,
-    presetArray,
-    updateAudioText,
-    getArrayFromFirebase,
-    save,
-    speak,
-    clearPreset,
-    handleDelete,
-  } = useContext(AiContext);
+  const { text, saveloading, save } = useContext(AiContext);
 
   return (
     <SafeView>
-      <LogoBar link={navigation} icon={"arrow-left"} />
+      <LogoBar
+        link={navigation}
+        icon={"arrow-left"}
+        route="Schedule ListView"
+      />
       <ScheduleView>
         <ScheduleText>Schedule Annoucnements</ScheduleText>
         <ScheduleInputView>
