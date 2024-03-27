@@ -16,17 +16,6 @@ export const ScheduleProvider = ({ children }) => {
 
   const sound = new Audio.Sound();
 
-  const updateScheduleAudioText = async () => {
-    try {
-      const snapshot = await get(ref(FIREBASEDATABASE, "scheduleText"));
-      const responseText = snapshot.val()?.scheduleText || "";
-      console.log("scheduleText from Firebase:", responseText);
-      setScheduleAudio(responseText);
-    } catch (error) {
-      console.error("Error updating audio text:", error);
-    }
-  };
-
   const convertTextToSpeech = async (textToConvert) => {
     try {
       if (!textToConvert) {
@@ -70,16 +59,20 @@ export const ScheduleProvider = ({ children }) => {
     setScheduleLoading(true);
     setTimeout(() => {
       convertTextToSpeech(scheduleText);
-      setScheduleText("");
+
       set(ref(FIREBASEDATABASE, "scheduleText"), {
         audioText: scheduleText,
       });
+      setScheduleAudio(scheduleText);
+      setScheduleText("");
       setScheduleLoading(false);
       return "";
-      updateScheduleAudioText();
     }, loadTime);
   };
 
+  const scheduleSpeak = async (text) => {
+    convertTextToSpeech(text);
+  };
   return (
     <ScheduleContext.Provider
       value={{
@@ -89,8 +82,7 @@ export const ScheduleProvider = ({ children }) => {
         scheduleListView,
         scheduleSave,
         scheduleLoading,
-        scheduleAudio,
-        updateScheduleAudioText,
+        scheduleSpeak,
       }}>
       {children}
     </ScheduleContext.Provider>

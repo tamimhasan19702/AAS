@@ -11,8 +11,7 @@ import TimerComponent from "../../components/Timer.component";
 
 import { Loading } from "../../utils/loading";
 import { ScheduleContext } from "../../context/Schedule.context";
-import PresetComponent from "../../components/preset.component";
-import { AiContext } from "../../context/AI.context";
+import ScheduleComponent from "../../components/schedule.component";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -63,13 +62,11 @@ export const ScheduleScreen = ({ navigation }) => {
   const {
     scheduleText,
     setScheduleText,
-    scheduleListView,
     scheduleSave,
     scheduleLoading,
     scheduleAudio,
-    updateScheduleAudioText,
+    scheduleSpeak,
   } = useContext(ScheduleContext);
-  const { speak } = useContext(AiContext);
 
   return (
     <SafeView>
@@ -100,6 +97,9 @@ export const ScheduleScreen = ({ navigation }) => {
             </ScheduleInputButton>
           )}
 
+          {scheduleAudio && (
+            <ScheduleComponent speak={scheduleSpeak} text={scheduleAudio} />
+          )}
           <TimerComponent />
         </ScheduleInputView>
       </ScheduleView>
