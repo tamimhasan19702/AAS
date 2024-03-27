@@ -67,11 +67,11 @@ const TimeText = styled(Text)`
 `;
 export default function PresetComponent({
   speak,
-  handleDelete,
-  index,
+  handleDelete = () => {},
+  index = 0,
   text,
-  isActive,
-  time,
+  isActive = true,
+  time = "00:00",
 }) {
   const { loadTime } = useContext(AiContext);
   const [loading, setLoading] = useState(false);

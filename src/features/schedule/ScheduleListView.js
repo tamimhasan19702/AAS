@@ -14,13 +14,13 @@ const ScheduleView = styled(View)`
   justify-content: space-between;
   align-items: center;
   width: auto;
+  flex: 1;
 `;
 
 const ScheduleListViewModal = styled(View)`
   display: flex;
   justify-content: start;
   align-items: center;
-  height: 85%;
 `;
 
 const ScheduleText = styled(Text)`
@@ -67,7 +67,7 @@ const ScheduleListView = ({ navigation }) => {
             </View>
           ) : (
             <View>
-              <Text>Schedule will beeee added</Text>
+              <Text>No Schedule has been added yet 😃</Text>
             </View>
           )}
         </ScheduleListViewModal>

@@ -1,15 +1,18 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import { color } from "../../utils/colors";
 import { TextInput } from "react-native-paper";
 import TimerComponent from "../../components/Timer.component";
-import { AiContext } from "../../context/AI.context";
+
 import { Loading } from "../../utils/loading";
+import { ScheduleContext } from "../../context/Schedule.context";
+import PresetComponent from "../../components/preset.component";
+import { AiContext } from "../../context/AI.context";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -57,7 +60,16 @@ const ScheduleInputText = styled(Text)`
 `;
 
 export const ScheduleScreen = ({ navigation }) => {
-  const { text, saveloading, save } = useContext(AiContext);
+  const {
+    scheduleText,
+    setScheduleText,
+    scheduleListView,
+    scheduleSave,
+    scheduleLoading,
+    scheduleAudio,
+    updateScheduleAudioText,
+  } = useContext(ScheduleContext);
+  const { speak } = useContext(AiContext);
 
   return (
     <SafeView>
@@ -71,7 +83,8 @@ export const ScheduleScreen = ({ navigation }) => {
         <ScheduleInputView>
           <ScheduleInputField
             placeholder="Please Enter Text Here"
-            onChangeText={() => {}}
+            value={scheduleText}
+            onChangeText={setScheduleText}
             underlineColor={color.primary}
             mode="outlined"
             autoFocus={false}
@@ -79,10 +92,10 @@ export const ScheduleScreen = ({ navigation }) => {
             autoCorrect={false}
             multiline={true}
           />
-          {saveloading ? (
+          {scheduleLoading ? (
             <Loading />
           ) : (
-            <ScheduleInputButton onPress={() => save(toString(text))}>
+            <ScheduleInputButton onPress={() => scheduleSave(scheduleText)}>
               <ScheduleInputText>Generate Audio</ScheduleInputText>
             </ScheduleInputButton>
           )}
