@@ -1,17 +1,17 @@
 /** @format */
 
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { useContext, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 import { color } from "../../utils/colors";
 import { TextInput } from "react-native-paper";
 import TimerComponent from "../../components/Timer.component";
-
 import { Loading } from "../../utils/loading";
 import { ScheduleContext } from "../../context/Schedule.context";
 import ScheduleComponent from "../../components/schedule.component";
+import ScheduleSpeaker from "../../components/scheduleSpeaker.component";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -66,6 +66,7 @@ export const ScheduleScreen = ({ navigation }) => {
     scheduleLoading,
     scheduleAudio,
     scheduleSpeak,
+    schedSpeakers,
   } = useContext(ScheduleContext);
 
   return (
@@ -102,6 +103,11 @@ export const ScheduleScreen = ({ navigation }) => {
           )}
           <TimerComponent />
         </ScheduleInputView>
+        <ScrollView horizontal style={{ width: "80%" }}>
+          {schedSpeakers.map((speaker) => (
+            <ScheduleSpeaker />
+          ))}
+        </ScrollView>
       </ScheduleView>
     </SafeView>
   );

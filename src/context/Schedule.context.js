@@ -14,6 +14,14 @@ export const ScheduleProvider = ({ children }) => {
   const [loadTime, setLoadTime] = useState(0);
   const [scheduleLoading, setScheduleLoading] = useState(false);
 
+  const [schedSpeakers, setSchedSpeakers] = useState([
+    { no: 1, isOn: false, text: "" },
+    { no: 2, isOn: false, text: "" },
+    { no: 3, isOn: false, text: "" },
+    { no: 4, isOn: false, text: "" },
+    { no: 5, isOn: false, text: "" },
+  ]);
+
   const sound = new Audio.Sound();
 
   const convertTextToSpeech = async (textToConvert) => {
@@ -83,6 +91,7 @@ export const ScheduleProvider = ({ children }) => {
         scheduleSave,
         scheduleLoading,
         scheduleSpeak,
+        schedSpeakers,
       }}>
       {children}
     </ScheduleContext.Provider>
