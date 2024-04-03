@@ -67,8 +67,8 @@ export const ScheduleScreen = ({ navigation }) => {
     scheduleAudio,
     scheduleSpeak,
     schedSpeakers,
+    toggleHandler,
   } = useContext(ScheduleContext);
-
   return (
     <SafeView>
       <LogoBar
@@ -103,11 +103,24 @@ export const ScheduleScreen = ({ navigation }) => {
           )}
           <TimerComponent />
         </ScheduleInputView>
+        <Text style={{ padding: 10, fontSize: 15 }}>
+          {" "}
+          Scroll horizontal to select the Speakers 👉
+        </Text>
         <ScrollView horizontal style={{ width: "80%" }}>
           {schedSpeakers.map((speaker) => (
-            <ScheduleSpeaker />
+            <ScheduleSpeaker
+              key={speaker.no}
+              No={speaker.no}
+              isOn={speaker.isOn}
+              toggleHandler={() => toggleHandler(speaker.no, speaker.text)}
+            />
           ))}
         </ScrollView>
+
+        <ScheduleInputButton>
+          <ScheduleInputText>Schedule</ScheduleInputText>
+        </ScheduleInputButton>
       </ScheduleView>
     </SafeView>
   );

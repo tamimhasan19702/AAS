@@ -81,6 +81,20 @@ export const ScheduleProvider = ({ children }) => {
   const scheduleSpeak = async (text) => {
     convertTextToSpeech(text);
   };
+
+  const toggleHandler = (speakerNo, audio) => {
+    setSchedSpeakers((prevSpeakers) =>
+      prevSpeakers.map((speaker) =>
+        speaker.no === speakerNo
+          ? {
+              ...speaker,
+              isOn: speaker.isOn ? false : true,
+              text: speaker.isOn ? "" : audio,
+            }
+          : speaker
+      )
+    );
+  };
   return (
     <ScheduleContext.Provider
       value={{
@@ -92,6 +106,7 @@ export const ScheduleProvider = ({ children }) => {
         scheduleLoading,
         scheduleSpeak,
         schedSpeakers,
+        toggleHandler,
       }}>
       {children}
     </ScheduleContext.Provider>
