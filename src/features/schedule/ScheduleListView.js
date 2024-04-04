@@ -61,8 +61,11 @@ const ScheduleButtonText = styled(Text)`
 `;
 
 const ScheduleListView = ({ navigation }) => {
-  const { scheduleListView } = useContext(ScheduleContext);
-
+  const { scheduleListView, scheduleSpeak, setScheduleListView } =
+    useContext(ScheduleContext);
+  const deleteOnFinishTime = (index) => {
+    setScheduleListView([...scheduleListView.slice(0, index)]);
+  };
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -76,6 +79,7 @@ const ScheduleListView = ({ navigation }) => {
                   key={index}
                   text={item.audio}
                   timer={item.timeDuration}
+                  speak={scheduleSpeak}
                 />
               ))}
             </ScrollView>

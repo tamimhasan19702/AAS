@@ -5,21 +5,24 @@ import { Text, View } from "react-native";
 
 const Timer = ({ initialTime, onFinish }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
+  const [timerFinished, setTimerFinished] = useState(false);
 
   useEffect(() => {
+    if (timeLeft === 0 && !timerFinished) {
+      if (typeof onFinish === "function") {
+        onFinish();
+      }
+      setTimerFinished(true);
+    }
+
     const timer = setInterval(() => {
       if (timeLeft > 0) {
         setTimeLeft((prevTime) => prevTime - 1);
-      } else {
-        clearInterval(timer);
-        if (typeof onFinish === "function") {
-          onFinish();
-        }
       }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [initialTime, onFinish]);
+  }, [initialTime, timeLeft, onFinish, timerFinished]);
 
   const formatTime = (time) => {
     const hours = Math.floor(time / 3600);

@@ -64,12 +64,15 @@ const TimeText = styled(Text)`
 `;
 export default function ScheduleListViewComponent({
   text,
+  index,
   isActive = true,
   timer = 0,
+  speak = () => {},
 }) {
   const [loading, setLoading] = useState(false);
   const handlePlayClick = () => {
     console.log(timer);
+    speak(text);
   };
 
   return (
