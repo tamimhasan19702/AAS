@@ -43,7 +43,7 @@ const ButtonText = styled.Text`
   font-family: "OverlockSC_400Regular";
 `;
 
-const TimerComponent = () => {
+const TimerComponent = ({ onTimeSelect }) => {
   const [showTimerPicker, setShowTimerPicker] = useState(false);
   const [timerDuration, setTimerDuration] = useState(0);
 
@@ -86,6 +86,7 @@ const TimerComponent = () => {
             pickedDuration.seconds;
           setTimerDuration(durationInSeconds);
           setShowTimerPicker(false);
+          onTimeSelect(durationInSeconds);
         }}
         onCancel={() => setShowTimerPicker(false)}
         modalTitle="Set Timer"

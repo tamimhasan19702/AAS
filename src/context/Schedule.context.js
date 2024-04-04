@@ -13,6 +13,7 @@ export const ScheduleProvider = ({ children }) => {
   const [scheduleListView, setScheduleListView] = useState([]);
   const [loadTime, setLoadTime] = useState(0);
   const [scheduleLoading, setScheduleLoading] = useState(false);
+  const [selectedTimeDuration, setSelectedTimeDuration] = useState(0);
 
   const [schedSpeakers, setSchedSpeakers] = useState([
     { no: 1, isOn: false, text: "" },
@@ -95,6 +96,11 @@ export const ScheduleProvider = ({ children }) => {
       )
     );
   };
+
+  const handleTimeDurationChange = (duration) => {
+    setSelectedTimeDuration(duration);
+  };
+
   return (
     <ScheduleContext.Provider
       value={{
@@ -107,6 +113,8 @@ export const ScheduleProvider = ({ children }) => {
         scheduleSpeak,
         schedSpeakers,
         toggleHandler,
+        handleTimeDurationChange,
+        selectedTimeDuration,
       }}>
       {children}
     </ScheduleContext.Provider>

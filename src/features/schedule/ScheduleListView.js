@@ -53,8 +53,19 @@ const ScheduleButtonText = styled(Text)`
 `;
 
 const ScheduleListView = ({ navigation }) => {
-  const { scheduleText, setScheduleText, scheduleAudio, scheduleListView } =
-    useContext(ScheduleContext);
+  const {
+    scheduleText,
+    setScheduleText,
+    scheduleAudio,
+    scheduleListView,
+    scheduleSave,
+    scheduleLoading,
+    scheduleSpeak,
+    schedSpeakers,
+    toggleHandler,
+    handleTimeDurationChange,
+    selectedTimeDuration,
+  } = useContext(ScheduleContext);
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />

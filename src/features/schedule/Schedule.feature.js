@@ -15,9 +15,9 @@ import ScheduleSpeaker from "../../components/scheduleSpeaker.component";
 
 const ScheduleView = styled(View)`
   display: flex;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
-  height: 100%;
+  flex: 1;
 `;
 
 const ScheduleText = styled(Text)`
@@ -68,7 +68,15 @@ export const ScheduleScreen = ({ navigation }) => {
     scheduleSpeak,
     schedSpeakers,
     toggleHandler,
+    handleTimeDurationChange,
+    selectedTimeDuration,
   } = useContext(ScheduleContext);
+
+  const ScheduleAction = async ({}) => {
+    navigation.navigate("Schedule ListView");
+    console.log(selectedTimeDuration);
+  };
+
   return (
     <SafeView>
       <LogoBar
@@ -101,12 +109,13 @@ export const ScheduleScreen = ({ navigation }) => {
           {scheduleAudio && (
             <ScheduleComponent speak={scheduleSpeak} text={scheduleAudio} />
           )}
-          <TimerComponent />
+          <TimerComponent onTimeSelect={handleTimeDurationChange} />
         </ScheduleInputView>
         <Text style={{ padding: 10, fontSize: 15 }}>
           {" "}
           Scroll horizontal to select the Speakers 👉
         </Text>
+
         <ScrollView horizontal style={{ width: "80%" }}>
           {schedSpeakers.map((speaker) => (
             <ScheduleSpeaker
@@ -118,7 +127,9 @@ export const ScheduleScreen = ({ navigation }) => {
           ))}
         </ScrollView>
 
-        <ScheduleInputButton>
+        <ScheduleInputButton
+          style={{ marginBottom: 10, width: "80%" }}
+          onPress={ScheduleAction}>
           <ScheduleInputText>Schedule</ScheduleInputText>
         </ScheduleInputButton>
       </ScheduleView>
