@@ -5,9 +5,7 @@ import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Loading } from "../utils/loading";
-import { PresetLoading } from "../utils/presetLoading";
-import { AiContext } from "../context/AI.context";
+import Timer from "../utils/timer";
 
 const Schedule = styled(View)`
   width: 380px;
@@ -71,7 +69,7 @@ export default function ScheduleListViewComponent({
 }) {
   const [loading, setLoading] = useState(false);
   const handlePlayClick = () => {
-    console.log("text", text);
+    console.log(timer);
   };
 
   return (
@@ -89,7 +87,7 @@ export default function ScheduleListViewComponent({
             </ActiveView>
           )}
           <TimeView>
-            <TimeText>{timer}</TimeText>
+            {<Timer initialTime={timer} />}
             <TouchableOpacity onPress={() => {}}>
               <MaterialCommunityIcons name="delete" size={26} color="white" />
             </TouchableOpacity>

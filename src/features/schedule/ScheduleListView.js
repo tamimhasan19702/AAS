@@ -62,7 +62,7 @@ const ScheduleButtonText = styled(Text)`
 
 const ScheduleListView = ({ navigation }) => {
   const { scheduleListView } = useContext(ScheduleContext);
-  console.log(scheduleListView);
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
