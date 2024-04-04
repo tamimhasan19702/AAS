@@ -1,6 +1,6 @@
 /** @format */
 
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { SafeView } from "../../utils/safeAreaView";
@@ -70,10 +70,23 @@ export const ScheduleScreen = ({ navigation }) => {
     toggleHandler,
     handleTimeDurationChange,
     selectedTimeDuration,
+    scheduleListView,
+    setScheduleListView,
   } = useContext(ScheduleContext);
 
   const ScheduleAction = async ({}) => {
-    navigation.navigate("Schedule ListView");
+    if (selectedTimeDuration !== 0) {
+      navigation.navigate("Schedule ListView");
+      setScheduleListView([
+        { timeDuration: selectedTimeDuration, audio: scheduleAudio },
+        ...scheduleListView,
+      ]);
+    } else {
+      Alert.alert("Alert", "Please select time duration to proceed", [
+        { text: "ok" },
+      ]);
+    }
+
     console.log(selectedTimeDuration);
   };
 
@@ -128,7 +141,12 @@ export const ScheduleScreen = ({ navigation }) => {
         </ScrollView>
 
         <ScheduleInputButton
-          style={{ marginBottom: 10, width: "80%" }}
+          style={[
+            { marginBottom: 5, width: "80%" },
+            selectedTimeDuration !== 0
+              ? { backgroundColor: color.primary }
+              : { backgroundColor: color.gray },
+          ]}
           onPress={ScheduleAction}>
           <ScheduleInputText>Schedule</ScheduleInputText>
         </ScheduleInputButton>

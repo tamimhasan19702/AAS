@@ -108,6 +108,7 @@ export const ScheduleProvider = ({ children }) => {
         setScheduleText,
         scheduleAudio,
         scheduleListView,
+        setScheduleListView,
         scheduleSave,
         scheduleLoading,
         scheduleSpeak,

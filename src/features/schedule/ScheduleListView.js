@@ -1,6 +1,12 @@
 /** @format */
 
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React, { useContext } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
@@ -8,6 +14,8 @@ import { LogoBar } from "../../components/logoBar.component";
 import styled from "styled-components";
 import { ScheduleContext } from "../../context/Schedule.context";
 import { color } from "../../utils/colors";
+import PresetComponent from "../../components/preset.component";
+import ScheduleListViewComponent from "../../components/scheduleListView.component";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -53,19 +61,8 @@ const ScheduleButtonText = styled(Text)`
 `;
 
 const ScheduleListView = ({ navigation }) => {
-  const {
-    scheduleText,
-    setScheduleText,
-    scheduleAudio,
-    scheduleListView,
-    scheduleSave,
-    scheduleLoading,
-    scheduleSpeak,
-    schedSpeakers,
-    toggleHandler,
-    handleTimeDurationChange,
-    selectedTimeDuration,
-  } = useContext(ScheduleContext);
+  const { scheduleListView } = useContext(ScheduleContext);
+  console.log(scheduleListView);
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -73,22 +70,29 @@ const ScheduleListView = ({ navigation }) => {
         <ScheduleListViewModal>
           <ScheduleText>Scheduled Announcement list</ScheduleText>
           {scheduleListView.length > 0 ? (
-            <View>
-              <Text>No Schedule added</Text>
-            </View>
+            <ScrollView>
+              {scheduleListView.map((item, index) => (
+                <ScheduleListViewComponent
+                  key={index}
+                  text={item.audio}
+                  timer={item.timeDuration}
+                />
+              ))}
+            </ScrollView>
           ) : (
             <View>
               <Text>No Schedule has been added yet 😃</Text>
             </View>
           )}
         </ScheduleListViewModal>
-        <ScheduleButton
-          onPress={() => {
-            navigation.navigate("Schedule Screen");
-          }}>
-          <ScheduleButtonText>Add Schedule</ScheduleButtonText>
-        </ScheduleButton>
       </ScheduleView>
+      <ScheduleButton
+        onPress={() => {
+          navigation.navigate("Schedule Screen");
+        }}
+        style={{ alignSelf: "center" }}>
+        <ScheduleButtonText>Add Schedule</ScheduleButtonText>
+      </ScheduleButton>
     </SafeView>
   );
 };
