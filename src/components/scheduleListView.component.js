@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Timer from "../utils/timer";
+import { ScheduleContext } from "../context/Schedule.context";
 
 const Schedule = styled(View)`
   width: 380px;
@@ -69,7 +70,9 @@ export default function ScheduleListViewComponent({
   timer = 0,
   speak = () => {},
 }) {
+  const { scheduleListView } = useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
+  const [timerFinished, setTimerFinished] = useState(false);
   const handlePlayClick = () => {
     console.log(timer);
     speak(text);
@@ -94,7 +97,11 @@ export default function ScheduleListViewComponent({
             </ActiveView>
           )}
           <TimeView>
-            {<Timer initialTime={timer} onFinish={onFinish} />}
+            {timerFinished ? (
+              <TimeText>Finish</TimeText>
+            ) : (
+              <Timer initialTime={timer} onFinish={onFinish} />
+            )}
             <TouchableOpacity onPress={() => {}}>
               <MaterialCommunityIcons name="delete" size={26} color="white" />
             </TouchableOpacity>

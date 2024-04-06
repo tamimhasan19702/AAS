@@ -4,6 +4,7 @@ import { createContext, useState } from "react";
 import { FIREBASEDATABASE } from "../../firebase.config";
 import { Audio } from "expo-av";
 import { ref, set, onValue, get } from "firebase/database";
+import { Alert } from "react-native";
 
 export const ScheduleContext = createContext();
 
@@ -65,17 +66,27 @@ export const ScheduleProvider = ({ children }) => {
   };
 
   const scheduleSave = async () => {
+    const trimmedText = scheduleText.trim();
+
+    if (!trimmedText) {
+      Alert.alert("No Text Entered", "Please enter text to convert to audio.");
+      return;
+    }
+
     setScheduleLoading(true);
+
     setTimeout(() => {
-      convertTextToSpeech(scheduleText);
+      convertTextToSpeech(trimmedText);
 
       set(ref(FIREBASEDATABASE, "scheduleText"), {
-        audioText: scheduleText,
+        audioText: trimmedText,
       });
-      setScheduleAudio(scheduleText);
+
+      setScheduleAudio(trimmedText);
+
       setScheduleText("");
+
       setScheduleLoading(false);
-      return "";
     }, loadTime);
   };
 
