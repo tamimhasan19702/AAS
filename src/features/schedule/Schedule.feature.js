@@ -73,17 +73,22 @@ export const ScheduleScreen = ({ navigation }) => {
     scheduleListView,
     setScheduleListView,
   } = useContext(ScheduleContext);
-
   const ScheduleAction = () => {
     const isAnySpeakerSelected = schedSpeakers.some((speaker) => speaker.isOn);
 
     if (selectedTimeDuration !== 0) {
       if (isAnySpeakerSelected) {
-        navigation.navigate("Schedule ListView");
-        setScheduleListView([
-          { timeDuration: selectedTimeDuration, audio: scheduleAudio },
-          ...scheduleListView,
-        ]);
+        if (scheduleAudio) {
+          navigation.navigate("Schedule ListView");
+          setScheduleListView([
+            { timeDuration: selectedTimeDuration, audio: scheduleAudio },
+            ...scheduleListView,
+          ]);
+        } else {
+          Alert.alert("Alert", "No audio generated to announce", [
+            { text: "OK" },
+          ]);
+        }
       } else {
         Alert.alert("Alert", "Please choose a speaker to proceed", [
           { text: "OK" },
@@ -120,13 +125,19 @@ export const ScheduleScreen = ({ navigation }) => {
           {scheduleLoading ? (
             <Loading />
           ) : (
-            <ScheduleInputButton onPress={() => scheduleSave(scheduleText)}>
+            <ScheduleInputButton
+              style={{ backgroundColor: color.primary }}
+              onPress={() => scheduleSave(scheduleText)}>
               <ScheduleInputText>Generate Audio</ScheduleInputText>
             </ScheduleInputButton>
           )}
 
-          {scheduleAudio && (
+          {scheduleAudio ? (
             <ScheduleComponent speak={scheduleSpeak} text={scheduleAudio} />
+          ) : (
+            <Text style={{ textAlign: "center", fontSize: 15, marginTop: 10 }}>
+              Enter your Text and Please Generate Audio
+            </Text>
           )}
           <TimerComponent onTimeSelect={handleTimeDurationChange} />
         </ScheduleInputView>
@@ -151,7 +162,8 @@ export const ScheduleScreen = ({ navigation }) => {
           onPress={ScheduleAction}
           enabled={
             selectedTimeDuration !== 0 &&
-            schedSpeakers.some((speaker) => speaker.isOn)
+            schedSpeakers.some((speaker) => speaker.isOn) &&
+            scheduleAudio
           }>
           <ScheduleInputText>Schedule</ScheduleInputText>
         </ScheduleInputButton>

@@ -74,7 +74,7 @@ export default function ScheduleComponent({ speak, text, isActive = true }) {
               <TouchableOpacity onPress={handlePlayClick}>
                 <MaterialCommunityIcons name="play" size={35} color="white" />
               </TouchableOpacity>
-              {isActive && <ActiveText>Converted Audio 🔊</ActiveText>}
+              {isActive && <ActiveText>Generated Audio 🔊</ActiveText>}
             </ActiveView>
           )}
         </ScheduleInput>

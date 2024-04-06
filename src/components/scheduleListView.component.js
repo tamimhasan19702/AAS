@@ -75,6 +75,10 @@ export default function ScheduleListViewComponent({
     speak(text);
   };
 
+  const onFinish = () => {
+    return "finish";
+  };
+
   return (
     <Schedule isActive={isActive}>
       <ScheduleView>
@@ -90,14 +94,7 @@ export default function ScheduleListViewComponent({
             </ActiveView>
           )}
           <TimeView>
-            {
-              <Timer
-                initialTime={timer}
-                onFinish={() => {
-                  console.log("finish");
-                }}
-              />
-            }
+            {<Timer initialTime={timer} onFinish={onFinish} />}
             <TouchableOpacity onPress={() => {}}>
               <MaterialCommunityIcons name="delete" size={26} color="white" />
             </TouchableOpacity>
