@@ -40,7 +40,7 @@ const ScheduleInputField = styled(TextInput)`
 `;
 const ScheduleInputButton = styled(TouchableOpacity)`
   width: 100%;
-  background-color: ${color.primary};
+  background-color: ${({ enabled }) => (enabled ? color.primary : color.gray)};
   text-align: center;
   padding: 15px;
   border-radius: 5px;
@@ -74,20 +74,26 @@ export const ScheduleScreen = ({ navigation }) => {
     setScheduleListView,
   } = useContext(ScheduleContext);
 
-  const ScheduleAction = async ({}) => {
+  const ScheduleAction = () => {
+    const isAnySpeakerSelected = schedSpeakers.some((speaker) => speaker.isOn);
+
     if (selectedTimeDuration !== 0) {
-      navigation.navigate("Schedule ListView");
-      setScheduleListView([
-        { timeDuration: selectedTimeDuration, audio: scheduleAudio },
-        ...scheduleListView,
-      ]);
+      if (isAnySpeakerSelected) {
+        navigation.navigate("Schedule ListView");
+        setScheduleListView([
+          { timeDuration: selectedTimeDuration, audio: scheduleAudio },
+          ...scheduleListView,
+        ]);
+      } else {
+        Alert.alert("Alert", "Please choose a speaker to proceed", [
+          { text: "OK" },
+        ]);
+      }
     } else {
-      Alert.alert("Alert", "Please select time duration to proceed", [
-        { text: "ok" },
+      Alert.alert("Alert", "Please select a time duration to proceed", [
+        { text: "OK" },
       ]);
     }
-
-    console.log(selectedTimeDuration);
   };
 
   return (
@@ -141,13 +147,12 @@ export const ScheduleScreen = ({ navigation }) => {
         </ScrollView>
 
         <ScheduleInputButton
-          style={[
-            { marginBottom: 5, width: "80%" },
-            selectedTimeDuration !== 0
-              ? { backgroundColor: color.primary }
-              : { backgroundColor: color.gray },
-          ]}
-          onPress={ScheduleAction}>
+          style={{ marginBottom: 5, width: "80%" }}
+          onPress={ScheduleAction}
+          enabled={
+            selectedTimeDuration !== 0 &&
+            schedSpeakers.some((speaker) => speaker.isOn)
+          }>
           <ScheduleInputText>Schedule</ScheduleInputText>
         </ScheduleInputButton>
       </ScheduleView>

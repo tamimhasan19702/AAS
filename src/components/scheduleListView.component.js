@@ -90,7 +90,14 @@ export default function ScheduleListViewComponent({
             </ActiveView>
           )}
           <TimeView>
-            {<Timer initialTime={timer} />}
+            {
+              <Timer
+                initialTime={timer}
+                onFinish={() => {
+                  console.log("finish");
+                }}
+              />
+            }
             <TouchableOpacity onPress={() => {}}>
               <MaterialCommunityIcons name="delete" size={26} color="white" />
             </TouchableOpacity>
