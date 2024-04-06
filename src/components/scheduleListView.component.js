@@ -5,32 +5,24 @@ import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Loading } from "../utils/loading";
-import { PresetLoading } from "../utils/presetLoading";
-import { AiContext } from "../context/AI.context";
+import Timer from "../utils/timer";
+import { ScheduleContext } from "../context/Schedule.context";
 
-const Preset = styled(View)`
+const Schedule = styled(View)`
   width: 380px;
-  background-color: ${(props) =>
-    props.isActive ? color.green : color.primary};
+  background-color: ${color.primary};
   padding: 12px;
   border-radius: 5px;
   margin: 5px;
 `;
 
-const PresetView = styled(View)`
+const ScheduleView = styled(View)`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
-const PresetText = styled(Text)`
-  color: ${color.white};
-  font-size: 15px;
-  font-family: "OverlockSC_400Regular";
-  overflow: scroll;
-`;
-
-const PresetInput = styled(View)`
+const ScheduleInput = styled(View)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -42,13 +34,15 @@ const ActiveView = styled(View)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
+  justify-content: space-between;
+  gap: 3px;
+  width: 75%;
+  padding: 0px 3px;
 `;
 
 const ActiveText = styled(Text)`
   color: ${color.white};
-  font-size: 23px;
+  font-size: 18px;
   font-family: "OverlockSC_400Regular";
 `;
 
@@ -58,55 +52,65 @@ const TimeView = styled(View)`
   align-items: center;
   justify-content: center;
   gap: 5px;
+  width: 15%;
 `;
 
 const TimeText = styled(Text)`
   color: ${color.white};
-  font-size: 15px;
+  font-size: 13px;
   font-family: "OverlockSC_400Regular";
 `;
-export default function PresetComponent({
-  speak,
-  handleDelete = () => {},
-  index = 0,
+export default function ScheduleListViewComponent({
   text,
+  index,
   isActive = true,
-  time = "00:00",
+  timer = 0,
+  speak = () => {},
 }) {
-  const { loadTime } = useContext(AiContext);
+  const { handleDelete } = useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
-
+  const [timerFinished, setTimerFinished] = useState(false);
   const handlePlayClick = () => {
-    setLoading(true);
+    console.log(timer);
+    speak(text);
+  };
+
+  const onFinish = () => {
+    setTimerFinished(true);
     setTimeout(() => {
-      speak({ presetText: text });
-      setLoading(false);
-    }, loadTime);
+      handleDelete(index);
+    }, 1000);
   };
 
   return (
-    <Preset isActive={isActive}>
-      <PresetView>
-        <PresetInput>
+    <Schedule isActive={isActive}>
+      <ScheduleView>
+        <ScheduleInput>
           {loading ? (
-            <PresetLoading />
+            <ScheduleLoading />
           ) : (
             <ActiveView>
               <TouchableOpacity onPress={handlePlayClick}>
-                <MaterialCommunityIcons name="play" size={35} color="white" />
+                <MaterialCommunityIcons name="play" size={30} color="white" />
               </TouchableOpacity>
-              {isActive && <ActiveText>Active Now</ActiveText>}
+              <ActiveText>{text}</ActiveText>
             </ActiveView>
           )}
           <TimeView>
-            {time && <TimeText>{time}</TimeText>}
-            <TouchableOpacity onPress={() => handleDelete(index)}>
+            {timerFinished ? (
+              <TimeText>Finished</TimeText>
+            ) : (
+              <Timer initialTime={timer} onFinish={onFinish} />
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                handleDelete(index);
+              }}>
               <MaterialCommunityIcons name="delete" size={26} color="white" />
             </TouchableOpacity>
           </TimeView>
-        </PresetInput>
-        <PresetText>{text}</PresetText>
-      </PresetView>
-    </Preset>
+        </ScheduleInput>
+      </ScheduleView>
+    </Schedule>
   );
 }

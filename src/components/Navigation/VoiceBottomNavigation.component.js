@@ -1,14 +1,11 @@
 /** @format */
-
-import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { color } from "../../utils/colors";
-import { StartPage } from "../../features/StartPage/StartPage.feature";
-import { ScheduleScreen } from "../../features/schedule/Schedule.feature";
 import { HistoryScreen } from "../../features/history/History.feature";
 import { InternalNavigator } from "../../components/Navigation/internalNavigator.component";
-import { Entypo, AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import ScheduleNavigator from "./scheduleNavigator.component";
 
 const Tab = createBottomTabNavigator();
 
@@ -62,7 +59,7 @@ export const VoiceBottomNavigation = () => {
 
       <Tab.Screen
         name="Schedule"
-        component={ScheduleScreen}
+        component={ScheduleNavigator}
         options={{
           headerShown: false,
           tabBarLabel: "Schedule",

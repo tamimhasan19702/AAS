@@ -1,36 +1,35 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Loading } from "../utils/loading";
 import { PresetLoading } from "../utils/presetLoading";
-import { AiContext } from "../context/AI.context";
 
-const Preset = styled(View)`
-  width: 380px;
+const Schedule = styled(View)`
+  width: 100%;
   background-color: ${(props) =>
     props.isActive ? color.green : color.primary};
   padding: 12px;
   border-radius: 5px;
-  margin: 5px;
+  margin-top: 10px;
 `;
 
-const PresetView = styled(View)`
+const ScheduleView = styled(View)`
   display: flex;
   flex-direction: column;
 `;
 
-const PresetText = styled(Text)`
+const ScheduleText = styled(Text)`
   color: ${color.white};
-  font-size: 15px;
+  font-size: 18px;
   font-family: "OverlockSC_400Regular";
   overflow: scroll;
+  margin-left: 10px;
 `;
 
-const PresetInput = styled(View)`
+const ScheduleInput = styled(View)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -52,42 +51,22 @@ const ActiveText = styled(Text)`
   font-family: "OverlockSC_400Regular";
 `;
 
-const TimeView = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-`;
-
-const TimeText = styled(Text)`
-  color: ${color.white};
-  font-size: 15px;
-  font-family: "OverlockSC_400Regular";
-`;
-export default function PresetComponent({
-  speak,
-  handleDelete = () => {},
-  index = 0,
-  text,
-  isActive = true,
-  time = "00:00",
-}) {
-  const { loadTime } = useContext(AiContext);
+export default function ScheduleComponent({ speak, text, isActive = true }) {
   const [loading, setLoading] = useState(false);
 
   const handlePlayClick = () => {
     setLoading(true);
     setTimeout(() => {
-      speak({ presetText: text });
+      console.log(text);
+      speak(text);
       setLoading(false);
-    }, loadTime);
+    }, 2000);
   };
 
   return (
-    <Preset isActive={isActive}>
-      <PresetView>
-        <PresetInput>
+    <Schedule isActive={isActive}>
+      <ScheduleView>
+        <ScheduleInput>
           {loading ? (
             <PresetLoading />
           ) : (
@@ -95,18 +74,12 @@ export default function PresetComponent({
               <TouchableOpacity onPress={handlePlayClick}>
                 <MaterialCommunityIcons name="play" size={35} color="white" />
               </TouchableOpacity>
-              {isActive && <ActiveText>Active Now</ActiveText>}
+              {isActive && <ActiveText>Generated Audio 🔊</ActiveText>}
             </ActiveView>
           )}
-          <TimeView>
-            {time && <TimeText>{time}</TimeText>}
-            <TouchableOpacity onPress={() => handleDelete(index)}>
-              <MaterialCommunityIcons name="delete" size={26} color="white" />
-            </TouchableOpacity>
-          </TimeView>
-        </PresetInput>
-        <PresetText>{text}</PresetText>
-      </PresetView>
-    </Preset>
+        </ScheduleInput>
+        <ScheduleText>{text}</ScheduleText>
+      </ScheduleView>
+    </Schedule>
   );
 }

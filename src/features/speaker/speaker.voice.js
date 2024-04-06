@@ -13,10 +13,10 @@ import { LogoBar } from "../../components/logoBar.component";
 import { SpeakerComponent } from "../../components/speaker.component";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
-import { SpeakerContext } from "../../context/Speaker.context";
-import { AiContext } from "../../context/AI.context";
-import { FIREBASEDATABASE } from "../../../firebase.config";
-import { set, ref } from "firebase/database";
+import { FIREBASESTORAGE } from "../../../firebase.config";
+import { PSpeakerContext } from "../../context/PSpeaker.context";
+import { PVoiceContext } from "../../context/PVoice.context";
+import { uploadString, ref } from "firebase/storage";
 
 const SpeakerText = styled(Text)`
   font-weight: 400;
@@ -77,25 +77,33 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerVoice = ({ navigation }) => {
-  const { audio } = useContext(AiContext);
+  const { finalRecording } = useContext(PVoiceContext);
   const [loading, setLoading] = useState(false);
+  const [audioMp3, setAudioMp3] = useState("");
   const {
-    speakers,
-    toggleHandler,
-    toggleHandlerAll,
+    pspeakers,
+    toggleHandlerPS,
+    toggleHandlerAllPS,
     showAlert,
     showSuccessAlert,
-  } = useContext(SpeakerContext);
+  } = useContext(PSpeakerContext);
 
-  const allSpeakersOn = speakers.some((s) => s.isOn);
-  const handleNextStepPress = () => {
+  const allSpeakersOn = pspeakers.some((s) => s.isOn);
+
+  const handleNextStepPress = async () => {
     if (allSpeakersOn) {
       setLoading(true); // Set loading to true
 
       // Simulate a delay (replace this with your asynchronous operation)
-      setTimeout(() => {
-        setLoading(false); // Set loading back to false
-        showSuccessAlert(navigation);
+      setTimeout(async () => {
+        console.log(pspeakers);
+        try {
+          setLoading(false);
+
+          showSuccessAlert(navigation);
+        } catch (err) {
+          console.log(err);
+        }
       }, 3000);
     }
   };
@@ -103,21 +111,21 @@ export const SpeakerVoice = ({ navigation }) => {
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} route={"Voice Screen"} />
-      <SpeakerText>This is Voice Screen</SpeakerText>
+      <SpeakerText>Personal Voice Screen</SpeakerText>
       <ScrollView>
-        {speakers.map((speaker) => (
+        {pspeakers.map((speaker) => (
           <SpeakerComponent
             key={speaker.no}
             No={speaker.no}
             isOn={speaker.isOn}
-            toggleHandler={() => toggleHandler(speaker.no, audio)}
+            toggleHandler={() => toggleHandlerPS(speaker.no, finalRecording)}
           />
         ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText onPress={() => toggleHandlerAll(audio)}>
-            Turn {speakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
+          <AllSpeakerText onPress={() => toggleHandlerAllPS(finalRecording)}>
+            Turn {pspeakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>
         <NextSpeakerButton

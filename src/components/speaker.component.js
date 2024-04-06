@@ -5,9 +5,6 @@ import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Loading } from "../utils/loading";
-import { PresetLoading } from "../utils/presetLoading";
-import { AiContext } from "../context/AI.context";
 
 const Speaker = styled(View)`
   width: 400px;

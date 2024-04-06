@@ -71,7 +71,7 @@ export const PVoiceContextProvider = ({ children }) => {
       });
 
       // Get the URI of the recorded audio file
-      const sound = recording.getURI();
+      const sound = await recording.getURI();
       console.log("Sound URI:", sound);
 
       setRecording(false);
@@ -93,6 +93,9 @@ export const PVoiceContextProvider = ({ children }) => {
         },
         ...prevRecordedSounds,
       ]);
+
+      //saving a final recording
+      setFinalRecording(sound);
 
       // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
@@ -143,6 +146,8 @@ export const PVoiceContextProvider = ({ children }) => {
               isActive: i === index,
             }))
           );
+          //saving a final recording
+          setFinalRecording(recordedSoundsArray[index].sound);
         } else {
           console.error(`No recording found at index ${index}`);
         }
@@ -202,6 +207,8 @@ export const PVoiceContextProvider = ({ children }) => {
     };
 
     loadRecordedSounds();
+
+    
   }, []);
 
   const contextValue = {
