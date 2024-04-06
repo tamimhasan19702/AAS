@@ -50,7 +50,9 @@ const Timer = ({ initialTime, onFinish }) => {
 
   return (
     <View>
-      <Text style={{ color: "white" }}>{formatTime(timeLeft)}</Text>
+      <Text style={{ color: "white", fontSize: 12 }}>
+        {formatTime(timeLeft)}
+      </Text>
     </View>
   );
 };

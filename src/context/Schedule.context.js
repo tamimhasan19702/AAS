@@ -112,6 +112,14 @@ export const ScheduleProvider = ({ children }) => {
     setSelectedTimeDuration(duration);
   };
 
+  const handleDelete = (itemIndex) => {
+    const updatedScheduleList = scheduleListView.filter(
+      (_, idx) => idx !== itemIndex
+    );
+
+    setScheduleListView(updatedScheduleList);
+  };
+
   return (
     <ScheduleContext.Provider
       value={{
@@ -127,6 +135,7 @@ export const ScheduleProvider = ({ children }) => {
         toggleHandler,
         handleTimeDurationChange,
         selectedTimeDuration,
+        handleDelete,
       }}>
       {children}
     </ScheduleContext.Provider>

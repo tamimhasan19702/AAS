@@ -19,13 +19,7 @@ const Schedule = styled(View)`
 const ScheduleView = styled(View)`
   display: flex;
   flex-direction: column;
-`;
-
-const ScheduleText = styled(Text)`
-  color: ${color.white};
-  font-size: 15px;
-  font-family: "OverlockSC_400Regular";
-  overflow: scroll;
+  width: 100%;
 `;
 
 const ScheduleInput = styled(View)`
@@ -40,13 +34,15 @@ const ActiveView = styled(View)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
+  justify-content: space-between;
+  gap: 3px;
+  width: 75%;
+  padding: 0px 3px;
 `;
 
 const ActiveText = styled(Text)`
   color: ${color.white};
-  font-size: 23px;
+  font-size: 18px;
   font-family: "OverlockSC_400Regular";
 `;
 
@@ -56,11 +52,12 @@ const TimeView = styled(View)`
   align-items: center;
   justify-content: center;
   gap: 5px;
+  width: 15%;
 `;
 
 const TimeText = styled(Text)`
   color: ${color.white};
-  font-size: 15px;
+  font-size: 13px;
   font-family: "OverlockSC_400Regular";
 `;
 export default function ScheduleListViewComponent({
@@ -70,7 +67,7 @@ export default function ScheduleListViewComponent({
   timer = 0,
   speak = () => {},
 }) {
-  const { scheduleListView } = useContext(ScheduleContext);
+  const { handleDelete } = useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
   const handlePlayClick = () => {
@@ -79,7 +76,10 @@ export default function ScheduleListViewComponent({
   };
 
   const onFinish = () => {
-    return "finish";
+    setTimerFinished(true);
+    setTimeout(() => {
+      handleDelete(index);
+    }, 1000);
   };
 
   return (
@@ -91,23 +91,25 @@ export default function ScheduleListViewComponent({
           ) : (
             <ActiveView>
               <TouchableOpacity onPress={handlePlayClick}>
-                <MaterialCommunityIcons name="play" size={35} color="white" />
+                <MaterialCommunityIcons name="play" size={30} color="white" />
               </TouchableOpacity>
               <ActiveText>{text}</ActiveText>
             </ActiveView>
           )}
           <TimeView>
             {timerFinished ? (
-              <TimeText>Finish</TimeText>
+              <TimeText>Finished</TimeText>
             ) : (
               <Timer initialTime={timer} onFinish={onFinish} />
             )}
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                handleDelete(index);
+              }}>
               <MaterialCommunityIcons name="delete" size={26} color="white" />
             </TouchableOpacity>
           </TimeView>
         </ScheduleInput>
-        <ScheduleText></ScheduleText>
       </ScheduleView>
     </Schedule>
   );

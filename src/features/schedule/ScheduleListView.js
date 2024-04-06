@@ -77,6 +77,7 @@ const ScheduleListView = ({ navigation }) => {
               {scheduleListView.map((item, index) => (
                 <ScheduleListViewComponent
                   key={index}
+                  index={index}
                   text={item.audio}
                   timer={item.timeDuration}
                   speak={scheduleSpeak}
