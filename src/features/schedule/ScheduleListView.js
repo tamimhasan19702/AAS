@@ -1,34 +1,21 @@
 /** @format */
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import styled from "styled-components/native";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
-
-import styled from "styled-components";
-import { ScheduleContext } from "../../context/Schedule.context";
 import { color } from "../../utils/colors";
-import PresetComponent from "../../components/preset.component";
 import ScheduleListViewComponent from "../../components/scheduleListView.component";
+import { ScheduleContext } from "../../context/Schedule.context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ScheduleView = styled(View)`
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   width: auto;
   flex: 1;
-`;
-
-const ScheduleListViewModal = styled(View)`
-  display: flex;
-  justify-content: start;
-  align-items: center;
 `;
 
 const ScheduleText = styled(Text)`
@@ -63,33 +50,52 @@ const ScheduleButtonText = styled(Text)`
 const ScheduleListView = ({ navigation }) => {
   const { scheduleListView, scheduleSpeak, setScheduleListView } =
     useContext(ScheduleContext);
-  const deleteOnFinishTime = (index) => {
-    setScheduleListView([...scheduleListView.slice(0, index)]);
+
+  const loadStoredScheduleListView = async () => {
+    try {
+      const storedScheduleListView = await AsyncStorage.getItem(
+        "scheduleListView"
+      );
+      if (storedScheduleListView !== null) {
+        const parsedScheduleListView = JSON.parse(storedScheduleListView);
+        setScheduleListView(parsedScheduleListView);
+      } else {
+        setScheduleListView([]);
+      }
+    } catch (error) {
+      console.error(
+        "Error retrieving scheduleListView from AsyncStorage:",
+        error
+      );
+    }
   };
+
+  useEffect(() => {
+    loadStoredScheduleListView();
+  }, []); // Run when setScheduleListView changes
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <ScheduleView>
-        <ScheduleListViewModal>
-          <ScheduleText>Scheduled Announcement list</ScheduleText>
-          {scheduleListView.length > 0 ? (
-            <ScrollView>
-              {scheduleListView.map((item, index) => (
-                <ScheduleListViewComponent
-                  key={index}
-                  index={index}
-                  text={item.audio}
-                  timer={item.timeDuration}
-                  speak={scheduleSpeak}
-                />
-              ))}
-            </ScrollView>
-          ) : (
-            <View>
-              <Text>No Schedule has been added yet 😃</Text>
-            </View>
-          )}
-        </ScheduleListViewModal>
+        <ScheduleText>Scheduled Announcement List</ScheduleText>
+        {scheduleListView.length > 0 ? (
+          <ScrollView>
+            {scheduleListView.map((item, index) => (
+              <ScheduleListViewComponent
+                key={index}
+                index={index}
+                text={item.audio}
+                timer={item.timeDuration}
+                speak={scheduleSpeak}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <View>
+            <Text>No Schedule has been added yet 😃</Text>
+          </View>
+        )}
       </ScheduleView>
       <ScheduleButton
         onPress={() => {
@@ -103,5 +109,3 @@ const ScheduleListView = ({ navigation }) => {
 };
 
 export default ScheduleListView;
-
-const styles = StyleSheet.create({});

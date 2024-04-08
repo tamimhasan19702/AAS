@@ -48,6 +48,13 @@ const Timer = ({ initialTime, onFinish }) => {
     )}`;
   };
 
+  useEffect(() => {
+    // Execute onFinish callback when timeLeft reaches 0
+    if (timeLeft === 0 && typeof onFinish === "function") {
+      onFinish();
+    }
+  }, [timeLeft, onFinish]);
+
   return (
     <View>
       <Text style={{ color: "white", fontSize: 12 }}>

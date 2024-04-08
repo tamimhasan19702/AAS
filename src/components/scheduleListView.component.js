@@ -67,16 +67,17 @@ export default function ScheduleListViewComponent({
   timer = 0,
   speak = () => {},
 }) {
-  const { handleDelete } = useContext(ScheduleContext);
+  const { handleDelete, schedSpeakers, scheduleAudio } =
+    useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
   const handlePlayClick = () => {
-    console.log(timer);
     speak(text);
   };
 
   const onFinish = () => {
     setTimerFinished(true);
+    console.log(scheduleAudio);
     setTimeout(() => {
       handleDelete(index);
     }, 1000);

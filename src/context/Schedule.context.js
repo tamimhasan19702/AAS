@@ -5,6 +5,7 @@ import { FIREBASEDATABASE } from "../../firebase.config";
 import { Audio } from "expo-av";
 import { ref, set, onValue, get } from "firebase/database";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const ScheduleContext = createContext();
 
@@ -112,12 +113,24 @@ export const ScheduleProvider = ({ children }) => {
     setSelectedTimeDuration(duration);
   };
 
-  const handleDelete = (itemIndex) => {
+  const handleDelete = async (itemIndex) => {
     const updatedScheduleList = scheduleListView.filter(
       (_, idx) => idx !== itemIndex
     );
 
-    setScheduleListView(updatedScheduleList);
+    try {
+      // Update the context state
+      setScheduleListView(updatedScheduleList);
+
+      // Store the updated scheduleListView in AsyncStorage
+      await AsyncStorage.setItem(
+        "scheduleListView",
+        JSON.stringify(updatedScheduleList)
+      );
+    } catch (error) {
+      console.error("Error updating scheduleListView in AsyncStorage:", error);
+      // Handle error if needed
+    }
   };
 
   return (

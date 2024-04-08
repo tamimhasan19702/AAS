@@ -12,6 +12,7 @@ import { Loading } from "../../utils/loading";
 import { ScheduleContext } from "../../context/Schedule.context";
 import ScheduleComponent from "../../components/schedule.component";
 import ScheduleSpeaker from "../../components/scheduleSpeaker.component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -73,17 +74,24 @@ export const ScheduleScreen = ({ navigation }) => {
     scheduleListView,
     setScheduleListView,
   } = useContext(ScheduleContext);
-  const ScheduleAction = () => {
+  const ScheduleAction = async () => {
     const isAnySpeakerSelected = schedSpeakers.some((speaker) => speaker.isOn);
 
     if (selectedTimeDuration !== 0) {
       if (isAnySpeakerSelected) {
         if (scheduleAudio) {
           navigation.navigate("Schedule ListView");
-          setScheduleListView([
+          const updatedScheduleListView = [
             { timeDuration: selectedTimeDuration, audio: scheduleAudio },
             ...scheduleListView,
-          ]);
+          ];
+
+          setScheduleListView(updatedScheduleListView);
+
+          await AsyncStorage.setItem(
+            "scheduleListView",
+            JSON.stringify(updatedScheduleListView)
+          );
         } else {
           Alert.alert("Alert", "No audio generated to announce", [
             { text: "OK" },
