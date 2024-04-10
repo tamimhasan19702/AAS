@@ -7,7 +7,9 @@ import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Timer from "../utils/timer";
 import { ScheduleContext } from "../context/Schedule.context";
+import { Loading } from "../utils/loading";
 
+// styles
 const Schedule = styled(View)`
   width: 380px;
   background-color: ${color.primary};
@@ -67,41 +69,44 @@ export default function ScheduleListViewComponent({
   timer = 0,
   speak = () => {},
 }) {
-  const { handleDelete, schedSpeakers, scheduleAudio } =
+  const { handleDelete, scheduleSpeak, scheduleListView } =
     useContext(ScheduleContext);
-  const [loading, setLoading] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
+
   const handlePlayClick = () => {
     speak(text);
   };
 
   const onFinish = () => {
     setTimerFinished(true);
-    console.log(scheduleAudio);
     setTimeout(() => {
       handleDelete(index);
     }, 1000);
   };
 
+  useEffect(() => {
+    console.log(scheduleListView);
+    console.log(timer);
+  }, []);
+
   return (
     <Schedule isActive={isActive}>
       <ScheduleView>
         <ScheduleInput>
-          {loading ? (
-            <ScheduleLoading />
-          ) : (
-            <ActiveView>
-              <TouchableOpacity onPress={handlePlayClick}>
-                <MaterialCommunityIcons name="play" size={30} color="white" />
-              </TouchableOpacity>
-              <ActiveText>{text}</ActiveText>
-            </ActiveView>
-          )}
+          <ActiveView>
+            <TouchableOpacity onPress={handlePlayClick}>
+              <MaterialCommunityIcons name="play" size={30} color="white" />
+            </TouchableOpacity>
+            <ActiveText>{text}</ActiveText>
+          </ActiveView>
           <TimeView>
             {timerFinished ? (
               <TimeText>Finished</TimeText>
             ) : (
-              <Timer initialTime={timer} onFinish={onFinish} />
+              <Timer
+                initialTime={scheduleListView[index].timeDuration}
+                onFinish={onFinish}
+              />
             )}
             <TouchableOpacity
               onPress={() => {

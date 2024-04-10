@@ -51,28 +51,24 @@ const ScheduleListView = ({ navigation }) => {
   const { scheduleListView, scheduleSpeak, setScheduleListView } =
     useContext(ScheduleContext);
 
-  const loadStoredScheduleListView = async () => {
-    try {
-      const storedScheduleListView = await AsyncStorage.getItem(
-        "scheduleListView"
-      );
-      if (storedScheduleListView !== null) {
-        const parsedScheduleListView = JSON.parse(storedScheduleListView);
-        setScheduleListView(parsedScheduleListView);
-      } else {
-        setScheduleListView([]);
-      }
-    } catch (error) {
-      console.error(
-        "Error retrieving scheduleListView from AsyncStorage:",
-        error
-      );
-    }
-  };
-
-  useEffect(() => {
-    loadStoredScheduleListView();
-  }, []); // Run when setScheduleListView changes
+  // const loadStoredScheduleListView = async () => {
+  //   try {
+  //     const storedScheduleListView = await AsyncStorage.getItem(
+  //       "scheduleListView"
+  //     );
+  //     if (storedScheduleListView !== null) {
+  //       const parsedScheduleListView = JSON.parse(storedScheduleListView);
+  //       setScheduleListView(parsedScheduleListView);
+  //     } else {
+  //       setScheduleListView([]);
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "Error retrieving scheduleListView from AsyncStorage:",
+  //       error
+  //     );
+  //   }
+  // };
 
   return (
     <SafeView>

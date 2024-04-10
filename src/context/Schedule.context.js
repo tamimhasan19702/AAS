@@ -114,6 +114,8 @@ export const ScheduleProvider = ({ children }) => {
   };
 
   const handleDelete = async (itemIndex) => {
+    if (itemIndex === undefined) return; // Exit early if index is not provided
+
     const updatedScheduleList = scheduleListView.filter(
       (_, idx) => idx !== itemIndex
     );
