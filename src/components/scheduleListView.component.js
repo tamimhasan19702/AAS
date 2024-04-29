@@ -7,7 +7,7 @@ import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { ScheduleContext } from "../context/Schedule.context";
-import Timer from "../utils/timer";
+import { Timer } from "../utils/timer";
 
 // styles
 const Schedule = styled(View)`
@@ -62,20 +62,22 @@ const TimeText = styled(Text)`
   font-size: 13px;
   font-family: "OverlockSC_400Regular";
 `;
-export default function ScheduleListViewComponent({ index }) {
+export default function ScheduleListViewComponent({ index, onFinish }) {
   const { handleDelete, scheduleSpeak, scheduleListView } =
     useContext(ScheduleContext);
+
   const [timerFinished, setTimerFinished] = useState(false);
+
   const isActive = true;
 
   const handlePlayClick = () => {
     scheduleSpeak(scheduleListView[index].audio);
   };
 
-  const onFinish = () => {
-    setTimerFinished(true);
+  const handleFinish = () => {
+    setTimerFinished(true); // Update local state to indicate finish
     setTimeout(() => {
-      handleDelete(index);
+      handleDelete(index); // Delete the item after the specified duration
     }, scheduleListView[index].timeDuration * 1000);
   };
 
@@ -93,7 +95,7 @@ export default function ScheduleListViewComponent({ index }) {
             {timerFinished ? (
               <TimeText>Finished</TimeText>
             ) : (
-              <Timer initialTime={"20"} onFinish={onFinish} />
+              <Timer initialTime={20} onFinish={handleFinish} />
             )}
             <TouchableOpacity
               onPress={() => {

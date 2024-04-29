@@ -1,69 +1,33 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { color } from "./colors";
+import { useState, useEffect } from "react";
+import { View, Text } from "react-native";
 
-const Timer = ({ initialTime, onFinish }) => {
+export const Timer = ({ initialTime, onFinish }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
   useEffect(() => {
     let timer = null;
 
     if (timeLeft > 0) {
-      // Start an interval to decrement timeLeft every second
       timer = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          const newTime = prevTime - 1;
-          if (newTime === 0) {
-            // Stop the timer when timeLeft reaches 0
-            clearInterval(timer);
-            // Execute onFinish function if provided
-            if (typeof onFinish === "function") {
-              onFinish();
-            }
-          }
-          return newTime;
-        });
+        // Update state asynchronously
+        setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
     } else {
-      // Execute onFinish immediately if initialTime is 0 or negative
       if (typeof onFinish === "function") {
         onFinish();
       }
     }
 
-    // Cleanup the interval on component unmount or when timeLeft is 0
     return () => clearInterval(timer);
-  }, [initialTime, onFinish]);
-
-  const formatTime = (time) => {
-    const hours = Math.floor(time / 3600);
-    const minutes = Math.floor((time % 3600) / 60);
-    const seconds = time % 60;
-
-    const formatNumber = (num) => {
-      return num < 10 ? "0" + num : num;
-    };
-
-    return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(
-      seconds
-    )}`;
-  };
-
-  useEffect(() => {
-    // Execute onFinish callback when timeLeft reaches 0
-    if (timeLeft === 0 && typeof onFinish === "function") {
-      onFinish();
-    }
   }, [timeLeft, onFinish]);
 
+  // Rendering the current timeLeft
   return (
     <View>
-      <Text style={{ color: "white", fontSize: 12 }}>
-        {formatTime(timeLeft)}
-      </Text>
+      <Text style={{ color: color.white, fontSize: 16 }}>{timeLeft}</Text>
     </View>
   );
 };
-
-export default Timer;

@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import styled from "styled-components/native";
 import { SafeView } from "../../utils/safeAreaView";
@@ -48,8 +48,16 @@ const ScheduleButtonText = styled(Text)`
 `;
 
 const ScheduleListView = ({ navigation }) => {
-  const { scheduleListView, scheduleSpeak, setScheduleListView } =
+  const { scheduleListView, scheduleSpeak, setScheduleListView, handleDelete } =
     useContext(ScheduleContext);
+  const [timerFinished, setTimerFinished] = useState(false);
+
+  const onFinish = (index) => {
+    setTimerFinished(true);
+    setTimeout(() => {
+      handleDelete(index);
+    }, scheduleListView[index].timeDuration * 1000);
+  };
 
   return (
     <SafeView>
@@ -59,7 +67,12 @@ const ScheduleListView = ({ navigation }) => {
         {scheduleListView.length > 0 ? (
           <ScrollView>
             {scheduleListView.map((item, index) => (
-              <ScheduleListViewComponent key={index} index={index} />
+              <ScheduleListViewComponent
+                key={index}
+                index={index}
+                onFinish={onFinish}
+                timerFinished={timerFinished}
+              />
             ))}
           </ScrollView>
         ) : (
