@@ -51,25 +51,6 @@ const ScheduleListView = ({ navigation }) => {
   const { scheduleListView, scheduleSpeak, setScheduleListView } =
     useContext(ScheduleContext);
 
-  // const loadStoredScheduleListView = async () => {
-  //   try {
-  //     const storedScheduleListView = await AsyncStorage.getItem(
-  //       "scheduleListView"
-  //     );
-  //     if (storedScheduleListView !== null) {
-  //       const parsedScheduleListView = JSON.parse(storedScheduleListView);
-  //       setScheduleListView(parsedScheduleListView);
-  //     } else {
-  //       setScheduleListView([]);
-  //     }
-  //   } catch (error) {
-  //     console.error(
-  //       "Error retrieving scheduleListView from AsyncStorage:",
-  //       error
-  //     );
-  //   }
-  // };
-
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -78,13 +59,7 @@ const ScheduleListView = ({ navigation }) => {
         {scheduleListView.length > 0 ? (
           <ScrollView>
             {scheduleListView.map((item, index) => (
-              <ScheduleListViewComponent
-                key={index}
-                index={index}
-                text={item.audio}
-                timer={item.timeDuration}
-                speak={scheduleSpeak}
-              />
+              <ScheduleListViewComponent key={index} index={index} />
             ))}
           </ScrollView>
         ) : (

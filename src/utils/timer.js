@@ -10,6 +10,7 @@ const Timer = ({ initialTime, onFinish }) => {
     let timer = null;
 
     if (timeLeft > 0) {
+      // Start an interval to decrement timeLeft every second
       timer = setInterval(() => {
         setTimeLeft((prevTime) => {
           const newTime = prevTime - 1;
@@ -31,7 +32,8 @@ const Timer = ({ initialTime, onFinish }) => {
       }
     }
 
-    return () => clearInterval(timer); // Cleanup timer on component unmount
+    // Cleanup the interval on component unmount or when timeLeft is 0
+    return () => clearInterval(timer);
   }, [initialTime, onFinish]);
 
   const formatTime = (time) => {
