@@ -45,7 +45,7 @@ export const AiContextProvider = ({ children }) => {
       const startTime = performance.now();
       const isLive = true;
       const baseUrl = isLive
-        ? "https://azure-rhinoceros-tutu.cyclic.app"
+        ? "https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/"
         : "http://http://192.168.63.129:3000/";
       const response = await fetch(
         `${baseUrl}/speech?text=${encodeURIComponent(textToConvert)}`
