@@ -7,10 +7,13 @@ import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Timer from "../utils/timer";
 import { ScheduleContext } from "../context/Schedule.context";
+import { PresetLoading } from "../utils/presetLoading";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Schedule = styled(View)`
   width: 380px;
-  background-color: ${color.primary};
+  background-color: ${({ isActive }) =>
+    isActive ? color.green : color.primary};
   padding: 12px;
   border-radius: 5px;
   margin: 5px;
@@ -24,7 +27,7 @@ const ScheduleView = styled(View)`
 
 const ScheduleInput = styled(View)`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -69,6 +72,7 @@ export default function ScheduleListViewComponent({
   const { scheduleListView, setScheduleListView } = useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
+
   const handlePlayClick = () => {
     console.log(scheduleListView);
     speak(text);
@@ -87,29 +91,17 @@ export default function ScheduleListViewComponent({
       <ScheduleView>
         <ScheduleInput>
           {loading ? (
-            <ScheduleLoading />
+            <PresetLoading />
           ) : (
             <ActiveView>
               <TouchableOpacity onPress={handlePlayClick}>
-                <MaterialCommunityIcons name="play" size={30} color="white" />
+                <MaterialCommunityIcons name="play" size={35} color="white" />
               </TouchableOpacity>
-              <ActiveText>{text}</ActiveText>
+              {isActive && <ActiveText>Generated Audio 🔊</ActiveText>}
             </ActiveView>
           )}
-          <TimeView>
-            {timerFinished ? (
-              <TimeText>Finished</TimeText>
-            ) : (
-              <Timer initialTime={time} onFinish={onFinish} />
-            )}
-            <TouchableOpacity
-              onPress={() => {
-                handleDelete();
-              }}>
-              <MaterialCommunityIcons name="delete" size={26} color="white" />
-            </TouchableOpacity>
-          </TimeView>
         </ScheduleInput>
+        <Text>{text}</Text>
       </ScheduleView>
     </Schedule>
   );

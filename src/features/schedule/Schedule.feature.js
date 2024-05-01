@@ -12,6 +12,7 @@ import { Loading } from "../../utils/loading";
 import { ScheduleContext } from "../../context/Schedule.context";
 import ScheduleComponent from "../../components/schedule.component";
 import ScheduleSpeaker from "../../components/scheduleSpeaker.component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -73,31 +74,56 @@ export const ScheduleScreen = ({ navigation }) => {
     scheduleListView,
     setScheduleListView,
   } = useContext(ScheduleContext);
-  const ScheduleAction = () => {
-    const isAnySpeakerSelected = schedSpeakers.some((speaker) => speaker.isOn);
+  const ScheduleAction = async () => {
+    if (!schedSpeakers) {
+      console.error("schedSpeakers is null or undefined");
+      return;
+    }
 
-    if (selectedTimeDuration !== 0) {
-      if (isAnySpeakerSelected) {
-        if (scheduleAudio) {
-          navigation.navigate("Schedule ListView");
-          setScheduleListView({
-            timeDuration: selectedTimeDuration,
-            audio: scheduleAudio,
-          });
-        } else {
-          Alert.alert("Alert", "No audio generated to announce", [
-            { text: "OK" },
-          ]);
-        }
-      } else {
-        Alert.alert("Alert", "Please choose a speaker to proceed", [
-          { text: "OK" },
-        ]);
-      }
-    } else {
+    const isAnySpeakerSelected = schedSpeakers.some(
+      (speaker) => speaker?.isOn === true
+    );
+
+    if (selectedTimeDuration === null || selectedTimeDuration === undefined) {
+      console.error("selectedTimeDuration is null or undefined");
       Alert.alert("Alert", "Please select a time duration to proceed", [
         { text: "OK" },
       ]);
+      return;
+    }
+
+    if (selectedTimeDuration === 0) {
+      Alert.alert("Alert", "Please select a time duration to proceed", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    if (!isAnySpeakerSelected) {
+      Alert.alert("Alert", "Please choose a speaker to proceed", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    if (!scheduleAudio) {
+      Alert.alert("Alert", "No audio generated to announce", [{ text: "OK" }]);
+      return;
+    }
+
+    try {
+      navigation.navigate("Schedule ListView");
+      setScheduleListView({
+        timeDuration: selectedTimeDuration,
+        audio: scheduleAudio,
+      });
+
+      await AsyncStorage.setItem(
+        "scheduleListView",
+        JSON.stringify(scheduleListView)
+      );
+    } catch (error) {
+      console.error("Error saving scheduleListView to AsyncStorage", error);
     }
   };
 
