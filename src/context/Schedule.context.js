@@ -11,7 +11,7 @@ export const ScheduleContext = createContext();
 export const ScheduleProvider = ({ children }) => {
   const [scheduleText, setScheduleText] = useState("");
   const [scheduleAudio, setScheduleAudio] = useState("");
-  const [scheduleListView, setScheduleListView] = useState([]);
+  const [scheduleListView, setScheduleListView] = useState("");
   const [loadTime, setLoadTime] = useState(0);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [selectedTimeDuration, setSelectedTimeDuration] = useState(0);
@@ -112,14 +112,6 @@ export const ScheduleProvider = ({ children }) => {
     setSelectedTimeDuration(duration);
   };
 
-  const handleDelete = (itemIndex) => {
-    const updatedScheduleList = scheduleListView.filter(
-      (_, idx) => idx !== itemIndex
-    );
-
-    setScheduleListView(updatedScheduleList);
-  };
-
   return (
     <ScheduleContext.Provider
       value={{
@@ -135,7 +127,6 @@ export const ScheduleProvider = ({ children }) => {
         toggleHandler,
         handleTimeDurationChange,
         selectedTimeDuration,
-        handleDelete,
       }}>
       {children}
     </ScheduleContext.Provider>

@@ -62,24 +62,24 @@ const TimeText = styled(Text)`
 `;
 export default function ScheduleListViewComponent({
   text,
-  index,
+  time,
   isActive = true,
-  timer = 0,
   speak = () => {},
 }) {
-  const { handleDelete } = useContext(ScheduleContext);
+  const { scheduleListView, setScheduleListView } = useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
   const handlePlayClick = () => {
-    console.log(timer);
+    console.log(scheduleListView);
     speak(text);
   };
 
   const onFinish = () => {
     setTimerFinished(true);
-    setTimeout(() => {
-      handleDelete(index);
-    }, 1000);
+  };
+
+  const handleDelete = () => {
+    setScheduleListView("");
   };
 
   return (
@@ -100,11 +100,11 @@ export default function ScheduleListViewComponent({
             {timerFinished ? (
               <TimeText>Finished</TimeText>
             ) : (
-              <Timer initialTime={timer} onFinish={onFinish} />
+              <Timer initialTime={time} onFinish={onFinish} />
             )}
             <TouchableOpacity
               onPress={() => {
-                handleDelete(index);
+                handleDelete();
               }}>
               <MaterialCommunityIcons name="delete" size={26} color="white" />
             </TouchableOpacity>

@@ -61,29 +61,22 @@ const ScheduleButtonText = styled(Text)`
 `;
 
 const ScheduleListView = ({ navigation }) => {
-  const { scheduleListView, scheduleSpeak, setScheduleListView } =
-    useContext(ScheduleContext);
-  const deleteOnFinishTime = (index) => {
-    setScheduleListView([...scheduleListView.slice(0, index)]);
-  };
+  const { scheduleListView, scheduleSpeak } = useContext(ScheduleContext);
+  const { audio, timeDuration } = scheduleListView;
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <ScheduleView>
         <ScheduleListViewModal>
           <ScheduleText>Scheduled Announcement list</ScheduleText>
-          {scheduleListView.length > 0 ? (
-            <ScrollView>
-              {scheduleListView.map((item, index) => (
-                <ScheduleListViewComponent
-                  key={index}
-                  index={index}
-                  text={item.audio}
-                  timer={item.timeDuration}
-                  speak={scheduleSpeak}
-                />
-              ))}
-            </ScrollView>
+          {scheduleListView ? (
+            <ScheduleListViewComponent
+              text={audio}
+              time={timeDuration}
+              isActive={true}
+              speak={scheduleSpeak}
+            />
           ) : (
             <View>
               <Text>No Schedule has been added yet 😃</Text>

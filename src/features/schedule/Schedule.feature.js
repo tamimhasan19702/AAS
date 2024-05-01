@@ -80,10 +80,10 @@ export const ScheduleScreen = ({ navigation }) => {
       if (isAnySpeakerSelected) {
         if (scheduleAudio) {
           navigation.navigate("Schedule ListView");
-          setScheduleListView([
-            { timeDuration: selectedTimeDuration, audio: scheduleAudio },
-            ...scheduleListView,
-          ]);
+          setScheduleListView({
+            timeDuration: selectedTimeDuration,
+            audio: scheduleAudio,
+          });
         } else {
           Alert.alert("Alert", "No audio generated to announce", [
             { text: "OK" },
