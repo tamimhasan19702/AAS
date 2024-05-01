@@ -11,15 +11,16 @@
       "backgroundColor": "#3409c5",
       "image": "./assets/splashtrans.png"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "",
-        "backgroundColor": "#3409c5",
-        "foregroundImage": "./assets/Splash.png"
+        "foregroundImage": "./assets/Splash.png",
+        "backgroundColor": "#3409c5"
       }
     },
     "web": {
@@ -27,7 +28,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "58be1009-6a0f-4c27-b6b1-4d3600b5db41"
+        "projectId": "08c71323-5268-4c6c-9c4f-ffdabd1ad336"
       }
     },
     "owner": "tamim19702021",
@@ -35,7 +36,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/58be1009-6a0f-4c27-b6b1-4d3600b5db41"
+      "url": "https://u.expo.dev/08c71323-5268-4c6c-9c4f-ffdabd1ad336"
     }
   }
 }
