@@ -11,9 +11,7 @@
       "backgroundColor": "#3409c5",
       "image": "./assets/splashtrans.png"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
