@@ -85,7 +85,7 @@ export default function ScheduleListViewComponent({
                 isPlaying
                 duration={time}
                 colors={["#00FF00", "#82FF82", "#FFC800", "#FF0000", "#FF0000"]}
-                colorsTime={[20, 15, 10, 5, 0]}
+                colorsTime={[35, 25, 15, 5, 0]}
                 onComplete={onFinish}>
                 {({ remainingTime }) => (
                   <Text style={{ fontSize: 20, color: "white" }}>

@@ -27,6 +27,16 @@ export const ScheduleProvider = ({ children }) => {
 
   const sound = new Audio.Sound();
 
+  const updateScheduleText = async () => {
+    try {
+      const snapshot = await get(ref(FIREBASEDATABASE, "scheduleText"));
+
+      setScheduleAudio(snapshot.val()?.audioText || "");
+    } catch (error) {
+      console.error("Error updating audio text:", error);
+    }
+  };
+
   const convertTextToSpeech = async (textToConvert) => {
     try {
       if (!textToConvert) {
@@ -183,6 +193,7 @@ export const ScheduleProvider = ({ children }) => {
         handleTimeDurationChange,
         selectedTimeDuration,
         ScheduleAction,
+        updateScheduleText,
       }}>
       {children}
     </ScheduleContext.Provider>

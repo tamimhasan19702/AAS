@@ -74,7 +74,13 @@ export const ScheduleScreen = ({ navigation }) => {
     scheduleListView,
     setScheduleListView,
     ScheduleAction,
+    updateScheduleText,
   } = useContext(ScheduleContext);
+
+  useEffect(() => {
+    updateScheduleText();
+    console.log(scheduleAudio, "scheduleAudio");
+  }, []);
 
   return (
     <SafeView>
