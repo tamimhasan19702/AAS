@@ -115,10 +115,57 @@ export const ScheduleProvider = ({ children }) => {
     setSelectedTimeDuration(duration);
   };
 
-  // useEffect(() => {
-  //   const audio = AsyncStorage.getItem("scheduleAudio");
-  //   setScheduleAudio(audio);
-  // });
+  const ScheduleAction = async (navigation) => {
+    if (!schedSpeakers) {
+      console.error("schedSpeakers is null or undefined");
+      return;
+    }
+
+    const selectedSpeakers = schedSpeakers.filter((speaker) => speaker.isOn);
+
+    if (selectedSpeakers.length === 0) {
+      Alert.alert("Alert", "Please choose a speaker to proceed", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    if (
+      selectedTimeDuration === null ||
+      selectedTimeDuration === undefined ||
+      selectedTimeDuration === 0
+    ) {
+      Alert.alert("Alert", "Please select a valid time duration to proceed", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    if (!scheduleAudio) {
+      Alert.alert("Alert", "No audio generated to announce", [{ text: "OK" }]);
+      return;
+    }
+
+    try {
+      // Update the text property of selected speakers
+      const updatedSpeakers = schedSpeakers.map((speaker) =>
+        speaker.isOn ? { ...speaker, text: scheduleAudio } : speaker
+      );
+
+      setSchedSpeakers(updatedSpeakers);
+
+      // Navigate to the Schedule ListView screen
+      navigation.navigate("Schedule ListView");
+
+      // Set the scheduleListView state with the selected duration and audio
+      setScheduleListView({
+        timeDuration: selectedTimeDuration,
+        audio: scheduleAudio,
+      });
+    } catch (error) {
+      console.error("Error updating speakers and navigating", error);
+    }
+  };
 
   return (
     <ScheduleContext.Provider
@@ -135,6 +182,7 @@ export const ScheduleProvider = ({ children }) => {
         toggleHandler,
         handleTimeDurationChange,
         selectedTimeDuration,
+        ScheduleAction,
       }}>
       {children}
     </ScheduleContext.Provider>

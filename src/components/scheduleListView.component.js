@@ -9,6 +9,8 @@ import { ScheduleContext } from "../context/Schedule.context";
 import { PresetLoading } from "../utils/presetLoading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import { ref, set, onValue, get } from "firebase/database";
+import { FIREBASEDATABASE } from "../../firebase.config";
 
 const Schedule = styled(View)`
   width: 380px;
@@ -37,7 +39,8 @@ export default function ScheduleListViewComponent({
   time,
   speak = () => {},
 }) {
-  const { scheduleListView, setScheduleListView } = useContext(ScheduleContext);
+  const { scheduleListView, setScheduleListView, schedSpeakers } =
+    useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
 
@@ -47,20 +50,13 @@ export default function ScheduleListViewComponent({
   };
 
   const onFinish = () => {
-    Alert.alert(
-      "Alert Title",
-      "This is the alert message.",
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            handleDelete();
-          },
-        },
-      ],
-      { cancelable: false } // Prevents dismissing the alert by tapping outside of it
-    );
+    Alert.alert("The Schedule timer has finished!!");
     setTimerFinished(true);
+    console.log(schedSpeakers);
+    set(ref(FIREBASEDATABASE, "speakers"), schedSpeakers);
+    setTimeout(() => {
+      handleDelete();
+    }, 1000);
   };
 
   const handleDelete = () => {

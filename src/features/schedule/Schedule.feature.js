@@ -73,54 +73,8 @@ export const ScheduleScreen = ({ navigation }) => {
     selectedTimeDuration,
     scheduleListView,
     setScheduleListView,
+    ScheduleAction,
   } = useContext(ScheduleContext);
-  const ScheduleAction = async () => {
-    if (!schedSpeakers) {
-      console.error("schedSpeakers is null or undefined");
-      return;
-    }
-
-    const isAnySpeakerSelected = schedSpeakers.some(
-      (speaker) => speaker?.isOn === true
-    );
-
-    if (selectedTimeDuration === null || selectedTimeDuration === undefined) {
-      console.error("selectedTimeDuration is null or undefined");
-      Alert.alert("Alert", "Please select a time duration to proceed", [
-        { text: "OK" },
-      ]);
-      return;
-    }
-
-    if (selectedTimeDuration === 0) {
-      Alert.alert("Alert", "Please select a time duration to proceed", [
-        { text: "OK" },
-      ]);
-      return;
-    }
-
-    if (!isAnySpeakerSelected) {
-      Alert.alert("Alert", "Please choose a speaker to proceed", [
-        { text: "OK" },
-      ]);
-      return;
-    }
-
-    if (!scheduleAudio) {
-      Alert.alert("Alert", "No audio generated to announce", [{ text: "OK" }]);
-      return;
-    }
-
-    try {
-      navigation.navigate("Schedule ListView");
-      setScheduleListView({
-        timeDuration: selectedTimeDuration,
-        audio: scheduleAudio,
-      });
-    } catch (error) {
-      console.error("Error saving scheduleListView to AsyncStorage", error);
-    }
-  };
 
   return (
     <SafeView>
@@ -180,7 +134,9 @@ export const ScheduleScreen = ({ navigation }) => {
 
         <ScheduleInputButton
           style={{ marginBottom: 5, width: "80%" }}
-          onPress={ScheduleAction}
+          onPress={() => {
+            ScheduleAction(navigation);
+          }}
           enabled={
             selectedTimeDuration !== 0 &&
             schedSpeakers.some((speaker) => speaker.isOn) &&
