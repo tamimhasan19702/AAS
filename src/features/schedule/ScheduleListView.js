@@ -62,26 +62,7 @@ const ScheduleButtonText = styled(Text)`
 `;
 
 const ScheduleListView = ({ navigation }) => {
-  const { scheduleListView, scheduleSpeak, setScheduleListView } =
-    useContext(ScheduleContext);
-
-  useEffect(() => {
-    const loadScheduleData = async () => {
-      try {
-        const storedSchedule = await AsyncStorage.getItem("scheduleListView");
-        if (storedSchedule) {
-          setScheduleListView(JSON.parse(storedSchedule));
-        }
-      } catch (error) {
-        console.error(
-          "Error loading scheduleListView from AsyncStorage",
-          error
-        );
-      }
-    };
-
-    loadScheduleData();
-  }, []);
+  const { scheduleListView, scheduleSpeak } = useContext(ScheduleContext);
 
   return (
     <SafeView>

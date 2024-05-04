@@ -1,10 +1,11 @@
 /** @format */
 
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { FIREBASEDATABASE } from "../../firebase.config";
 import { Audio } from "expo-av";
 import { ref, set, onValue, get } from "firebase/database";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const ScheduleContext = createContext();
 
@@ -88,6 +89,8 @@ export const ScheduleProvider = ({ children }) => {
 
       setScheduleLoading(false);
     }, loadTime);
+
+    await AsyncStorage.setItem("scheduleAudio", JSON.stringify(scheduleAudio));
   };
 
   const scheduleSpeak = async (text) => {
@@ -111,6 +114,11 @@ export const ScheduleProvider = ({ children }) => {
   const handleTimeDurationChange = (duration) => {
     setSelectedTimeDuration(duration);
   };
+
+  // useEffect(() => {
+  //   const audio = AsyncStorage.getItem("scheduleAudio");
+  //   setScheduleAudio(audio);
+  // });
 
   return (
     <ScheduleContext.Provider

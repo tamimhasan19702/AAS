@@ -47,7 +47,19 @@ export default function ScheduleListViewComponent({
   };
 
   const onFinish = () => {
-    Alert.alert("Time's up!");
+    Alert.alert(
+      "Alert Title",
+      "This is the alert message.",
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            handleDelete();
+          },
+        },
+      ],
+      { cancelable: false } // Prevents dismissing the alert by tapping outside of it
+    );
     setTimerFinished(true);
   };
 
@@ -76,8 +88,8 @@ export default function ScheduleListViewComponent({
                 style={{ width: 20, height: 20 }}
                 isPlaying
                 duration={time}
-                colors={["#00FF00", "#82FF82", "#FFC800", "#FF0000"]}
-                colorsTime={[20, 15, 10, 5]}
+                colors={["#00FF00", "#82FF82", "#FFC800", "#FF0000", "#FF0000"]}
+                colorsTime={[20, 15, 10, 5, 0]}
                 onComplete={onFinish}>
                 {({ remainingTime }) => (
                   <Text style={{ fontSize: 20, color: "white" }}>
@@ -115,7 +127,12 @@ export default function ScheduleListViewComponent({
                 <Text style={{ fontSize: 20, color: "white" }}>
                   Generated Audio 🔊
                 </Text>
-                <Text style={{ fontSize: 15, color: "white", marginTop: 10 }}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: "white",
+                    marginTop: 10,
+                  }}>
                   {text}
                 </Text>
               </View>

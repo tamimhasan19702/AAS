@@ -117,11 +117,6 @@ export const ScheduleScreen = ({ navigation }) => {
         timeDuration: selectedTimeDuration,
         audio: scheduleAudio,
       });
-
-      await AsyncStorage.setItem(
-        "scheduleListView",
-        JSON.stringify(scheduleListView)
-      );
     } catch (error) {
       console.error("Error saving scheduleListView to AsyncStorage", error);
     }
