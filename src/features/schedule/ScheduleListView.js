@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 
@@ -16,6 +16,7 @@ import { ScheduleContext } from "../../context/Schedule.context";
 import { color } from "../../utils/colors";
 import PresetComponent from "../../components/preset.component";
 import ScheduleListViewComponent from "../../components/scheduleListView.component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -61,20 +62,37 @@ const ScheduleButtonText = styled(Text)`
 `;
 
 const ScheduleListView = ({ navigation }) => {
-  const { scheduleListView, scheduleSpeak } = useContext(ScheduleContext);
-  const { audio, timeDuration } = scheduleListView;
+  const { scheduleListView, scheduleSpeak, setScheduleListView } =
+    useContext(ScheduleContext);
+
+  useEffect(() => {
+    const loadScheduleData = async () => {
+      try {
+        const storedSchedule = await AsyncStorage.getItem("scheduleListView");
+        if (storedSchedule) {
+          setScheduleListView(JSON.parse(storedSchedule));
+        }
+      } catch (error) {
+        console.error(
+          "Error loading scheduleListView from AsyncStorage",
+          error
+        );
+      }
+    };
+
+    loadScheduleData();
+  }, []);
 
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <ScheduleView>
         <ScheduleListViewModal>
-          <ScheduleText>Scheduled Announcement list</ScheduleText>
+          <ScheduleText>Scheduled Announcement </ScheduleText>
           {scheduleListView ? (
             <ScheduleListViewComponent
-              text={audio}
-              time={timeDuration}
-              isActive={true}
+              text={scheduleListView.audio}
+              time={scheduleListView.timeDuration}
               speak={scheduleSpeak}
             />
           ) : (

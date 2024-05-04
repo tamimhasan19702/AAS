@@ -1,19 +1,18 @@
 /** @format */
 
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Timer from "../utils/timer";
 import { ScheduleContext } from "../context/Schedule.context";
 import { PresetLoading } from "../utils/presetLoading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 
 const Schedule = styled(View)`
   width: 380px;
-  background-color: ${({ isActive }) =>
-    isActive ? color.green : color.primary};
+  background-color: ${color.primary};
   padding: 12px;
   border-radius: 5px;
   margin: 5px;
@@ -33,40 +32,9 @@ const ScheduleInput = styled(View)`
   width: 100%;
 `;
 
-const ActiveView = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3px;
-  width: 75%;
-  padding: 0px 3px;
-`;
-
-const ActiveText = styled(Text)`
-  color: ${color.white};
-  font-size: 18px;
-  font-family: "OverlockSC_400Regular";
-`;
-
-const TimeView = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  width: 15%;
-`;
-
-const TimeText = styled(Text)`
-  color: ${color.white};
-  font-size: 13px;
-  font-family: "OverlockSC_400Regular";
-`;
 export default function ScheduleListViewComponent({
   text,
   time,
-  isActive = true,
   speak = () => {},
 }) {
   const { scheduleListView, setScheduleListView } = useContext(ScheduleContext);
@@ -79,6 +47,7 @@ export default function ScheduleListViewComponent({
   };
 
   const onFinish = () => {
+    Alert.alert("Time's up!");
     setTimerFinished(true);
   };
 
@@ -87,21 +56,72 @@ export default function ScheduleListViewComponent({
   };
 
   return (
-    <Schedule isActive={isActive}>
+    <Schedule>
       <ScheduleView>
         <ScheduleInput>
           {loading ? (
             <PresetLoading />
           ) : (
-            <ActiveView>
-              <TouchableOpacity onPress={handlePlayClick}>
-                <MaterialCommunityIcons name="play" size={35} color="white" />
-              </TouchableOpacity>
-              {isActive && <ActiveText>Generated Audio 🔊</ActiveText>}
-            </ActiveView>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 20,
+              }}>
+              <Text style={{ fontSize: 20, color: "white", marginBottom: 10 }}>
+                {timerFinished ? "Timer Finished" : "Time left: "}
+              </Text>
+              <CountdownCircleTimer
+                style={{ width: 20, height: 20 }}
+                isPlaying
+                duration={time}
+                colors={["#00FF00", "#82FF82", "#FFC800", "#FF0000"]}
+                colorsTime={[20, 15, 10, 5]}
+                onComplete={onFinish}>
+                {({ remainingTime }) => (
+                  <Text style={{ fontSize: 20, color: "white" }}>
+                    {remainingTime} s
+                  </Text>
+                )}
+              </CountdownCircleTimer>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  gap: 30,
+                }}>
+                <TouchableOpacity
+                  style={{ marginTop: 20 }}
+                  onPress={handlePlayClick}>
+                  <MaterialCommunityIcons
+                    name="play"
+                    size={35}
+                    color={color.white}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ marginTop: 20 }}
+                  onPress={handleDelete}>
+                  <MaterialCommunityIcons
+                    name="delete"
+                    size={35}
+                    color={color.white}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{ marginTop: 20 }}>
+                <Text style={{ fontSize: 20, color: "white" }}>
+                  Generated Audio 🔊
+                </Text>
+                <Text style={{ fontSize: 15, color: "white", marginTop: 10 }}>
+                  {text}
+                </Text>
+              </View>
+            </View>
           )}
         </ScheduleInput>
-        <Text>{text}</Text>
       </ScheduleView>
     </Schedule>
   );
