@@ -65,6 +65,13 @@ const TimeText = styled(Text)`
   font-size: 15px;
   font-family: "OverlockSC_400Regular";
 `;
+
+const TranslatedText = styled(Text)`
+  color: ${color.white};
+  font-size: 15px;
+  font-family: "OverlockSC_400Regular";
+  margin-left: 10px;
+`;
 export default function PresetComponent({
   speak,
   handleDelete = () => {},
@@ -105,6 +112,7 @@ export default function PresetComponent({
             </TouchableOpacity>
           </TimeView>
         </PresetInput>
+        <PresetText>Your input:</PresetText>
         <PresetText>{text}</PresetText>
       </PresetView>
     </Preset>

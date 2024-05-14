@@ -110,6 +110,10 @@ export const ScheduleScreen = ({ navigation }) => {
       />
       <ScheduleView>
         <ScheduleText>Schedule Annoucnements</ScheduleText>
+        <Text>
+          Note** - All the input text will be translated & converted to bangla
+          audio
+        </Text>
         <ScheduleInputView>
           <ScheduleInputField
             placeholder="Please Enter Text Here"

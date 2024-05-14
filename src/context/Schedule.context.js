@@ -38,7 +38,7 @@ export const ScheduleProvider = ({ children }) => {
         ? "https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/"
         : "http://http://192.168.63.129:3000/";
       const response = await fetch(
-        `${baseUrl}/speech?text=${encodeURIComponent(textToConvert)}`
+        `${baseUrl}/speech?text="${encodeURIComponent(textToConvert)}"`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

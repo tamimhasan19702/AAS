@@ -23,6 +23,7 @@ import { Loading } from "../../utils/loading";
 import { View } from "react-native";
 import PresetComponent from "../../components/preset.component";
 import { AiContext } from "../../context/AI.context";
+import { Text } from "react-native";
 export const AiScreen = ({ navigation }) => {
   const {
     text,
@@ -55,7 +56,11 @@ export const AiScreen = ({ navigation }) => {
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <AiScreenView>
-        <AiText>Please enter your text to be Announced</AiText>
+        <AiText> Enter your annoucnement</AiText>
+        <Text>
+          Note** - All the input text will be translated & converted to bangla
+          audio
+        </Text>
         <AiTextInputView>
           <AiInputField
             placeholder="Please Enter Text Here"
