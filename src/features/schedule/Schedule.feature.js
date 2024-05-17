@@ -12,6 +12,7 @@ import { Loading } from "../../utils/loading";
 import { ScheduleContext } from "../../context/Schedule.context";
 import ScheduleComponent from "../../components/schedule.component";
 import ScheduleSpeaker from "../../components/scheduleSpeaker.component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -72,34 +73,14 @@ export const ScheduleScreen = ({ navigation }) => {
     selectedTimeDuration,
     scheduleListView,
     setScheduleListView,
+    ScheduleAction,
+    updateScheduleText,
   } = useContext(ScheduleContext);
-  const ScheduleAction = () => {
-    const isAnySpeakerSelected = schedSpeakers.some((speaker) => speaker.isOn);
 
-    if (selectedTimeDuration !== 0) {
-      if (isAnySpeakerSelected) {
-        if (scheduleAudio) {
-          navigation.navigate("Schedule ListView");
-          setScheduleListView([
-            { timeDuration: selectedTimeDuration, audio: scheduleAudio },
-            ...scheduleListView,
-          ]);
-        } else {
-          Alert.alert("Alert", "No audio generated to announce", [
-            { text: "OK" },
-          ]);
-        }
-      } else {
-        Alert.alert("Alert", "Please choose a speaker to proceed", [
-          { text: "OK" },
-        ]);
-      }
-    } else {
-      Alert.alert("Alert", "Please select a time duration to proceed", [
-        { text: "OK" },
-      ]);
-    }
-  };
+  useEffect(() => {
+    updateScheduleText();
+    console.log(scheduleAudio, "scheduleAudio");
+  }, []);
 
   return (
     <SafeView>
@@ -163,7 +144,9 @@ export const ScheduleScreen = ({ navigation }) => {
 
         <ScheduleInputButton
           style={{ marginBottom: 5, width: "80%" }}
-          onPress={ScheduleAction}
+          onPress={() => {
+            ScheduleAction(navigation);
+          }}
           enabled={
             selectedTimeDuration !== 0 &&
             schedSpeakers.some((speaker) => speaker.isOn) &&

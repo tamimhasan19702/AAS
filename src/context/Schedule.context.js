@@ -1,17 +1,18 @@
 /** @format */
 
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { FIREBASEDATABASE } from "../../firebase.config";
 import { Audio } from "expo-av";
 import { ref, set, onValue, get } from "firebase/database";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const ScheduleContext = createContext();
 
 export const ScheduleProvider = ({ children }) => {
   const [scheduleText, setScheduleText] = useState("");
   const [scheduleAudio, setScheduleAudio] = useState("");
-  const [scheduleListView, setScheduleListView] = useState([]);
+  const [scheduleListView, setScheduleListView] = useState("");
   const [loadTime, setLoadTime] = useState(0);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [selectedTimeDuration, setSelectedTimeDuration] = useState(0);
@@ -25,6 +26,16 @@ export const ScheduleProvider = ({ children }) => {
   ]);
 
   const sound = new Audio.Sound();
+
+  const updateScheduleText = async () => {
+    try {
+      const snapshot = await get(ref(FIREBASEDATABASE, "scheduleText"));
+
+      setScheduleAudio(snapshot.val()?.audioText || "");
+    } catch (error) {
+      console.error("Error updating audio text:", error);
+    }
+  };
 
   const convertTextToSpeech = async (textToConvert) => {
     try {
@@ -88,6 +99,8 @@ export const ScheduleProvider = ({ children }) => {
 
       setScheduleLoading(false);
     }, loadTime);
+
+    await AsyncStorage.setItem("scheduleAudio", JSON.stringify(scheduleAudio));
   };
 
   const scheduleSpeak = async (text) => {
@@ -112,12 +125,56 @@ export const ScheduleProvider = ({ children }) => {
     setSelectedTimeDuration(duration);
   };
 
-  const handleDelete = (itemIndex) => {
-    const updatedScheduleList = scheduleListView.filter(
-      (_, idx) => idx !== itemIndex
-    );
+  const ScheduleAction = async (navigation) => {
+    if (!schedSpeakers) {
+      console.error("schedSpeakers is null or undefined");
+      return;
+    }
 
-    setScheduleListView(updatedScheduleList);
+    const selectedSpeakers = schedSpeakers.filter((speaker) => speaker.isOn);
+
+    if (selectedSpeakers.length === 0) {
+      Alert.alert("Alert", "Please choose a speaker to proceed", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    if (
+      selectedTimeDuration === null ||
+      selectedTimeDuration === undefined ||
+      selectedTimeDuration === 0
+    ) {
+      Alert.alert("Alert", "Please select a valid time duration to proceed", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    if (!scheduleAudio) {
+      Alert.alert("Alert", "No audio generated to announce", [{ text: "OK" }]);
+      return;
+    }
+
+    try {
+      // Update the text property of selected speakers
+      const updatedSpeakers = schedSpeakers.map((speaker) =>
+        speaker.isOn ? { ...speaker, text: scheduleAudio } : speaker
+      );
+
+      setSchedSpeakers(updatedSpeakers);
+
+      // Navigate to the Schedule ListView screen
+      navigation.navigate("Schedule ListView");
+
+      // Set the scheduleListView state with the selected duration and audio
+      setScheduleListView({
+        timeDuration: selectedTimeDuration,
+        audio: scheduleAudio,
+      });
+    } catch (error) {
+      console.error("Error updating speakers and navigating", error);
+    }
   };
 
   return (
@@ -135,7 +192,8 @@ export const ScheduleProvider = ({ children }) => {
         toggleHandler,
         handleTimeDurationChange,
         selectedTimeDuration,
-        handleDelete,
+        ScheduleAction,
+        updateScheduleText,
       }}>
       {children}
     </ScheduleContext.Provider>

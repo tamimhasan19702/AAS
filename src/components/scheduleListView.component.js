@@ -1,12 +1,16 @@
 /** @format */
 
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Timer from "../utils/timer";
 import { ScheduleContext } from "../context/Schedule.context";
+import { PresetLoading } from "../utils/presetLoading";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import { ref, set, onValue, get } from "firebase/database";
+import { FIREBASEDATABASE } from "../../firebase.config";
 
 const Schedule = styled(View)`
   width: 380px;
@@ -24,91 +28,112 @@ const ScheduleView = styled(View)`
 
 const ScheduleInput = styled(View)`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 `;
 
-const ActiveView = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3px;
-  width: 75%;
-  padding: 0px 3px;
-`;
-
-const ActiveText = styled(Text)`
-  color: ${color.white};
-  font-size: 18px;
-  font-family: "OverlockSC_400Regular";
-`;
-
-const TimeView = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  width: 15%;
-`;
-
-const TimeText = styled(Text)`
-  color: ${color.white};
-  font-size: 13px;
-  font-family: "OverlockSC_400Regular";
-`;
 export default function ScheduleListViewComponent({
   text,
-  index,
-  isActive = true,
-  timer = 0,
+  time,
   speak = () => {},
 }) {
-  const { handleDelete } = useContext(ScheduleContext);
+  const { scheduleListView, setScheduleListView, schedSpeakers } =
+    useContext(ScheduleContext);
   const [loading, setLoading] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
+
   const handlePlayClick = () => {
-    console.log(timer);
+    console.log(scheduleListView);
     speak(text);
   };
 
   const onFinish = () => {
+    Alert.alert("The Schedule timer has finished!!");
     setTimerFinished(true);
+    console.log(schedSpeakers);
+    set(ref(FIREBASEDATABASE, "speakers"), schedSpeakers);
     setTimeout(() => {
-      handleDelete(index);
+      handleDelete();
     }, 1000);
   };
 
+  const handleDelete = () => {
+    setScheduleListView("");
+  };
+
   return (
-    <Schedule isActive={isActive}>
+    <Schedule>
       <ScheduleView>
         <ScheduleInput>
           {loading ? (
-            <ScheduleLoading />
+            <PresetLoading />
           ) : (
-            <ActiveView>
-              <TouchableOpacity onPress={handlePlayClick}>
-                <MaterialCommunityIcons name="play" size={30} color="white" />
-              </TouchableOpacity>
-              <ActiveText>{text}</ActiveText>
-            </ActiveView>
-          )}
-          <TimeView>
-            {timerFinished ? (
-              <TimeText>Finished</TimeText>
-            ) : (
-              <Timer initialTime={timer} onFinish={onFinish} />
-            )}
-            <TouchableOpacity
-              onPress={() => {
-                handleDelete(index);
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 20,
               }}>
-              <MaterialCommunityIcons name="delete" size={26} color="white" />
-            </TouchableOpacity>
-          </TimeView>
+              <Text style={{ fontSize: 20, color: "white", marginBottom: 10 }}>
+                {timerFinished ? "Timer Finished" : "Time left: "}
+              </Text>
+              <CountdownCircleTimer
+                style={{ width: 20, height: 20 }}
+                isPlaying
+                duration={time}
+                colors={["#00FF00", "#82FF82", "#FFC800", "#FF0000", "#FF0000"]}
+                colorsTime={[35, 25, 15, 5, 0]}
+                onComplete={onFinish}>
+                {({ remainingTime }) => (
+                  <Text style={{ fontSize: 20, color: "white" }}>
+                    {remainingTime} s
+                  </Text>
+                )}
+              </CountdownCircleTimer>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  gap: 30,
+                }}>
+                <TouchableOpacity
+                  style={{ marginTop: 20 }}
+                  onPress={handlePlayClick}>
+                  <MaterialCommunityIcons
+                    name="play"
+                    size={35}
+                    color={color.white}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ marginTop: 20 }}
+                  onPress={handleDelete}>
+                  <MaterialCommunityIcons
+                    name="delete"
+                    size={35}
+                    color={color.white}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{ marginTop: 20 }}>
+                <Text style={{ fontSize: 20, color: "white" }}>
+                  Generated Audio 🔊
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: "white",
+                    marginTop: 10,
+                  }}>
+                  {text}
+                </Text>
+              </View>
+            </View>
+          )}
         </ScheduleInput>
       </ScheduleView>
     </Schedule>
