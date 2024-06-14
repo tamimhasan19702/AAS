@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState, useCallback, useEffect } from "react";
 import { Audio } from "expo-av";
 import { ref, set, onValue, get } from "firebase/database";
 import { FIREBASEDATABASE } from "../../firebase.config";
@@ -160,6 +160,11 @@ export const AiContextProvider = ({ children }) => {
       return updatedArray; // Return the updated state value
     });
   };
+
+  useEffect(() => {
+    updateAudioText();
+    getArrayFromFirebase();
+  }, [audio]);
 
   const contextValue = {
     text,

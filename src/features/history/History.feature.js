@@ -1,24 +1,43 @@
 /** @format */
 
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
+import { AiContext } from "../../context/AI.context";
+
+import { ScheduleContext } from "../../context/Schedule.context";
+import { color } from "../../utils/colors";
+import { PVoiceContext } from "../../context/PVoice.context";
 
 const HistoryView = styled(View)`
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   height: 100%;
+  margin-top: 20px;
 `;
 
 export const HistoryScreen = ({ navigation }) => {
+  const { presetArray, audio, getArrayFromFirebase } = useContext(AiContext);
+  const { recordedSounds } = useContext(PVoiceContext);
+  const { scheduleListView } = useContext(ScheduleContext);
+
+  const [histories, setHistories] = useState([]);
+
+  useEffect(() => {
+    setHistories([...presetArray, ...recordedSounds, scheduleListView]);
+  }, []);
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <HistoryView>
-        <Text>HistoryScreen</Text>
+        {histories.map((history) => (
+          <View key={history.id}>
+            <Text>{history?.text || "Recorded Voice"}</Text>
+          </View>
+        ))}
       </HistoryView>
     </SafeView>
   );

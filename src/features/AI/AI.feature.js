@@ -31,18 +31,12 @@ export const AiScreen = ({ navigation }) => {
     audio,
     saveloading,
     presetArray,
-    updateAudioText,
-    getArrayFromFirebase,
+
     save,
     speak,
     clearPreset,
     handleDelete,
   } = useContext(AiContext);
-
-  useEffect(() => {
-    updateAudioText();
-    getArrayFromFirebase();
-  }, [audio]);
 
   let [fontsLoaded] = useFonts({
     OverlockSC_400Regular,

@@ -85,6 +85,7 @@ export const SpeakerScreen = ({ navigation }) => {
     toggleHandlerAll,
     showAlert,
     showSuccessAlert,
+    resetSpeakers,
   } = useContext(SpeakerContext);
 
   const allSpeakersOn = speakers.some((s) => s.isOn);
@@ -97,6 +98,7 @@ export const SpeakerScreen = ({ navigation }) => {
         set(ref(FIREBASEDATABASE, "speakers"), speakers);
         setLoading(false); // Set loading back to false
         showSuccessAlert(navigation);
+        resetSpeakers();
       }, 3000);
     }
   };

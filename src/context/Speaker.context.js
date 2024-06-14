@@ -66,6 +66,16 @@ export const SpeakerProvider = ({ children }) => {
     );
   };
 
+  const resetSpeakers = () => {
+    setSpeakers([
+      { no: 1, isOn: false, text: "" },
+      { no: 2, isOn: false, text: "" },
+      { no: 3, isOn: false, text: "" },
+      { no: 4, isOn: false, text: "" },
+      { no: 5, isOn: false, text: "" },
+    ]);
+  };
+
   return (
     <SpeakerContext.Provider
       value={{
@@ -74,6 +84,7 @@ export const SpeakerProvider = ({ children }) => {
         toggleHandlerAll,
         showAlert,
         showSuccessAlert,
+        resetSpeakers,
       }}>
       {children}
     </SpeakerContext.Provider>
