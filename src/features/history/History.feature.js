@@ -22,12 +22,12 @@ const HistoryView = styled(View)`
 export const HistoryScreen = ({ navigation }) => {
   const { presetArray, audio, getArrayFromFirebase } = useContext(AiContext);
   const { recordedSounds } = useContext(PVoiceContext);
-  const { scheduleListView } = useContext(ScheduleContext);
+  const { scheduleHistory } = useContext(ScheduleContext);
 
   const [histories, setHistories] = useState([]);
-
+  console.log(scheduleHistory);
   useEffect(() => {
-    setHistories([...presetArray, ...recordedSounds, scheduleListView]);
+    setHistories([...presetArray, ...recordedSounds]);
   }, []);
   return (
     <SafeView>

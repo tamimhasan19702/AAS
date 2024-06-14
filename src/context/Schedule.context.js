@@ -16,6 +16,7 @@ export const ScheduleProvider = ({ children }) => {
   const [loadTime, setLoadTime] = useState(0);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [selectedTimeDuration, setSelectedTimeDuration] = useState(0);
+  const [scheduleHistory, setScheduleHistory] = useState([]);
 
   const [schedSpeakers, setSchedSpeakers] = useState([
     { no: 1, isOn: false, text: "" },
@@ -182,6 +183,10 @@ export const ScheduleProvider = ({ children }) => {
         timeDuration: selectedTimeDuration,
         audio: scheduleAudio,
       });
+      setScheduleHistory({
+        timeDuration: selectedTimeDuration,
+        text: scheduleAudio,
+      });
       resetScheduleSpeakers();
     } catch (error) {
       console.error("Error updating speakers and navigating", error);
@@ -205,6 +210,7 @@ export const ScheduleProvider = ({ children }) => {
         selectedTimeDuration,
         ScheduleAction,
         updateScheduleText,
+        scheduleHistory,
       }}>
       {children}
     </ScheduleContext.Provider>

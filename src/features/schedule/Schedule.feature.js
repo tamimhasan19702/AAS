@@ -77,11 +77,6 @@ export const ScheduleScreen = ({ navigation }) => {
     updateScheduleText,
   } = useContext(ScheduleContext);
 
-  useEffect(() => {
-    updateScheduleText();
-    console.log(scheduleAudio, "scheduleAudio");
-  }, []);
-
   return (
     <SafeView>
       <LogoBar
