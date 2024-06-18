@@ -193,6 +193,16 @@ export const ScheduleProvider = ({ children }) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (scheduleListView) {
+  //     const timeNow = new Date().toLocaleString();
+  //     setScheduleHistory((prevHistory) => [
+  //       ...prevHistory,
+  //       { text: scheduleListView, time: timeNow },
+  //     ]);
+  //   }
+  // }, [scheduleListView]);
+
   return (
     <ScheduleContext.Provider
       value={{
