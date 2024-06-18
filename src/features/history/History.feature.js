@@ -1,15 +1,14 @@
 /** @format */
 
-import { View, Text } from "react-native";
+import { View, Button, Text, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
 import { AiContext } from "../../context/AI.context";
-
-import { ScheduleContext } from "../../context/Schedule.context";
 import { color } from "../../utils/colors";
 import { PVoiceContext } from "../../context/PVoice.context";
+import HistoryBoxComponent from "../../components/historyBox.component";
 
 const HistoryView = styled(View)`
   display: flex;
@@ -24,18 +23,48 @@ export const HistoryScreen = ({ navigation }) => {
   const { recordedSounds } = useContext(PVoiceContext);
 
   const [histories, setHistories] = useState([]);
+  console.log("histories", histories);
   useEffect(() => {
     setHistories([...presetArray, ...recordedSounds]);
-  }, []);
+  }, [presetArray, recordedSounds]);
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
       <HistoryView>
         {histories.map((history) => (
-          <View key={history.id}>
-            <Text>{history?.text || "Recorded Voice"}</Text>
+          <View
+            key={history.id}
+            style={{
+              marginBottom: 10,
+              backgroundColor: color.primary,
+              width: "90%",
+              elevation: 5,
+              borderRadius: 5,
+              paddingHorizontal: 20,
+              paddingVertical: 10,
+            }}>
+            <HistoryBoxComponent history={history} />
           </View>
         ))}
+        {histories.length !== 0 ? (
+          <TouchableOpacity
+            style={{
+              backgroundColor: color.white,
+              paddingVertical: 20,
+              width: "80%",
+              elevation: 9,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+              display: "flex",
+              alignSelf: "flex - end",
+            }}>
+            <Text>Clear History</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text>No History found at this moment 😅</Text>
+        )}
       </HistoryView>
     </SafeView>
   );

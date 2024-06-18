@@ -15,12 +15,6 @@ export const PVoiceContextProvider = ({ children }) => {
   const [recordingTime, setRecordingTime] = useState(null);
   const [recordedSounds, setRecordedSounds] = useState([]);
 
-  useEffect(() => {
-    return () => {
-      clearInterval(recordingDuration.timerId);
-    };
-  }, []);
-
   async function startRecording() {
     try {
       const { status } = await Audio.requestPermissionsAsync();
@@ -80,7 +74,7 @@ export const PVoiceContextProvider = ({ children }) => {
       clearInterval(recordingDuration.timerId);
 
       // Set recording time to current time
-      const time = new Date().getTime();
+      const updateTime = new Date().getTime();
       setRecordingTime(time);
 
       // Save the recorded sound to the array with isActive set to false
@@ -88,7 +82,7 @@ export const PVoiceContextProvider = ({ children }) => {
         {
           sound,
           duration: recordingDuration.duration / 1000,
-          time,
+          updateTime,
           isActive: false,
         },
         ...prevRecordedSounds,
@@ -104,7 +98,7 @@ export const PVoiceContextProvider = ({ children }) => {
           {
             sound,
             duration: recordingDuration.duration / 1000,
-            time,
+            updateTime,
             isActive: false,
           },
           ...recordedSounds,
@@ -207,8 +201,7 @@ export const PVoiceContextProvider = ({ children }) => {
     };
 
     loadRecordedSounds();
-
-    
+    clearInterval(recordingDuration.timerId);
   }, []);
 
   const contextValue = {

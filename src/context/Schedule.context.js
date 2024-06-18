@@ -16,7 +16,6 @@ export const ScheduleProvider = ({ children }) => {
   const [loadTime, setLoadTime] = useState(0);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [selectedTimeDuration, setSelectedTimeDuration] = useState(0);
-  const [scheduleHistory, setScheduleHistory] = useState([]);
 
   const [schedSpeakers, setSchedSpeakers] = useState([
     { no: 1, isOn: false, text: "" },
@@ -193,16 +192,6 @@ export const ScheduleProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (scheduleListView) {
-  //     const timeNow = new Date().toLocaleString();
-  //     setScheduleHistory((prevHistory) => [
-  //       ...prevHistory,
-  //       { text: scheduleListView, time: timeNow },
-  //     ]);
-  //   }
-  // }, [scheduleListView]);
-
   return (
     <ScheduleContext.Provider
       value={{
@@ -220,7 +209,6 @@ export const ScheduleProvider = ({ children }) => {
         selectedTimeDuration,
         ScheduleAction,
         updateScheduleText,
-        scheduleHistory,
       }}>
       {children}
     </ScheduleContext.Provider>
