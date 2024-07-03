@@ -44,17 +44,15 @@ export const AiContextProvider = ({ children }) => {
     try {
       const startTime = performance.now();
       const isLive = true;
+      const spareApi =
+        "https://aas-backend-copy-hze8iz77e-tareqs-projects-4295e8be.vercel.app/";
       const baseUrl = isLive
         ? "https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/"
         : "http://192.168.0.107:3000/";
       const response = await fetch(
         `${baseUrl}/speech?text="${encodeURIComponent(textToConvert)}"`
       );
-      // const response = await fetch(
-      //   `http://192.168.0.107:3000/speech?text="${encodeURIComponent(
-      //     textToConvert
-      //   )}"`
-      // );
+
       const audioResponse = await response.blob();
 
       const reader = new FileReader();

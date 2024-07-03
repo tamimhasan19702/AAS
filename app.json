@@ -6,11 +6,7 @@
     "orientation": "portrait",
     "icon": "../AAS/assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "resizeMode": "contain",
-      "backgroundColor": "#3409c5",
-      "image": "./assets/splashtrans.png"
-    },
+
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true

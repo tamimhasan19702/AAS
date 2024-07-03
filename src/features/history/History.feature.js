@@ -22,11 +22,14 @@ export const HistoryScreen = ({ navigation }) => {
   const { presetArray } = useContext(AiContext);
   const { recordedSounds } = useContext(PVoiceContext);
 
-  const [histories, setHistories] = useState([]);
-  console.log("histories", histories);
-  useEffect(() => {
-    setHistories([...presetArray, ...recordedSounds]);
-  }, [presetArray, recordedSounds]);
+  const [histories, setHistories] = useState([
+    ...presetArray,
+    ...recordedSounds,
+  ]);
+
+  const clearHistory = () => {
+    setHistories([]);
+  };
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -59,7 +62,8 @@ export const HistoryScreen = ({ navigation }) => {
               borderRadius: 5,
               display: "flex",
               alignSelf: "flex - end",
-            }}>
+            }}
+            onPress={() => clearHistory()}>
             <Text>Clear History</Text>
           </TouchableOpacity>
         ) : (
