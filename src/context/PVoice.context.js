@@ -74,15 +74,15 @@ export const PVoiceContextProvider = ({ children }) => {
       clearInterval(recordingDuration.timerId);
 
       // Set recording time to current time
-      const updateTime = new Date().getTime();
-      setRecordingTime(time);
+      const Time = new Date().getTime();
+      setRecordingTime(Time);
 
       // Save the recorded sound to the array with isActive set to false
       setRecordedSounds((prevRecordedSounds) => [
         {
           sound,
           duration: recordingDuration.duration / 1000,
-          updateTime,
+          Time,
           isActive: false,
         },
         ...prevRecordedSounds,
@@ -98,7 +98,7 @@ export const PVoiceContextProvider = ({ children }) => {
           {
             sound,
             duration: recordingDuration.duration / 1000,
-            updateTime,
+            Time,
             isActive: false,
           },
           ...recordedSounds,

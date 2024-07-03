@@ -27,6 +27,8 @@ export const HistoryScreen = ({ navigation }) => {
     ...recordedSounds,
   ]);
 
+  console.log(histories);
+
   const clearHistory = () => {
     setHistories([]);
   };
