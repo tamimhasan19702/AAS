@@ -2,6 +2,9 @@
 
 # Advance Announcing System with Speech Synthesis API and ESP32 WiFi Module
 
+api Url: https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/
+spare api Url: https://aas-backend-copy-hze8iz77e-tareqs-projects-4295e8be.vercel.app/
+np
 This mobile application is part of the final year project for the Advanced Announcing System. The project aims to build a speaker control system using React Native, Speech Synthesis API, and ESP32 WiFi module.
 
 ## Project Overview
