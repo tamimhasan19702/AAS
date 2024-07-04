@@ -9,6 +9,14 @@ import { PVoiceContext } from "../../context/PVoice.context";
 import { StartStopRecorder } from "../../components/Start&StopRecorder.component";
 import { PlayVoice } from "../../components/playVoice.component";
 import { color } from "../../utils/colors";
+import { FIREBASESTORAGE, FIREBASEDATABASE } from "../../../firebase.config";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { set, ref as refDB, get } from "firebase/database";
 
 const VoiceScreenView = styled(View)`
   margin-top: 30px;
@@ -61,7 +69,55 @@ export const VoiceScreen = ({ navigation }) => {
     clearRecordedSounds,
     deleteRecordedSound,
     finalRecording,
+    setUrl,
   } = useContext(PVoiceContext);
+
+  useEffect(() => {
+    if (finalRecording) {
+      const uploadFile = async () => {
+        try {
+          // Fetch the existing recording URL from Firebase Database
+          const existingRecordingRef = refDB(
+            FIREBASEDATABASE,
+            "recordings/url"
+          );
+          const existingRecordingSnapshot = await get(existingRecordingRef);
+
+          if (existingRecordingSnapshot.exists()) {
+            const existingUrl = existingRecordingSnapshot.val();
+
+            // Delete the existing recording from Firebase Storage
+            const existingStorageRef = ref(FIREBASESTORAGE, existingUrl);
+            await deleteObject(existingStorageRef);
+            console.log("Deleted existing recording");
+          }
+
+          // Upload the new recording to Firebase Storage
+          const storageRef = ref(
+            FIREBASESTORAGE,
+            `recordings/${Date.now()}.3gp`
+          );
+          const response = await fetch(finalRecording);
+          const blob = await response.blob();
+
+          await uploadBytes(storageRef, blob);
+          const url = await getDownloadURL(storageRef);
+
+          setUrl(url);
+          console.log("File available at", url);
+
+          // Update Firebase Database with the new recording URL
+          await set(refDB(FIREBASEDATABASE, "recordings"), {
+            url: url,
+          });
+        } catch (error) {
+          console.error("Error uploading file:", error);
+        }
+      };
+
+      uploadFile();
+    }
+  }, [finalRecording]);
 
   return (
     <SafeView>
@@ -80,7 +136,8 @@ export const VoiceScreen = ({ navigation }) => {
         <ScrollView>
           {recordedSounds.length > 0 ? (
             recordedSounds.map((soundItem, index) => {
-              const { sound, duration, time, isActive } = soundItem;
+              const { sound, duration, Time, isActive } = soundItem;
+
               const reverseIndex = recordedSounds.length - index;
               return (
                 <PlayVoice
@@ -88,9 +145,10 @@ export const VoiceScreen = ({ navigation }) => {
                   title={`Play Recording ${reverseIndex}`}
                   onPress={() => playRecording(index)}
                   duration={duration}
-                  time={time}
+                  time={Time}
                   handleDelete={() => deleteRecordedSound(index)}
                   isActive={isActive}
+                  sound={sound}
                 />
               );
             })

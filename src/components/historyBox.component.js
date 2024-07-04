@@ -28,6 +28,7 @@ const HistoryBoxComponent = ({ history }) => {
         alignItems: "start",
         flexDirection: "column",
         gap: 5,
+        elevation: 9,
       }}>
       <View
         style={{

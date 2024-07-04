@@ -13,10 +13,10 @@ import { LogoBar } from "../../components/logoBar.component";
 import { SpeakerComponent } from "../../components/speaker.component";
 import styled from "styled-components";
 import { color } from "../../utils/colors";
-import { FIREBASESTORAGE } from "../../../firebase.config";
 import { PSpeakerContext } from "../../context/PSpeaker.context";
 import { PVoiceContext } from "../../context/PVoice.context";
-import { uploadString, ref } from "firebase/storage";
+import { set, ref } from "firebase/database";
+import { FIREBASEDATABASE } from "../../../firebase.config";
 
 const SpeakerText = styled(Text)`
   font-weight: 400;
@@ -77,9 +77,8 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerVoice = ({ navigation }) => {
-  const { finalRecording } = useContext(PVoiceContext);
+  const { finalRecording, url } = useContext(PVoiceContext);
   const [loading, setLoading] = useState(false);
-  const [audioMp3, setAudioMp3] = useState("");
   const {
     pspeakers,
     toggleHandlerPS,
@@ -88,6 +87,7 @@ export const SpeakerVoice = ({ navigation }) => {
     showSuccessAlert,
   } = useContext(PSpeakerContext);
 
+  console.log(pspeakers);
   const allSpeakersOn = pspeakers.some((s) => s.isOn);
 
   const handleNextStepPress = async () => {
@@ -98,9 +98,10 @@ export const SpeakerVoice = ({ navigation }) => {
       setTimeout(async () => {
         console.log(pspeakers);
         try {
+          set(ref(FIREBASEDATABASE, "RecordSpeakers"), pspeakers);
           setLoading(false);
-
           showSuccessAlert(navigation);
+          // Upload the final recording to Firebase Storage
         } catch (err) {
           console.log(err);
         }
@@ -118,13 +119,13 @@ export const SpeakerVoice = ({ navigation }) => {
             key={speaker.no}
             No={speaker.no}
             isOn={speaker.isOn}
-            toggleHandler={() => toggleHandlerPS(speaker.no, finalRecording)}
+            toggleHandler={() => toggleHandlerPS(speaker.no, url)}
           />
         ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText onPress={() => toggleHandlerAllPS(finalRecording)}>
+          <AllSpeakerText onPress={() => toggleHandlerAllPS(url)}>
             Turn {pspeakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>

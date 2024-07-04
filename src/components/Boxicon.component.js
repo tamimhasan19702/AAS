@@ -45,7 +45,7 @@ export default function Boxicon({ url, text }) {
     return null;
   }
   return (
-    <BoxiconView>
+    <BoxiconView style={{ elevation: 9 }}>
       <AnimationView
         autoPlay
         loop

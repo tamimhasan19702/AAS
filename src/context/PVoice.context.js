@@ -14,6 +14,7 @@ export const PVoiceContextProvider = ({ children }) => {
   });
   const [recordingTime, setRecordingTime] = useState(null);
   const [recordedSounds, setRecordedSounds] = useState([]);
+  const [url, setUrl] = useState(null);
 
   async function startRecording() {
     try {
@@ -77,16 +78,17 @@ export const PVoiceContextProvider = ({ children }) => {
       const Time = new Date().getTime();
       setRecordingTime(Time);
 
-      // Save the recorded sound to the array with isActive set to false
-      setRecordedSounds((prevRecordedSounds) => [
+      // Update the recorded sounds with the new recording as active
+      const newRecordedSounds = [
         {
           sound,
           duration: recordingDuration.duration / 1000,
           Time,
-          isActive: false,
+          isActive: true,
         },
-        ...prevRecordedSounds,
-      ]);
+        ...recordedSounds.map((sound) => ({ ...sound, isActive: false })),
+      ];
+      setRecordedSounds(newRecordedSounds);
 
       //saving a final recording
       setFinalRecording(sound);
@@ -94,23 +96,13 @@ export const PVoiceContextProvider = ({ children }) => {
       // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
         "recordedSounds",
-        JSON.stringify([
-          {
-            sound,
-            duration: recordingDuration.duration / 1000,
-            Time,
-            isActive: false,
-          },
-          ...recordedSounds,
-        ])
+        JSON.stringify(newRecordedSounds)
       );
 
       console.log("Recording stopped and sound created");
 
       // Reset the recording duration
       setRecordingDuration({ duration: 0, timerId: null });
-
-      // Reload recorded sounds from AsyncStorage
     } catch (err) {
       console.error("Failed to stop recording", err);
     }
@@ -215,6 +207,8 @@ export const PVoiceContextProvider = ({ children }) => {
     recordedSounds,
     clearRecordedSounds,
     deleteRecordedSound,
+    url,
+    setUrl,
   };
 
   return (
