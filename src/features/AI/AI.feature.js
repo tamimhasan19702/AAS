@@ -20,7 +20,7 @@ import {
   AiTextInputView,
 } from "./AI.style";
 import { Loading } from "../../utils/loading";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import PresetComponent from "../../components/preset.component";
 import { AiContext } from "../../context/AI.context";
 import { Text } from "react-native";
@@ -31,7 +31,6 @@ export const AiScreen = ({ navigation }) => {
     audio,
     saveloading,
     presetArray,
-
     save,
     speak,
     clearPreset,
@@ -45,6 +44,9 @@ export const AiScreen = ({ navigation }) => {
   if (!fontsLoaded) {
     return null;
   }
+
+  // Check if any preset has isActive: true
+  const isAnyPresetActive = presetArray.some((item) => item.isActive);
 
   return (
     <SafeView>
@@ -131,11 +133,17 @@ export const AiScreen = ({ navigation }) => {
 
         <NextButton
           onPress={() => {
-            if (audio) {
+            if (isAnyPresetActive) {
               navigation.navigate("Speaker Screen");
+            } else {
+              Alert.alert(
+                "Alert",
+                "No active Sound to announce.Click on any sound to activate it.",
+                [{ text: "OK" }]
+              );
             }
           }}
-          hasAudio={Boolean(audio)} // Pass the audio prop here
+          hasAudio={Boolean(isAnyPresetActive)} // Pass the audio prop here
         >
           <AiInputText>Next Step</AiInputText>
         </NextButton>

@@ -44,8 +44,9 @@ export const AiContextProvider = ({ children }) => {
     try {
       const startTime = performance.now();
       const isLive = true;
-      const spareApi =
-        "https://aas-backend-copy-hze8iz77e-tareqs-projects-4295e8be.vercel.app/";
+      // https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/
+      // const spareApi =
+      //   "https://aas-backend-copy-hze8iz77e-tareqs-projects-4295e8be.vercel.app/";
       const baseUrl = isLive
         ? "https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/"
         : "http://192.168.0.107:3000/";
@@ -159,6 +160,14 @@ export const AiContextProvider = ({ children }) => {
     });
   };
 
+  const deleteActivePreset = () => {
+    setPresetArray((prevArray) => {
+      const updatedArray = prevArray.filter((item) => !item.isActive);
+      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
+      return updatedArray; // Return the updated state value
+    });
+  };
+
   useEffect(() => {
     updateAudioText();
     getArrayFromFirebase();
@@ -179,6 +188,7 @@ export const AiContextProvider = ({ children }) => {
     speak,
     clearPreset,
     handleDelete,
+    deleteActivePreset,
   };
 
   return (

@@ -2,6 +2,7 @@
 
 import React, { createContext, useState } from "react";
 import { Alert } from "react-native";
+
 export const SpeakerContext = createContext();
 
 export const SpeakerProvider = ({ children }) => {

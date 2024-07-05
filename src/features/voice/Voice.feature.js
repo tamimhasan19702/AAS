@@ -1,6 +1,13 @@
 /** @format */
 
-import { View, Text, TouchableOpacity, Button, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Button,
+  ScrollView,
+  Alert,
+} from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
@@ -10,6 +17,7 @@ import { StartStopRecorder } from "../../components/Start&StopRecorder.component
 import { PlayVoice } from "../../components/playVoice.component";
 import { color } from "../../utils/colors";
 import { FIREBASESTORAGE, FIREBASEDATABASE } from "../../../firebase.config";
+
 import {
   ref,
   uploadBytes,
@@ -45,7 +53,8 @@ const VoiceBottomView = styled(View)`
 `;
 
 const VoiceBottomButton = styled(TouchableOpacity)`
-  background-color: ${color.primary};
+  background-color: ${({ hasRecording }) =>
+    hasRecording ? color.primary : color.gray} !important;
   width: 150px;
   color: ${color.white};
   text-align: center;
@@ -118,7 +127,9 @@ export const VoiceScreen = ({ navigation }) => {
       uploadFile();
     }
   }, [finalRecording]);
+  console.log(recordedSounds);
 
+  const isAnyRecordActive = recordedSounds.some((item) => item.isActive);
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -170,7 +181,18 @@ export const VoiceScreen = ({ navigation }) => {
               </VoiceScreenText>
             </VoiceBottomButton>
             <VoiceBottomButton
-              onPress={() => navigation.navigate("Speaker Voice")}>
+              onPress={() => {
+                if (isAnyRecordActive) {
+                  navigation.navigate("Speaker Voice");
+                } else {
+                  Alert.alert(
+                    "Alert",
+                    "No active Recording.Click on any sound to activate it.",
+                    [{ text: "OK" }]
+                  );
+                }
+              }}
+              hasRecording={Boolean(isAnyRecordActive)}>
               <VoiceScreenText style={{ color: color.white, fontSize: 16 }}>
                 Next Step
               </VoiceScreenText>

@@ -77,7 +77,7 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerScreen = ({ navigation }) => {
-  const { audio } = useContext(AiContext);
+  const { audio, deleteActivePreset } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
   const {
     speakers,
@@ -87,6 +87,8 @@ export const SpeakerScreen = ({ navigation }) => {
     showSuccessAlert,
     resetSpeakers,
   } = useContext(SpeakerContext);
+
+  console.log(audio);
 
   const allSpeakersOn = speakers.some((s) => s.isOn);
   const handleNextStepPress = () => {
@@ -99,6 +101,7 @@ export const SpeakerScreen = ({ navigation }) => {
         setLoading(false); // Set loading back to false
         showSuccessAlert(navigation);
         resetSpeakers();
+        deleteActivePreset();
       }, 3000);
     }
   };

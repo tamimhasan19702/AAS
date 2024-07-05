@@ -42,7 +42,7 @@ export const HistoryScreen = ({ navigation }) => {
         <ScrollView style={{ width: "90%", height: "80%" }}>
           {histories.map((history) => (
             <View
-              key={history.id}
+              key={Math.random()}
               style={{
                 marginBottom: 10,
                 backgroundColor: color.primary,

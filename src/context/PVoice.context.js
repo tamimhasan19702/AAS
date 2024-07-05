@@ -173,6 +173,13 @@ export const PVoiceContextProvider = ({ children }) => {
     }
   }
 
+  const deleteActiveRecordedSound = () => {
+    const index = recordedSounds.findIndex((sound) => sound.isActive);
+    if (index !== -1) {
+      deleteRecordedSound(index);
+    }
+  };
+
   useEffect(() => {
     // Load recorded sounds from AsyncStorage on component mount
     const loadRecordedSounds = async () => {
@@ -209,6 +216,7 @@ export const PVoiceContextProvider = ({ children }) => {
     deleteRecordedSound,
     url,
     setUrl,
+    deleteActiveRecordedSound,
   };
 
   return (

@@ -77,7 +77,8 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerVoice = ({ navigation }) => {
-  const { finalRecording, url } = useContext(PVoiceContext);
+  const { finalRecording, url, deleteActiveRecordedSound } =
+    useContext(PVoiceContext);
   const [loading, setLoading] = useState(false);
   const {
     pspeakers,
@@ -101,6 +102,7 @@ export const SpeakerVoice = ({ navigation }) => {
           set(ref(FIREBASEDATABASE, "RecordSpeakers"), pspeakers);
           setLoading(false);
           showSuccessAlert(navigation);
+          deleteActiveRecordedSound();
           // Upload the final recording to Firebase Storage
         } catch (err) {
           console.log(err);
