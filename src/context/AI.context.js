@@ -87,6 +87,8 @@ export const AiContextProvider = ({ children }) => {
           audioText: newText,
         });
 
+        setAudio(newText);
+
         // Convert text to speech
         convertTextToSpeech(newText);
 
