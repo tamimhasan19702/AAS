@@ -4,6 +4,8 @@ import React, { createContext, useState, useEffect } from "react";
 import { Audio } from "expo-av";
 export const PVoiceContext = createContext();
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from "expo-file-system";
+import { FFmpegKit } from "ffmpeg-kit-react-native";
 
 export const PVoiceContextProvider = ({ children }) => {
   const [recording, setRecording] = useState();
@@ -31,7 +33,12 @@ export const PVoiceContextProvider = ({ children }) => {
       console.log("Starting recording..");
       const recording = new Audio.Recording();
       await recording.prepareToRecordAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY,
+        {
+          format: "wav", // Specify the format as WAV
+          sampleRate: 44100, // Optional: specify the sample rate
+          bitrate: 128000, // Optional: specify the bitrate
+        }
       );
       await recording.startAsync();
 
@@ -65,9 +72,14 @@ export const PVoiceContextProvider = ({ children }) => {
         allowsRecordingIOS: false,
       });
 
-      // Get the URI of the recorded audio file
+      // Get the URI of the recorded audio file (3GP format)
       const sound = await recording.getURI();
       console.log("Sound URI:", sound);
+
+      if (!sound) {
+        console.error("No sound recorded. Please try again.");
+        return;
+      }
 
       setRecording(false);
 
@@ -90,7 +102,7 @@ export const PVoiceContextProvider = ({ children }) => {
       ];
       setRecordedSounds(newRecordedSounds);
 
-      //saving a final recording
+      // Save the final recording URI
       setFinalRecording(sound);
 
       // Save the array of recorded sounds to AsyncStorage

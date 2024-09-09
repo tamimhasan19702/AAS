@@ -59,9 +59,9 @@ export const AiContextProvider = ({ children }) => {
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64Data = reader.result;
-        await sound.unloadAsync(); // Unload any previous audio
-        await sound.loadAsync({ uri: base64Data }); // Load the new audio
-        await sound.playAsync(); // Play the audio
+        await sound.unloadAsync();
+        await sound.loadAsync({ uri: base64Data });
+        await sound.playAsync();
 
         const endTime = performance.now();
         setLoadTime(endTime - startTime);
