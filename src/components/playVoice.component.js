@@ -13,9 +13,10 @@ const PlayVoiceView = styled(View)`
     props.isActive ? color.green : color.primary};
   width: 380px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  gap: 5px;
   padding: 15px;
   border-radius: 5px;
   margin-top: 5px;
@@ -29,16 +30,16 @@ const PlayVoiceText = styled(Text)`
 
 const PlayVoiceLeftView = styled(View)`
   display: flex;
-  align-items: center;
-  flex-direction: row;
-  justify-content: center;
+  align-items: start;
+  flex-direction: column;
+  justify-content: start;
   gap: 10px;
 `;
 const PlayVoiceRightView = styled(View)`
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  align-items: start;
+  justify-content: space-between;
   gap: 10px;
 `;
 

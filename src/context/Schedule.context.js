@@ -182,10 +182,7 @@ export const ScheduleProvider = ({ children }) => {
         timeDuration: selectedTimeDuration,
         audio: scheduleAudio,
       });
-      setScheduleHistory({
-        timeDuration: selectedTimeDuration,
-        text: scheduleAudio,
-      });
+
       resetScheduleSpeakers();
     } catch (error) {
       console.error("Error updating speakers and navigating", error);

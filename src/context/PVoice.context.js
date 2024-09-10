@@ -2,150 +2,112 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import { Audio } from "expo-av";
-export const PVoiceContext = createContext();
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as FileSystem from "expo-file-system";
-import { FFmpegKit } from "ffmpeg-kit-react-native";
+
+export const PVoiceContext = createContext();
 
 export const PVoiceContextProvider = ({ children }) => {
-  const [recording, setRecording] = useState();
-  const [finalRecording, setFinalRecording] = useState();
+  const [recording, setRecording] = useState(null);
+  const [finalRecording, setFinalRecording] = useState(null);
   const [recordingDuration, setRecordingDuration] = useState({
     duration: 0,
     timerId: null,
   });
   const [recordingTime, setRecordingTime] = useState(null);
   const [recordedSounds, setRecordedSounds] = useState([]);
-  const [url, setUrl] = useState(null);
+  const [sound, setSound] = useState(null);
 
+  // Start recording
   async function startRecording() {
     try {
-      const { status } = await Audio.requestPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Requesting permission..");
-        return;
-      }
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
+      console.log("Requesting permissions..");
+      const permission = await Audio.requestPermissionsAsync();
+      if (permission.status === "granted") {
+        console.log("Starting recording..");
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+        );
+        setRecording(recording);
+        console.log("Recording started");
 
-      console.log("Starting recording..");
-      const recording = new Audio.Recording();
-      await recording.prepareToRecordAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY,
-        {
-          format: "wav", // Specify the format as WAV
-          sampleRate: 44100, // Optional: specify the sample rate
-          bitrate: 128000, // Optional: specify the bitrate
-        }
-      );
-      await recording.startAsync();
+        // Start the timer
+        const timerId = setInterval(() => {
+          setRecordingDuration((prevDuration) => ({
+            ...prevDuration,
+            duration: prevDuration.duration + 1000, // Increment by 1 second
+          }));
+        }, 1000);
 
-      setRecording(recording);
-
-      // Start the timer
-      const timerId = setInterval(() => {
         setRecordingDuration((prevDuration) => ({
           ...prevDuration,
-          duration: prevDuration.duration + 1000, // Increment by 1 second (1000 milliseconds)
+          timerId,
         }));
-      }, 1000); // Update every second
-
-      // Store the timer reference in a state
-      setRecordingDuration((prevDuration) => ({
-        ...prevDuration,
-        timerId: timerId,
-      }));
-
-      console.log("Recording started");
+      } else {
+        console.error("Recording permission not granted");
+      }
     } catch (err) {
       console.error("Failed to start recording", err);
     }
   }
 
+  // Stop recording
   async function stopRecording() {
     try {
       console.log("Stopping recording..");
+      setRecording(null);
       await recording.stopAndUnloadAsync();
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-      });
+      const uri = recording.getURI();
+      setFinalRecording(uri);
 
-      // Get the URI of the recorded audio file (3GP format)
-      const sound = await recording.getURI();
-      console.log("Sound URI:", sound);
-
-      if (!sound) {
-        console.error("No sound recorded. Please try again.");
-        return;
-      }
-
-      setRecording(false);
-
-      // Clear the interval timer
       clearInterval(recordingDuration.timerId);
 
       // Set recording time to current time
       const Time = new Date().getTime();
       setRecordingTime(Time);
 
-      // Update the recorded sounds with the new recording as active
       const newRecordedSounds = [
         {
-          sound,
-          duration: recordingDuration.duration / 1000,
+          sound: uri, // file path of the recorded audio
+          duration: recordingDuration.duration / 1000, // in seconds
           Time,
           isActive: true,
         },
         ...recordedSounds.map((sound) => ({ ...sound, isActive: false })),
       ];
+
       setRecordedSounds(newRecordedSounds);
 
-      // Save the final recording URI
-      setFinalRecording(sound);
-
-      // Save the array of recorded sounds to AsyncStorage
       await AsyncStorage.setItem(
         "recordedSounds",
         JSON.stringify(newRecordedSounds)
       );
 
-      console.log("Recording stopped and sound created");
-
-      // Reset the recording duration
       setRecordingDuration({ duration: 0, timerId: null });
     } catch (err) {
       console.error("Failed to stop recording", err);
     }
   }
 
+  // Play recorded sound
   async function playRecording(index) {
     try {
-      // Retrieve recordedSounds from AsyncStorage
       const recordedSoundsString = await AsyncStorage.getItem("recordedSounds");
       if (recordedSoundsString) {
         const recordedSoundsArray = JSON.parse(recordedSoundsString);
-        console.log("recordedSounds from AsyncStorage:", recordedSoundsArray);
-
-        if (recordedSoundsArray[index] && recordedSoundsArray[index].sound) {
+        const filePath = recordedSoundsArray[index]?.sound;
+        if (filePath) {
           console.log(`Playing recording at index ${index}..`);
-          const soundObject = new Audio.Sound();
-          await soundObject.loadAsync({
-            uri: recordedSoundsArray[index].sound,
-          });
-          await soundObject.playAsync();
-          console.log("Recording playing");
 
-          // Update isActive for the played recording
-          setRecordedSounds((prevRecordedSounds) =>
-            prevRecordedSounds.map((item, i) => ({
-              ...item,
-              isActive: i === index,
-            }))
+          // Unload previous sound if playing
+          if (sound) {
+            await sound.unloadAsync();
+          }
+
+          const { sound: newSound } = await Audio.Sound.createAsync(
+            { uri: filePath },
+            { shouldPlay: true }
           );
-          //saving a final recording
-          setFinalRecording(recordedSoundsArray[index].sound);
+          setSound(newSound);
         } else {
           console.error(`No recording found at index ${index}`);
         }
@@ -157,6 +119,7 @@ export const PVoiceContextProvider = ({ children }) => {
     }
   }
 
+  // Clear recorded sounds
   async function clearRecordedSounds() {
     try {
       await AsyncStorage.removeItem("recordedSounds");
@@ -167,15 +130,12 @@ export const PVoiceContextProvider = ({ children }) => {
     }
   }
 
+  // Delete recorded sound
   async function deleteRecordedSound(index) {
     try {
-      // Make a copy of the recordedSounds array
       const updatedSounds = [...recordedSounds];
-      // Remove the element at the specified index
       updatedSounds.splice(index, 1);
-      // Update the recordedSounds state with the modified array
       setRecordedSounds(updatedSounds);
-      // Update AsyncStorage with the modified array
       await AsyncStorage.setItem(
         "recordedSounds",
         JSON.stringify(updatedSounds)
@@ -193,7 +153,6 @@ export const PVoiceContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // Load recorded sounds from AsyncStorage on component mount
     const loadRecordedSounds = async () => {
       try {
         const recordedSoundsString = await AsyncStorage.getItem(
@@ -213,6 +172,13 @@ export const PVoiceContextProvider = ({ children }) => {
 
     loadRecordedSounds();
     clearInterval(recordingDuration.timerId);
+
+    return () => {
+      // Unload sound to free up memory
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
   }, []);
 
   const contextValue = {
@@ -226,13 +192,11 @@ export const PVoiceContextProvider = ({ children }) => {
     recordedSounds,
     clearRecordedSounds,
     deleteRecordedSound,
-    url,
-    setUrl,
     deleteActiveRecordedSound,
   };
 
   return (
-    <PVoiceContext.Provider value={{ ...contextValue }}>
+    <PVoiceContext.Provider value={contextValue}>
       {children}
     </PVoiceContext.Provider>
   );

@@ -1,14 +1,7 @@
 /** @format */
 
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Button,
-  ScrollView,
-  Alert,
-} from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import React, { useEffect, useContext } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
 import { LogoBar } from "../../components/logoBar.component";
@@ -17,6 +10,7 @@ import { StartStopRecorder } from "../../components/Start&StopRecorder.component
 import { PlayVoice } from "../../components/playVoice.component";
 import { color } from "../../utils/colors";
 import { FIREBASESTORAGE, FIREBASEDATABASE } from "../../../firebase.config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   ref,
@@ -81,55 +75,29 @@ export const VoiceScreen = ({ navigation }) => {
     setUrl,
   } = useContext(PVoiceContext);
 
+  // Handle Firebase upload on recording completion
   useEffect(() => {
     if (finalRecording) {
-      const uploadFile = async () => {
+      const storeLocally = async () => {
         try {
-          // Fetch the existing recording URL from Firebase Database
-          const existingRecordingRef = refDB(
-            FIREBASEDATABASE,
-            "recordings/url"
+          // Save the recording to AsyncStorage (which you're already doing)
+          await AsyncStorage.setItem(
+            "recordedSounds",
+            JSON.stringify(recordedSounds)
           );
-          const existingRecordingSnapshot = await get(existingRecordingRef);
-
-          if (existingRecordingSnapshot.exists()) {
-            const existingUrl = existingRecordingSnapshot.val();
-
-            // Delete the existing recording from Firebase Storage
-            const existingStorageRef = ref(FIREBASESTORAGE, existingUrl);
-            await deleteObject(existingStorageRef);
-            console.log("Deleted existing recording");
-          }
-
-          // Upload the new recording to Firebase Storage
-          const storageRef = ref(
-            FIREBASESTORAGE,
-            `recordings/${Date.now()}.3gp`
-          );
-          const response = await fetch(finalRecording);
-          const blob = await response.blob();
-
-          await uploadBytes(storageRef, blob);
-          const url = await getDownloadURL(storageRef);
-
-          setUrl(url);
-          console.log("File available at", url);
-
-          // Update Firebase Database with the new recording URL
-          await set(refDB(FIREBASEDATABASE, "recordings"), {
-            url: url,
-          });
+          console.log("Recording saved locally in AsyncStorage.");
         } catch (error) {
-          console.error("Error uploading file:", error);
+          console.error("Error saving file locally:", error);
         }
       };
 
-      uploadFile();
+      storeLocally();
     }
   }, [finalRecording]);
-  console.log(recordedSounds);
 
+  // Check if any recording is active
   const isAnyRecordActive = recordedSounds.some((item) => item.isActive);
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -144,12 +112,13 @@ export const VoiceScreen = ({ navigation }) => {
         <VoiceScreenText style={{ fontSize: 25 }}>
           Recording List 🎙
         </VoiceScreenText>
+
         <ScrollView>
           {recordedSounds.length > 0 ? (
             recordedSounds.map((soundItem, index) => {
               const { sound, duration, Time, isActive } = soundItem;
-
               const reverseIndex = recordedSounds.length - index;
+
               return (
                 <PlayVoice
                   key={index}
@@ -164,20 +133,17 @@ export const VoiceScreen = ({ navigation }) => {
               );
             })
           ) : (
-            <VoiceScreenText> No New Recording Found!! ☺</VoiceScreenText>
+            <VoiceScreenText>No New Recording Found!! ☺</VoiceScreenText>
           )}
         </ScrollView>
+
         {recordedSounds.length > 0 && (
           <VoiceBottomView>
             <VoiceBottomButton
               onPress={clearRecordedSounds}
               style={{ backgroundColor: color.red }}>
-              <VoiceScreenText
-                style={{
-                  color: color.white,
-                  fontSize: 16,
-                }}>
-                clear List
+              <VoiceScreenText style={{ color: color.white, fontSize: 16 }}>
+                Clear List
               </VoiceScreenText>
             </VoiceBottomButton>
             <VoiceBottomButton
@@ -187,7 +153,7 @@ export const VoiceScreen = ({ navigation }) => {
                 } else {
                   Alert.alert(
                     "Alert",
-                    "No active Recording.Click on any sound to activate it.",
+                    "No active Recording. Click on any sound to activate it.",
                     [{ text: "OK" }]
                   );
                 }
