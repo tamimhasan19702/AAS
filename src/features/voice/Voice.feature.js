@@ -83,6 +83,8 @@ export const VoiceScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (finalRecording) {
+      console.log("Fin ", finalRecording);
+      console.log("recorded ", recordedSounds);
       const uploadFile = async () => {
         try {
           // Fetch the existing recording URL from Firebase Database
@@ -95,13 +97,22 @@ export const VoiceScreen = ({ navigation }) => {
           if (existingRecordingSnapshot.exists()) {
             const existingUrl = existingRecordingSnapshot.val();
 
-            // Delete the existing recording from Firebase Storage
-            const existingStorageRef = ref(FIREBASESTORAGE, existingUrl);
-            await deleteObject(existingStorageRef);
-            console.log("Deleted existing recording");
+            try {
+              // Attempt to delete the existing recording from Firebase Storage
+              const existingStorageRef = ref(FIREBASESTORAGE, existingUrl);
+              await deleteObject(existingStorageRef);
+              console.log("Deleted existing recording");
+            } catch (error) {
+              // If the object doesn't exist, handle the error
+              if (error.code === "storage/object-not-found") {
+                console.log("No existing recording found in Firebase Storage.");
+              } else {
+                throw error; // Other errors should still be thrown
+              }
+            }
           }
 
-          // Upload the new recording to Firebase Storage
+          // Proceed to upload the new recording
           const storageRef = ref(
             FIREBASESTORAGE,
             `recordings/${Date.now()}.3gp`
@@ -127,7 +138,6 @@ export const VoiceScreen = ({ navigation }) => {
       uploadFile();
     }
   }, [finalRecording]);
-  console.log(recordedSounds);
 
   const isAnyRecordActive = recordedSounds.some((item) => item.isActive);
   return (
