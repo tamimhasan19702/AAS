@@ -13,6 +13,16 @@ export const PSpeakerProvider = ({ children }) => {
     { no: 5, isOn: false, voice: "" },
   ]);
 
+  const resetPsSpeakers = () => {
+    setSpeakers([
+      { no: 1, isOn: false, voice: "" },
+      { no: 2, isOn: false, voice: "" },
+      { no: 3, isOn: false, voice: "" },
+      { no: 4, isOn: false, voice: "" },
+      { no: 5, isOn: false, voice: "" },
+    ]);
+  };
+
   const toggleHandlerPS = (speakerNo, audio) => {
     setPSpeakers((prevSpeakers) =>
       prevSpeakers.map((speaker) =>
@@ -74,6 +84,7 @@ export const PSpeakerProvider = ({ children }) => {
         toggleHandlerAllPS,
         showAlert,
         showSuccessAlert,
+        resetPsSpeakers,
       }}>
       {children}
     </PSpeakerContext.Provider>

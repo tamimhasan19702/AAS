@@ -108,7 +108,7 @@ export const VoiceScreen = ({ navigation }) => {
       }
 
       // Convert the 3GP file to MP3
-      const response = await fetch("http://192.168.1.105:3000/convert", {
+      const response = await fetch("https://aas-backend.vercel.app/convert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +121,7 @@ export const VoiceScreen = ({ navigation }) => {
       const mp3StorageRef = ref(FIREBASESTORAGE, `converted/${mp3FileName}`);
       await uploadBytes(mp3StorageRef, blob);
       const mp3DownloadUrl = await getDownloadURL(mp3StorageRef);
-
+      console.log("check", mp3DownloadUrl);
       // Update Firebase Database with the new MP3 file URL
       await set(refDB(FIREBASEDATABASE, "converted"), {
         url: mp3DownloadUrl,
