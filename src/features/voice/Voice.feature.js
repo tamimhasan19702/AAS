@@ -70,6 +70,7 @@ const VoiceBottomButton = styled(TouchableOpacity)`
 `;
 
 export const VoiceScreen = ({ navigation }) => {
+  const [converted, setConverted] = useState(false);
   const {
     recording,
     startRecording,
@@ -121,7 +122,7 @@ export const VoiceScreen = ({ navigation }) => {
       const mp3StorageRef = ref(FIREBASESTORAGE, `converted/${mp3FileName}`);
       await uploadBytes(mp3StorageRef, blob);
       const mp3DownloadUrl = await getDownloadURL(mp3StorageRef);
-      console.log("check", mp3DownloadUrl);
+      setConverted(true);
       // Update Firebase Database with the new MP3 file URL
       await set(refDB(FIREBASEDATABASE, "converted"), {
         url: mp3DownloadUrl,
@@ -245,8 +246,14 @@ export const VoiceScreen = ({ navigation }) => {
             </VoiceBottomButton>
             <VoiceBottomButton
               onPress={() => {
-                if (isAnyRecordActive) {
+                if (isAnyRecordActive && converted) {
                   navigation.navigate("Speaker Voice");
+                } else if (!converted) {
+                  Alert.alert(
+                    "Alert",
+                    "Audio conversion is still in progress. Please wait.",
+                    [{ text: "OK" }]
+                  );
                 } else {
                   Alert.alert(
                     "Alert",
@@ -255,7 +262,11 @@ export const VoiceScreen = ({ navigation }) => {
                   );
                 }
               }}
-              hasRecording={Boolean(isAnyRecordActive)}>
+              hasRecording={Boolean(isAnyRecordActive && converted)}
+              style={{
+                backgroundColor:
+                  isAnyRecordActive && converted ? color.primary : color.gray,
+              }}>
               <VoiceScreenText style={{ color: color.white, fontSize: 16 }}>
                 Next Step
               </VoiceScreenText>

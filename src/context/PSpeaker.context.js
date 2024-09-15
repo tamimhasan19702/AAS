@@ -14,7 +14,7 @@ export const PSpeakerProvider = ({ children }) => {
   ]);
 
   const resetPsSpeakers = () => {
-    setSpeakers([
+    setPSpeakers([
       { no: 1, isOn: false, voice: "" },
       { no: 2, isOn: false, voice: "" },
       { no: 3, isOn: false, voice: "" },
