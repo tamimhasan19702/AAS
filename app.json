@@ -6,17 +6,13 @@
     "orientation": "portrait",
     "icon": "../AAS/assets/icon.png",
     "userInterfaceStyle": "light",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/Splash.png",
-        "backgroundColor": "#3409c5"
-      }
+      "package": "com.yourcompany.aas",
+      "version": "1.0.0"
     },
     "web": {
       "favicon": ""

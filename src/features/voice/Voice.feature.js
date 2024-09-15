@@ -21,6 +21,7 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
+  listAll,
   deleteObject,
 } from "firebase/storage";
 import { set, ref as refDB, get } from "firebase/database";
@@ -79,7 +80,56 @@ export const VoiceScreen = ({ navigation }) => {
     deleteRecordedSound,
     finalRecording,
     setUrl,
+    url,
   } = useContext(PVoiceContext);
+
+  const convertToMp3 = async (firebaseUrl) => {
+    try {
+      // Fetch the existing MP3 file URL from Firebase Database
+      const existingMp3Ref = refDB(FIREBASEDATABASE, "converted/url");
+      const existingMp3Snapshot = await get(existingMp3Ref);
+
+      if (existingMp3Snapshot.exists()) {
+        const existingMp3Url = existingMp3Snapshot.val();
+
+        // Delete the existing MP3 file from Firebase Storage
+        try {
+          const existingMp3StorageRef = ref(FIREBASESTORAGE, existingMp3Url);
+          await deleteObject(existingMp3StorageRef);
+        } catch (error) {
+          if (error.code === "storage/object-not-found") {
+            console.log("No existing MP3 file found in Firebase Storage.");
+          } else {
+            throw error; // Other errors should be re-thrown
+          }
+        }
+      } else {
+        console.log("No existing MP3 file found in Realtime Database.");
+      }
+
+      // Convert the 3GP file to MP3
+      const response = await fetch("http://192.168.1.105:3000/convert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fileUrl: firebaseUrl }),
+      });
+
+      const blob = await response.blob();
+      const mp3FileName = `converted_file_${Date.now()}.mp3`;
+      const mp3StorageRef = ref(FIREBASESTORAGE, `converted/${mp3FileName}`);
+      await uploadBytes(mp3StorageRef, blob);
+      const mp3DownloadUrl = await getDownloadURL(mp3StorageRef);
+
+      // Update Firebase Database with the new MP3 file URL
+      await set(refDB(FIREBASEDATABASE, "converted"), {
+        url: mp3DownloadUrl,
+      });
+    } catch (error) {
+      console.error("Error during MP3 file conversion:", error);
+    }
+  };
 
   useEffect(() => {
     if (finalRecording) {
@@ -130,6 +180,8 @@ export const VoiceScreen = ({ navigation }) => {
           await set(refDB(FIREBASEDATABASE, "recordings"), {
             url: url,
           });
+
+          await convertToMp3(url);
         } catch (error) {
           console.error("Error uploading file:", error);
         }
@@ -157,8 +209,8 @@ export const VoiceScreen = ({ navigation }) => {
         <ScrollView>
           {recordedSounds.length > 0 ? (
             recordedSounds.map((soundItem, index) => {
-              const { sound, duration, Time, isActive } = soundItem;
-
+              const { sound, duration, time, isActive } = soundItem;
+              console.log(soundItem);
               const reverseIndex = recordedSounds.length - index;
               return (
                 <PlayVoice
@@ -166,7 +218,7 @@ export const VoiceScreen = ({ navigation }) => {
                   title={`Play Recording ${reverseIndex}`}
                   onPress={() => playRecording(index)}
                   duration={duration}
-                  time={Time}
+                  time={time}
                   handleDelete={() => deleteRecordedSound(index)}
                   isActive={isActive}
                   sound={sound}
@@ -187,7 +239,7 @@ export const VoiceScreen = ({ navigation }) => {
                   color: color.white,
                   fontSize: 16,
                 }}>
-                clear List
+                Clear List
               </VoiceScreenText>
             </VoiceBottomButton>
             <VoiceBottomButton
@@ -197,7 +249,7 @@ export const VoiceScreen = ({ navigation }) => {
                 } else {
                   Alert.alert(
                     "Alert",
-                    "No active Recording.Click on any sound to activate it.",
+                    "No active Recording. Click on any sound to activate it.",
                     [{ text: "OK" }]
                   );
                 }
