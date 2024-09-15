@@ -77,7 +77,7 @@ const Overlay = styled(View)`
 `;
 
 export const SpeakerVoice = ({ navigation }) => {
-  const { finalRecording, url, deleteActiveRecordedSound } =
+  const { finalRecording, url, deleteActiveRecordedSound, convertedUrl } =
     useContext(PVoiceContext);
   const [loading, setLoading] = useState(false);
   const {
@@ -121,13 +121,13 @@ export const SpeakerVoice = ({ navigation }) => {
             key={speaker.no}
             No={speaker.no}
             isOn={speaker.isOn}
-            toggleHandler={() => toggleHandlerPS(speaker.no, url)}
+            toggleHandler={() => toggleHandlerPS(speaker.no, convertedUrl)}
           />
         ))}
       </ScrollView>
       <AllSpeakerView>
         <AllSpeakerButton>
-          <AllSpeakerText onPress={() => toggleHandlerAllPS(url)}>
+          <AllSpeakerText onPress={() => toggleHandlerAllPS(convertedUrl)}>
             Turn {pspeakers.every((speaker) => speaker.isOn) ? "Off" : "On"} All
           </AllSpeakerText>
         </AllSpeakerButton>

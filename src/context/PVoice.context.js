@@ -14,6 +14,7 @@ export const PVoiceContextProvider = ({ children }) => {
   const [recordingTime, setRecordingTime] = useState(null);
   const [recordedSounds, setRecordedSounds] = useState([]);
   const [url, setUrl] = useState(null);
+  const [convertedUrl, setConvertedUrl] = useState("");
 
   async function startRecording() {
     try {
@@ -210,6 +211,8 @@ export const PVoiceContextProvider = ({ children }) => {
     url,
     setUrl,
     deleteActiveRecordedSound,
+    convertedUrl,
+    setConvertedUrl,
   };
 
   return (

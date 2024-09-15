@@ -80,7 +80,7 @@ export const VoiceScreen = ({ navigation }) => {
     deleteRecordedSound,
     finalRecording,
     setUrl,
-    url,
+    setConvertedUrl,
   } = useContext(PVoiceContext);
 
   const convertToMp3 = async (firebaseUrl) => {
@@ -126,6 +126,7 @@ export const VoiceScreen = ({ navigation }) => {
       await set(refDB(FIREBASEDATABASE, "converted"), {
         url: mp3DownloadUrl,
       });
+      setConvertedUrl(mp3DownloadUrl);
     } catch (error) {
       console.error("Error during MP3 file conversion:", error);
     }
