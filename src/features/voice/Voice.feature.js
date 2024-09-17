@@ -84,32 +84,33 @@ export const VoiceScreen = ({ navigation }) => {
     setConvertedUrl,
   } = useContext(PVoiceContext);
 
-  const convertToMp4 = async (firebaseUrl) => {
+  const convertToMp3 = async (firebaseUrl) => {
     try {
-      // Fetch the existing MP4 file URL from Firebase Database
-      const existingMp4Ref = refDB(FIREBASEDATABASE, "converted/url");
-      const existingMp4Snapshot = await get(existingMp4Ref);
+      // Fetch the existing MP3 file URL from Firebase Database
+      const existingMp3Ref = refDB(FIREBASEDATABASE, "converted/url");
+      const existingMp3Snapshot = await get(existingMp3Ref);
 
-      if (existingMp4Snapshot.exists()) {
-        const existingMp4Url = existingMp4Snapshot.val();
+      if (existingMp3Snapshot.exists()) {
+        const existingMp3Url = existingMp3Snapshot.val();
 
-        // Delete the existing MP4 file from Firebase Storage
+        // Delete the existing MP3 file from Firebase Storage
         try {
-          const existingMp4StorageRef = ref(FIREBASESTORAGE, existingMp4Url);
-          await deleteObject(existingMp4StorageRef);
+          const existingMp3StorageRef = ref(FIREBASESTORAGE, existingMp3Url);
+          await deleteObject(existingMp3StorageRef);
         } catch (error) {
           if (error.code === "storage/object-not-found") {
-            console.log("No existing MP4 file found in Firebase Storage.");
+            console.log("No existing MP3 file found in Firebase Storage.");
           } else {
             throw error; // Other errors should be re-thrown
           }
         }
       } else {
-        console.log("No existing MP4 file found in Realtime Database.");
+        console.log("No existing MP3 file found in Realtime Database.");
       }
 
-      // http://192.168.1.105:3000/convert
-
+      //http://192.168.1.105:3000/convert
+      //https://aas-backend.vercel.app/convert
+      // Send request to convert the 3GP file to MP3
       const response = await fetch("https://aas-backend.vercel.app/convert", {
         method: "POST",
         headers: {
@@ -123,18 +124,18 @@ export const VoiceScreen = ({ navigation }) => {
       }
 
       const blob = await response.blob();
-      const mp4FileName = `converted_file_${Date.now()}.mp4`;
-      const mp4StorageRef = ref(FIREBASESTORAGE, `converted/${mp4FileName}`);
+      const mp3FileName = `converted_file_${Date.now()}.mp3`;
+      const mp3StorageRef = ref(FIREBASESTORAGE, `converted/${mp3FileName}`);
 
       // Set metadata to ensure correct content type
       const metadata = {
-        contentType: "video/mp4",
+        contentType: "audio/mp3",
       };
 
-      // Upload the MP4 file with metadata
-      await uploadBytes(mp4StorageRef, blob, metadata);
+      // Upload the MP3 file with metadata
+      await uploadBytes(mp3StorageRef, blob, metadata);
 
-      console.log(`File uploaded to Firebase Storage as "${mp4FileName}"`);
+      console.log(`File uploaded to Firebase Storage as "${mp3FileName}"`);
 
       // Poll Firebase Storage to check when the file becomes streamable
       const waitForStreamableUrl = async () => {
@@ -144,19 +145,19 @@ export const VoiceScreen = ({ navigation }) => {
 
         while (attempts < maxAttempts) {
           try {
-            const mp4DownloadUrl = await getDownloadURL(mp4StorageRef);
-            console.log("Attempting to fetch URL:", mp4DownloadUrl);
+            const mp3DownloadUrl = await getDownloadURL(mp3StorageRef);
+            console.log("Attempting to fetch URL:", mp3DownloadUrl);
 
             // Check if URL is accessible
-            const urlResponse = await fetch(mp4DownloadUrl);
+            const urlResponse = await fetch(mp3DownloadUrl);
             if (urlResponse.ok) {
-              console.log("Streamable MP4 URL:", mp4DownloadUrl);
+              console.log("Streamable MP3 URL:", mp3DownloadUrl);
 
               // URL is valid, now set it in Firebase Database and update the state
               await set(refDB(FIREBASEDATABASE, "converted"), {
-                url: mp4DownloadUrl,
+                url: mp3DownloadUrl,
               });
-              setConvertedUrl(mp4DownloadUrl);
+              setConvertedUrl(mp3DownloadUrl);
               setConverted(true);
               return; // Stop polling when URL is available
             } else {
@@ -179,7 +180,7 @@ export const VoiceScreen = ({ navigation }) => {
       // Start polling for the streamable URL
       await waitForStreamableUrl();
     } catch (error) {
-      console.error("Error during MP4 file conversion:", error);
+      console.error("Error during MP3 file conversion:", error);
     }
   };
 
@@ -233,7 +234,7 @@ export const VoiceScreen = ({ navigation }) => {
             url: url,
           });
 
-          await convertToMp4(url);
+          await convertToMp3(url);
         } catch (error) {
           console.error("Error uploading file:", error);
         }
