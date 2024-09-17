@@ -3,6 +3,7 @@
     "name": "AAS",
     "slug": "AAS",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
     "orientation": "portrait",
     "icon": "../AAS/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,9 +22,6 @@
       "eas": {
         "projectId": "08c71323-5268-4c6c-9c4f-ffdabd1ad336"
       }
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/08c71323-5268-4c6c-9c4f-ffdabd1ad336"
