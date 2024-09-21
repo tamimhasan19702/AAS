@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",
-    "android": "expo run:android",
+    "android": "expo build:android --legacy-peer-deps",
     "ios": "expo run:ios",
     "web": "expo start --web"
   },
@@ -29,7 +29,8 @@
     "expo-updates": "~0.25.24",
     "firebase": "^10.11.1",
     "lottie-react-native": "6.7.0",
-    "react": "18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-native": "0.74.5",
     "react-native-countdown-circle-timer": "^3.2.1",
     "react-native-fs": "^2.20.0",
@@ -38,6 +39,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-timer-picker": "^1.6.0",
+    "reactstrap": "^9.2.2",
     "styled-components": "^6.1.9",
     "video-to-audio": "^1.0.1"
   },
