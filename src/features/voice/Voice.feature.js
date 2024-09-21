@@ -108,8 +108,6 @@ export const VoiceScreen = ({ navigation }) => {
         console.log("No existing MP3 file found in Realtime Database.");
       }
 
-      //http://192.168.1.105:3000/convert
-      //https://aas-backend.vercel.app/convert
       // Send request to convert the 3GP file to MP3
       const response = await fetch("https://aas-backend.vercel.app/convert", {
         method: "POST",
@@ -124,7 +122,7 @@ export const VoiceScreen = ({ navigation }) => {
       }
 
       const blob = await response.blob();
-      const mp3FileName = `converted_file_${Date.now()}.mp3`;
+      const mp3FileName = `converted_file_audio.mp3`;
       const mp3StorageRef = ref(FIREBASESTORAGE, `converted/${mp3FileName}`);
 
       // Set metadata to ensure correct content type
@@ -136,6 +134,15 @@ export const VoiceScreen = ({ navigation }) => {
       await uploadBytes(mp3StorageRef, blob, metadata);
 
       console.log(`File uploaded to Firebase Storage as "${mp3FileName}"`);
+
+      // Get the download URL of the converted MP3 file
+      const mp3DownloadUrl = await getDownloadURL(mp3StorageRef);
+      console.log("MP3 URL:", mp3DownloadUrl);
+
+      // Set the download URL in Firebase Database
+      await set(refDB(FIREBASEDATABASE, "converted"), {
+        url: mp3DownloadUrl,
+      });
 
       // Poll Firebase Storage to check when the file becomes streamable
       const waitForStreamableUrl = async () => {

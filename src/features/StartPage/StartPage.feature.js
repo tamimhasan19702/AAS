@@ -47,7 +47,7 @@ export const StartPage = ({ navigation }) => {
               url={
                 "https://lottie.host/a4715a7c-91a8-4a5b-9f04-6f261b334afd/Ma1gBgxNr0.json"
               }
-              text={"Personalized Voice"}
+              text={"Recorded Voice"}
             />
           </TouchableOpacity>
         </BoxContainer>
