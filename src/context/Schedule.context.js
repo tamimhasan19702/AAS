@@ -183,7 +183,9 @@ export const ScheduleProvider = ({ children }) => {
         audio: scheduleAudio,
       });
 
-      resetScheduleSpeakers();
+      setTimeout(() => {
+        resetScheduleSpeakers();
+      }, 3000);
     } catch (error) {
       console.error("Error updating speakers and navigating", error);
     }

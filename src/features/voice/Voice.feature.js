@@ -25,7 +25,6 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { set, ref as refDB, get } from "firebase/database";
-import VideoToAudio from "video-to-audio";
 
 const VoiceScreenView = styled(View)`
   margin-top: 30px;
