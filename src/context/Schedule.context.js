@@ -25,16 +25,6 @@ export const ScheduleProvider = ({ children }) => {
     { no: 5, isOn: false, text: "" },
   ]);
 
-  const resetScheduleSpeakers = () => {
-    setSchedSpeakers([
-      { no: 1, isOn: false, text: "" },
-      { no: 2, isOn: false, text: "" },
-      { no: 3, isOn: false, text: "" },
-      { no: 4, isOn: false, text: "" },
-      { no: 5, isOn: false, text: "" },
-    ]);
-  };
-
   const sound = new Audio.Sound();
 
   const updateScheduleText = async () => {
@@ -182,10 +172,6 @@ export const ScheduleProvider = ({ children }) => {
         timeDuration: selectedTimeDuration,
         audio: scheduleAudio,
       });
-
-      setTimeout(() => {
-        resetScheduleSpeakers();
-      }, 3000);
     } catch (error) {
       console.error("Error updating speakers and navigating", error);
     }
