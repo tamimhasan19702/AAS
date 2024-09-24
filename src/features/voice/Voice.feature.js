@@ -166,6 +166,7 @@ export const VoiceScreen = ({ navigation }) => {
               });
               setConvertedUrl(mp3DownloadUrl);
               setConverted(true);
+              getConvertedMp3Url();
               return; // Stop polling when URL is available
             } else {
               console.log(`Attempt ${attempts + 1}: File is not yet ready.`);
@@ -188,6 +189,32 @@ export const VoiceScreen = ({ navigation }) => {
       await waitForStreamableUrl();
     } catch (error) {
       console.error("Error during MP3 file conversion:", error);
+    }
+  };
+  const getConvertedMp3Url = async () => {
+    try {
+      // Create a reference to the converted folder in Firebase Storage
+      const storageRef = ref(
+        FIREBASESTORAGE,
+        "converted/converted_file_audio.mp3"
+      );
+
+      // Get the download URL of the MP3 file
+      const mp3Url = await getDownloadURL(storageRef).catch((error) => {
+        console.error("Error getting MP3 URL:", error);
+        return null;
+      });
+
+      if (mp3Url) {
+        console.log("MP3 URL:", mp3Url);
+        return mp3Url;
+      } else {
+        console.error("Failed to get MP3 URL");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error getting MP3 URL:", error);
+      return null;
     }
   };
 
