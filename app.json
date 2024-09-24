@@ -12,18 +12,16 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.yourcompany.aas",
-      "versionCode": 1,
-      "permissions": [
-        "RECORD_AUDIO",
-        "WRITE_EXTERNAL_STORAGE",
-        "READ_EXTERNAL_STORAGE"
-      ],
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      "versionCode": 1
     },
+    "plugins": [
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow AAS to access your microphone."
+        }
+      ]
+    ],
     "web": {
       "favicon": ""
     },
