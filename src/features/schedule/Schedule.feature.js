@@ -1,7 +1,7 @@
 /** @format */
 
-import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
@@ -12,7 +12,7 @@ import { Loading } from "../../utils/loading";
 import { ScheduleContext } from "../../context/Schedule.context";
 import ScheduleComponent from "../../components/schedule.component";
 import ScheduleSpeaker from "../../components/scheduleSpeaker.component";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ROUTES } from "../../constants/routes";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -71,9 +71,7 @@ export const ScheduleScreen = ({ navigation }) => {
     toggleHandler,
     handleTimeDurationChange,
     selectedTimeDuration,
-    scheduleListView,
     ScheduleAction,
-    updateScheduleText,
   } = useContext(ScheduleContext);
 
   return (
@@ -81,7 +79,7 @@ export const ScheduleScreen = ({ navigation }) => {
       <LogoBar
         link={navigation}
         icon={"arrow-left"}
-        route="Schedule ListView"
+        route={ROUTES.SCHEDULE_LIST_VIEW}
       />
       <ScheduleView>
         <ScheduleText>Schedule Annoucnements</ScheduleText>

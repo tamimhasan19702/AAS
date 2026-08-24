@@ -1,13 +1,11 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Loading } from "../utils/loading";
 import { PresetLoading } from "../utils/presetLoading";
-import { AiContext } from "../context/AI.context";
 
 const Preset = styled(View)`
   width: 380px;
@@ -66,12 +64,6 @@ const TimeText = styled(Text)`
   font-family: "OverlockSC_400Regular";
 `;
 
-const TranslatedText = styled(Text)`
-  color: ${color.white};
-  font-size: 15px;
-  font-family: "OverlockSC_400Regular";
-  margin-left: 10px;
-`;
 export default function PresetComponent({
   speak,
   handleDelete = () => {},
@@ -80,15 +72,15 @@ export default function PresetComponent({
   isActive = true,
   time = "00:00",
 }) {
-  const { loadTime } = useContext(AiContext);
   const [loading, setLoading] = useState(false);
 
-  const handlePlayClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      speak({ presetText: text });
+  const handlePlayClick = async () => {
+    try {
+      setLoading(true);
+      await speak({ presetText: text });
+    } finally {
       setLoading(false);
-    }, loadTime);
+    }
   };
 
   return (

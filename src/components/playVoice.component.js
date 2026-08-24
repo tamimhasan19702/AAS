@@ -7,6 +7,7 @@ import { color } from "../utils/colors";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { PresetLoading } from "../utils/presetLoading";
+import { formatTimestamp } from "../utils/date";
 
 const PlayVoiceView = styled(View)`
   background-color: ${(props) =>
@@ -66,28 +67,14 @@ export const PlayVoice = ({
   isActive,
 }) => {
   const [loading, setLoading] = useState(false);
-  const formatTimestamp = (timestamp) => {
-    // Convert the timestamp to a Date object
-    const date = new Date(timestamp);
 
-    // Get the day, month, year, hours, and minutes
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed, so add 1
-    const year = date.getFullYear();
-
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-
-    // Return the formatted date and time
-    return `${day}/${month}/${year} - ${hours}:${minutes}`;
-  };
-
-  const handlePlayClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      onPress();
+  const handlePlayClick = async () => {
+    try {
+      setLoading(true);
+      await onPress();
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (

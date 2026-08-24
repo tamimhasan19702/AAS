@@ -6,10 +6,6 @@ import LottieView from "lottie-react-native";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { Entypo } from "@expo/vector-icons";
-import {
-  useFonts,
-  OverlockSC_400Regular,
-} from "@expo-google-fonts/overlock-sc";
 import { PVoiceContext } from "../context/PVoice.context";
 
 const StartStopRecorderView = styled(View)`
@@ -33,15 +29,8 @@ const AnimationView = styled(LottieView)`
   height: 100px;
 `;
 
-export const StartStopRecorder = ({ title, onPress }) => {
+export const RecorderButton = ({ title, onPress }) => {
   const { recording } = useContext(PVoiceContext);
-  let [fontsLoaded] = useFonts({
-    OverlockSC_400Regular,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
     <TouchableOpacity onPress={onPress}>
       <StartStopRecorderView

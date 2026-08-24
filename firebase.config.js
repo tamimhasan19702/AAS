@@ -5,16 +5,15 @@ import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
+// Firebase configuration loaded from environment variables (.env)
 const firebaseConfig = {
-  apiKey: "AIzaSyAgPJTv7Bl_kiMJ6HCjblrPmF837zBJzzQ",
-  authDomain: "aas-4th-year.firebaseapp.com",
-  databaseURL:
-    "https://aas-4th-year-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "aas-4th-year",
-  storageBucket: "aas-4th-year.appspot.com",
-  messagingSenderId: "807122202905",
-  appId: "1:807122202905:web:4412fbb04053792aab9588",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.EXPO_PUBLIC_FIREBASE_DATABASE_URL,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase app
@@ -23,6 +22,3 @@ export const FIRBASEAPP = initializeApp(firebaseConfig);
 export const FIREBASEDATABASE = getDatabase(FIRBASEAPP);
 export const FIREBASEFIRESTORE = getFirestore(FIRBASEAPP);
 export const FIREBASESTORAGE = getStorage(FIRBASEAPP);
-
-export const OPEN_AI_API_KEY =
-  "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";

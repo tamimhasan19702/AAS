@@ -1,7 +1,6 @@
 /** @format */
 
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { TimerPickerModal } from "react-native-timer-picker";
 import { color } from "../utils/colors";

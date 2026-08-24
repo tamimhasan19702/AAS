@@ -5,10 +5,6 @@ import React from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import LottieView from "lottie-react-native";
-import {
-  useFonts,
-  OverlockSC_400Regular,
-} from "@expo-google-fonts/overlock-sc";
 
 const BoxiconView = styled(View)`
   background-color: ${color.primary};
@@ -37,13 +33,6 @@ const BoxText = styled(Text)`
 `;
 
 export default function Boxicon({ url, text }) {
-  let [fontsLoaded] = useFonts({
-    OverlockSC_400Regular,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
     <BoxiconView style={{ elevation: 9 }}>
       <AnimationView
