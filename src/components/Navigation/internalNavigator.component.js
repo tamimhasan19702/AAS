@@ -8,16 +8,19 @@ import { StartPage } from "../../features/StartPage/StartPage.feature";
 
 import { SpeakerScreen } from "../../features/speaker/speaker.feature";
 import { SpeakerVoice } from "../../features/speaker/speaker.voice";
+import { ROUTES } from "../../constants/routes";
 
 const Stack = createNativeStackNavigator();
 export const InternalNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Start Screen" component={StartPage} />
-      <Stack.Screen name="AI Screen" component={AiScreen} />
-      <Stack.Screen name="Voice Screen" component={VoiceScreen} />
-      <Stack.Screen name="Speaker Screen" component={SpeakerScreen} />
-      <Stack.Screen name="Speaker Voice" component={SpeakerVoice} />
+    <Stack.Navigator
+      initialRouteName={ROUTES.START_SCREEN}
+      screenOptions={{ headerShown: false }}>
+      <Stack.Screen name={ROUTES.START_SCREEN} component={StartPage} />
+      <Stack.Screen name={ROUTES.AI_SCREEN} component={AiScreen} />
+      <Stack.Screen name={ROUTES.VOICE_SCREEN} component={VoiceScreen} />
+      <Stack.Screen name={ROUTES.SPEAKER_SCREEN} component={SpeakerScreen} />
+      <Stack.Screen name={ROUTES.SPEAKER_VOICE} component={SpeakerVoice} />
     </Stack.Navigator>
   );
 };

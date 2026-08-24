@@ -1,11 +1,9 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import LottieView from "lottie-react-native";
 import styled from "styled-components";
-import { Loading } from "../../utils/loading";
-import { Image, Text } from "react-native";
 
 const SplashView = styled(SafeView)`
   display: flex;

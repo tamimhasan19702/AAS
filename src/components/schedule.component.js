@@ -54,13 +54,13 @@ const ActiveText = styled(Text)`
 export default function ScheduleComponent({ speak, text, isActive = true }) {
   const [loading, setLoading] = useState(false);
 
-  const handlePlayClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      console.log(text);
-      speak(text);
+  const handlePlayClick = async () => {
+    try {
+      setLoading(true);
+      await speak(text);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (

@@ -1,9 +1,12 @@
 /** @format */
 
 import React, { createContext, useState, useCallback, useEffect } from "react";
-import { Audio } from "expo-av";
-import { ref, set, onValue, get } from "firebase/database";
+import { ref, set, get } from "firebase/database";
 import { FIREBASEDATABASE } from "../../firebase.config";
+import { FIREBASE_PATHS } from "../constants/firebasePaths";
+import { synthesizeSpeech } from "../services/tts.service";
+import { useSound } from "../hooks/useSound";
+import { formatCurrentTimestamp } from "../utils/date";
 
 export const AiContext = createContext();
 
@@ -15,61 +18,40 @@ export const AiContextProvider = ({ children }) => {
   const [presetArray, setPresetArray] = useState([]);
   const [presetLoading, setPresetLoading] = useState(false);
   const [loadTime, setLoadTime] = useState(0);
+  const { playDataUrl } = useSound();
 
-  const sound = new Audio.Sound();
-
-  const updateAudioText = async () => {
+  const updateAudioText = useCallback(async () => {
     try {
-      const snapshot = await get(ref(FIREBASEDATABASE, "audioText"));
+      const snapshot = await get(ref(FIREBASEDATABASE, FIREBASE_PATHS.AUDIO_TEXT));
       const responseText = snapshot.val()?.audioText || "";
       setAudio(responseText);
     } catch (error) {
       console.error("Error updating audio text:", error);
     }
-  };
+  }, []);
 
-  const getArrayFromFirebase = async () => {
+  const getArrayFromFirebase = useCallback(async () => {
     try {
-      const snapshot = await get(ref(FIREBASEDATABASE, "presetArray"));
+      const snapshot = await get(
+        ref(FIREBASEDATABASE, FIREBASE_PATHS.PRESET_ARRAY)
+      );
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        setPresetArray(data);
+        setPresetArray(snapshot.val());
       }
     } catch (error) {
       console.error("Error getting array from Firebase:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    updateAudioText();
+    getArrayFromFirebase();
+  }, [updateAudioText, getArrayFromFirebase]);
 
   const convertTextToSpeech = async (textToConvert) => {
-    try {
-      const startTime = performance.now();
-      const isLive = true;
-      // https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/
-      // const spareApi =
-      //   "https://aas-backend-copy-hze8iz77e-tareqs-projects-4295e8be.vercel.app/";
-      const baseUrl = isLive
-        ? "https://aas-backend-git-main-tamimhasan19702s-projects.vercel.app/"
-        : "http://192.168.0.107:3000/";
-      const response = await fetch(
-        `${baseUrl}/speech?text="${encodeURIComponent(textToConvert)}"`
-      );
-
-      const audioResponse = await response.blob();
-
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64Data = reader.result;
-        await sound.unloadAsync();
-        await sound.loadAsync({ uri: base64Data });
-        await sound.playAsync();
-
-        const endTime = performance.now();
-        setLoadTime(endTime - startTime);
-      };
-      reader.readAsDataURL(audioResponse);
-    } catch (error) {
-      console.error(error);
-    }
+    const { dataUrl, durationMs } = await synthesizeSpeech(textToConvert);
+    await playDataUrl(dataUrl);
+    setLoadTime(durationMs);
   };
 
   const save = () => {
@@ -83,37 +65,28 @@ export const AiContextProvider = ({ children }) => {
         }
 
         // Update audio text in Firebase
-        set(ref(FIREBASEDATABASE, "audioText"), {
+        set(ref(FIREBASEDATABASE, FIREBASE_PATHS.AUDIO_TEXT), {
           audioText: newText,
         });
 
         setAudio(newText);
 
-        // Convert text to speech
-        convertTextToSpeech(newText);
+        // Convert text to speech (errors are logged inside)
+        convertTextToSpeech(newText).catch((error) =>
+          console.error("Error converting text to speech:", error)
+        );
 
-        // Get the current date and time
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-        const day = String(currentDate.getDate()).padStart(2, "0");
-        const hours = String(currentDate.getHours()).padStart(2, "0");
-        const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-
-        // Format the date and time string
-        const formattedTime = `${day}/${month}/${year} - ${hours}:${minutes}`;
-
-        // Update preset array in Firebase
+        // Update preset array in Firebase with the new active preset first
         const updatedPresetArray = [
-          { text: newText, isActive: true, updateTime: formattedTime }, // Include updateTime for the new item
+          { text: newText, isActive: true, updateTime: formatCurrentTimestamp() },
           ...presetArray.map((item) => ({ ...item, isActive: false })),
         ];
-        set(ref(FIREBASEDATABASE, "presetArray"), updatedPresetArray);
+        set(ref(FIREBASEDATABASE, FIREBASE_PATHS.PRESET_ARRAY), updatedPresetArray);
 
         setPresetArray(updatedPresetArray);
 
         setSaveLoading(false);
-        return ""; // Return the updated state value
+        return "";
       });
     }, loadTime);
   };
@@ -121,82 +94,65 @@ export const AiContextProvider = ({ children }) => {
   const speak = async ({ presetText }) => {
     setPresetLoading(true);
     try {
-      await convertTextToSpeech(presetText || ""); // Convert text to speech immediately
+      await convertTextToSpeech(presetText || "");
 
       // Update audio text in Firebase
-      set(ref(FIREBASEDATABASE, "audioText"), {
+      set(ref(FIREBASEDATABASE, FIREBASE_PATHS.AUDIO_TEXT), {
         audioText: presetText || "",
       });
 
-      setPresetArray((prevArray) => {
-        const updatedArray = prevArray.map((item) => ({
-          text: item.text,
-          isActive: item.text === presetText,
-          updateTime: item.updateTime,
-        }));
-        set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-        setAudio("");
-        setPresetLoading(false);
-        return updatedArray;
-      });
+      const updatedArray = presetArray.map((item) => ({
+        text: item.text,
+        isActive: item.text === presetText,
+        updateTime: item.updateTime,
+      }));
+      set(ref(FIREBASEDATABASE, FIREBASE_PATHS.PRESET_ARRAY), updatedArray);
+      setPresetArray(updatedArray);
+      setAudio("");
     } catch (error) {
       console.error("Error converting text to speech:", error);
+    } finally {
       setPresetLoading(false);
     }
   };
 
   const clearPreset = () => {
-    setPresetArray((prevArray) => {
-      set(ref(FIREBASEDATABASE, "presetArray"), []);
-      return []; // Return the updated state value
-    });
+    set(ref(FIREBASEDATABASE, FIREBASE_PATHS.PRESET_ARRAY), []);
+    setPresetArray([]);
   };
 
   const handleDelete = (index) => {
-    setPresetArray((prevArray) => {
-      const updatedArray = prevArray
-        .slice(0, index)
-        .concat(prevArray.slice(index + 1));
-      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-      return updatedArray; // Return the updated state value
-    });
+    const updatedArray = presetArray
+      .slice(0, index)
+      .concat(presetArray.slice(index + 1));
+    set(ref(FIREBASEDATABASE, FIREBASE_PATHS.PRESET_ARRAY), updatedArray);
+    setPresetArray(updatedArray);
   };
 
   const deleteActivePreset = () => {
-    setPresetArray((prevArray) => {
-      const updatedArray = prevArray.filter((item) => !item.isActive);
-      set(ref(FIREBASEDATABASE, "presetArray"), updatedArray);
-      return updatedArray; // Return the updated state value
-    });
-  };
-
-  useEffect(() => {
-    updateAudioText();
-    getArrayFromFirebase();
-  }, [audio]);
-
-  const contextValue = {
-    text,
-    setText,
-    audio,
-    saveloading,
-    speakloading,
-    presetArray,
-    loadTime,
-    updateAudioText,
-    getArrayFromFirebase,
-    presetLoading,
-    save,
-    speak,
-    clearPreset,
-    handleDelete,
-    deleteActivePreset,
+    const updatedArray = presetArray.filter((item) => !item.isActive);
+    set(ref(FIREBASEDATABASE, FIREBASE_PATHS.PRESET_ARRAY), updatedArray);
+    setPresetArray(updatedArray);
   };
 
   return (
     <AiContext.Provider
       value={{
-        ...contextValue,
+        text,
+        setText,
+        audio,
+        saveloading,
+        speakloading,
+        presetArray,
+        loadTime,
+        updateAudioText,
+        getArrayFromFirebase,
+        presetLoading,
+        save,
+        speak,
+        clearPreset,
+        handleDelete,
+        deleteActivePreset,
       }}>
       {children}
     </AiContext.Provider>

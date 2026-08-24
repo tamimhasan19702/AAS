@@ -1,12 +1,8 @@
 /** @format */
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
-import {
-  useFonts,
-  OverlockSC_400Regular,
-} from "@expo-google-fonts/overlock-sc";
 import { color } from "../../utils/colors";
 import {
   AiScreenView,
@@ -20,15 +16,14 @@ import {
   AiTextInputView,
 } from "./AI.style";
 import { Loading } from "../../utils/loading";
-import { Alert, View } from "react-native";
+import { Alert, View, Text } from "react-native";
 import PresetComponent from "../../components/preset.component";
 import { AiContext } from "../../context/AI.context";
-import { Text } from "react-native";
+
 export const AiScreen = ({ navigation }) => {
   const {
     text,
     setText,
-    audio,
     saveloading,
     presetArray,
     save,
@@ -36,14 +31,6 @@ export const AiScreen = ({ navigation }) => {
     clearPreset,
     handleDelete,
   } = useContext(AiContext);
-
-  let [fontsLoaded] = useFonts({
-    OverlockSC_400Regular,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
 
   // Check if any preset has isActive: true
   const isAnyPresetActive = presetArray.some((item) => item.isActive);
@@ -83,7 +70,7 @@ export const AiScreen = ({ navigation }) => {
           ) : (
             <AiInputButton
               style={{ marginBottom: 5, width: "80%" }}
-              onPress={() => save(toString(text))}>
+              onPress={save}>
               <AiInputText>Generate audio</AiInputText>
             </AiInputButton>
           )}
@@ -143,8 +130,7 @@ export const AiScreen = ({ navigation }) => {
               );
             }
           }}
-          hasAudio={Boolean(isAnyPresetActive)} // Pass the audio prop here
-        >
+          hasAudio={Boolean(isAnyPresetActive)}>
           <AiInputText>Next Step</AiInputText>
         </NextButton>
       </AiScreenView>

@@ -1,22 +1,15 @@
 /** @format */
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import React, { useContext, useEffect } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useContext } from "react";
+import styled from "styled-components";
 import { SafeView } from "../../utils/safeAreaView";
 import { LogoBar } from "../../components/logoBar.component";
 
-import styled from "styled-components";
 import { ScheduleContext } from "../../context/Schedule.context";
 import { color } from "../../utils/colors";
-import PresetComponent from "../../components/preset.component";
 import ScheduleListViewComponent from "../../components/scheduleListView.component";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ROUTES } from "../../constants/routes";
 
 const ScheduleView = styled(View)`
   display: flex;
@@ -85,7 +78,7 @@ const ScheduleListView = ({ navigation }) => {
       </ScheduleView>
       <ScheduleButton
         onPress={() => {
-          navigation.navigate("Schedule Screen");
+          navigation.navigate(ROUTES.SCHEDULE_SCREEN);
         }}
         style={{ alignSelf: "center" }}>
         <ScheduleButtonText>Add Schedule</ScheduleButtonText>
@@ -95,5 +88,3 @@ const ScheduleListView = ({ navigation }) => {
 };
 
 export default ScheduleListView;
-
-const styles = StyleSheet.create({});

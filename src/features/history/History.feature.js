@@ -1,6 +1,6 @@
 /** @format */
 
-import { View, Button, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { SafeView } from "../../utils/safeAreaView";
 import styled from "styled-components";
@@ -27,14 +27,16 @@ export const HistoryScreen = ({ navigation }) => {
   const [histories, setHistories] = useState([]);
 
   useEffect(() => {
-    setHistories([...presetArray, ...recordedSounds]);
+    setHistories([
+      ...presetArray.map((item, index) => ({ ...item, id: `ai-${index}` })),
+      ...recordedSounds.map((item, index) => ({ ...item, id: `rec-${index}` })),
+    ]);
   }, [presetArray, recordedSounds]);
-
-  console.log(histories);
 
   const clearHistory = () => {
     setHistories([]);
   };
+
   return (
     <SafeView>
       <LogoBar link={navigation} icon={"arrow-left"} />
@@ -42,7 +44,7 @@ export const HistoryScreen = ({ navigation }) => {
         <ScrollView style={{ width: "90%", height: "80%" }}>
           {histories.map((history) => (
             <View
-              key={Math.random()}
+              key={history.id}
               style={{
                 marginBottom: 10,
                 backgroundColor: color.primary,
@@ -63,12 +65,10 @@ export const HistoryScreen = ({ navigation }) => {
 
               width: "80%",
               elevation: 9,
-              display: "flex",
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 5,
-              display: "flex",
-              alignSelf: "flex - end",
+              alignSelf: "flex-end",
               marginBottom: 5,
             }}
             onPress={() => clearHistory()}>

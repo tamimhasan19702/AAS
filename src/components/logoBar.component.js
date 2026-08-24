@@ -1,15 +1,10 @@
 /** @format */
 
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import React from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import {
-  useFonts,
-  OverlockSC_400Regular,
-} from "@expo-google-fonts/overlock-sc";
-import { useNavigation } from "@react-navigation/native";
 
 const LogoBarView = styled(View)`
   background-color: ${color.primary};
@@ -36,21 +31,9 @@ const ContentView = styled(View)`
 `;
 
 export const LogoBar = ({ link, icon, route = "Start Screen" }) => {
-  let [fontsLoaded] = useFonts({
-    OverlockSC_400Regular,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const handleLogoClick = (prop) => {
-    link.navigate(prop);
-  };
-
   return (
     <LogoBarView>
-      <TouchableOpacity onPress={() => handleLogoClick(route)}>
+      <TouchableOpacity onPress={() => link.navigate(route)}>
         <ContentView>
           <MaterialCommunityIcons name={icon} size={24} color="white" />
           <LogoText>AAS</LogoText>

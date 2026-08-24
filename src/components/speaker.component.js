@@ -1,7 +1,7 @@
 /** @format */
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 import { color } from "../utils/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -39,13 +39,6 @@ const SpeakerInput = styled(View)`
   width: 100%;
 `;
 
-const SpeakerText = styled(Text)`
-  font-weight: 400;
-  font-size: 20px;
-  text-align: center;
-  padding: 10px 0px;
-  font-family: "OverlockSC_400Regular";
-`;
 export const SpeakerComponent = ({ No, isOn, toggleHandler }) => {
   return (
     <>
